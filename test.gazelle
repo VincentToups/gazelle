@@ -1,0 +1,10 @@
+(_var f (lambda ([: a b c])
+		  c))
+
+(print (match [: 1 2 3]
+			  ([: a b c]
+			 (_+ a c))))
+
+
+
+

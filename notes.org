@@ -1,0 +1,48 @@
+* You were about to write a function require-spec->symbol-macros
+  it will take a module spec, compile the module if needed, collect
+  the module manifest and macro context and then turn the require spec
+  into a flat list of define-symbol-macro expressions.
+* Module System
+
+  The module system is built on top of `require.js` which is a nice
+  system which already works for the dynamic part of javascrit.
+
+  Gazelle adds the notion of compile time activity to Javascript, and
+  hence requires that our implementation of modules include compile
+  time information, such as which macros are exported by a module and
+  what they are bound to in the body of a require.  
+
+  Require.js's require form looks like
+
+  require(["module/path/m1","module/path/m2"]
+          function(m1,m2){ 
+          body...
+          })
+
+  In Gazelle, this is rendered:
+
+  (require (("module/path/m1" <require-spec>)
+            ("module/path/m2" <require-spec>))
+    body ...)
+
+  Since the compile-time part of a module is not available to run-time
+  code, the modules themselves are bound to gensymed symbols and are
+  not directly accesible in the body.  Instead, external symbols from
+  the modules are bound to local "symbols" via require spec, with the
+  option of binding the module itself.
+
+  Modules in require.js look like this:
+
+  define([<mloc1>,<mloc2>],function(m1,m2){ body ... return
+  module-object }
+
+  Which is rendered in gazelle as
+
+  (module ((<mloc1> <require-spec>)
+           (<mloc2> <require-spec>))
+    body)
+
+  Where in the body the special form define+ defines external values
+  and functions and where define-macro+ defines external macros.
+
+  

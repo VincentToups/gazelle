@@ -1,0 +1,73 @@
+(define (reduce f init ra)
+  (for (i :in ra)
+	   (set! init (f [ra i] init)))
+  init)
+
+(define (=== a b)
+  (_=== a b))
+
+(define (string? o)
+  (=== (typeof o) "string"))
+
+(define (number? o)
+  (=== (typeof o) "number"))
+
+(define (< a b)
+  (_< a b))
+
+(define (> a b)
+  (_> a b))
+
+(define (<= a b)
+  (_<= a b))
+
+(define (>= a b)
+  (_>= a b))
+
+(define (== a b)
+  (_== a b))
+
+(define (plus hd (tail rest))
+  (if (=== 0 rest.length)
+	  hd
+	(reduce (lambda (a b) (_+ b a)) hd rest)))
+
+(define (times)
+  (reduce 
+   (lambda (a b)
+	 (_* a b))
+   1
+   (Array.prototype.slice.call arguments 0)))
+
+(define (minus hd (tail rest))
+  (_- hd (plus.apply plus rest)))
+
+(define (divide hd (tail rest))
+  (_/ hd (times.apply times rest)))
+
+(define (map1 f array)
+  (var output [:])
+  (for (i :in array)
+	   (output.push (f [array i])))
+  output)
+
+(define-macro for* ((tail body))
+  (match body
+		 ((list (list (list index element-pattern) :in expr) (tail real-body))
+		  (let ((over (gensym "for*-over"))
+				(anything-else (gensym "for*-anything-else")))
+			`(progn 
+			   (var ,over ,expr)
+			   (for (,index :in ,over)
+					(match [,over ,index]
+						   (,element-pattern ,@real-body)
+						   (,anything-else
+							(throw (_+ "Match failed in for* %S" ,(format "%S" `(for* ,@body)))))))
+			   undefined)))
+		 (otherwise 
+		  `(for ,@body))))
+
+(define (test-for* )
+  (for* ((index element) :in [: "cats" "dogs" "aardvarks"])
+		(print element)))
+

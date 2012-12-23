@@ -1,8 +1,11 @@
 (eval-when (load compile eval) 
   (require 'shadchen)
   (require 'prim))
+(provide 'proper)
 
 (eval-when (load compile eval) 
+  (defun proper:message (&rest args)
+	(message (concat "proper: " (apply #'format args))))
   (defvar proper:macros (list (make-hash-table)))
   (setq proper:macros (list (make-hash-table)))
   (defvar proper:symbol-macros (list (make-hash-table)))
@@ -101,7 +104,7 @@
   (recur anything nil))
 
 (defun-match proper:to-prim ((list-rest '_if cexpr tbody tail-of-if))
-  `(_if ,cexpr (proper:map-to-prim tbody) ,@(proper:tail-of-if-to-prim tail-of-if)))
+  `(_if ,(proper:to-prim cexpr) ,(proper:map-to-prim tbody) ,@(proper:tail-of-if-to-prim tail-of-if)))
 
 (defun-match proper:to-prim ((list (or 'if '_?) cexpr texpr fexpr))
   `(_? ,(proper:to-prim cexpr)
@@ -131,14 +134,16 @@
   `(_while ,(proper:to-prim expression)
 		   ,@(proper:map-to-prim body)))
 
-(defun-match proper:to-prim ((list-rest '_for (non-kw-symbol name) 
-										'_in expression body))
-  `(_for ,(proper:to-prim name) _in ,(proper:to-prim expression)
+(defun-match proper:to-prim ((list-rest (or 'for '_for) 
+										(list (non-kw-symbol name) 
+											  (or :in '_in) expression) 
+										body))
+  `(_for (,(proper:to-prim name) _in ,(proper:to-prim expression))
 		 ,@(proper:map-to-prim body)))
 
-(defun-match proper:to-prim ((list-rest '_for (and control 
-												   (list init cond update)) body))
-  `(_for ,(proper:map-to-prim contro) ,@(proper:map-to-prim body)))
+(defun-match proper:to-prim ((list-rest (or 'for '_for) (and control 
+															 (list init cond update)) body))
+  `(_for ,(proper:map-to-prim control) ,@(proper:map-to-prim body)))
 
 (defun-match proper:to-prim ((list '_throw expr))
   `(_throw ,(proper:to-prim expr)))
@@ -198,13 +203,13 @@
 (defun-match proper:tail-of-dot-to-prim (anything)
   (recur anything nil))
 
-(defun-match proper:to-prim ((list-rest '_. expr tail-of-dot-expr))
+(defun-match proper:to-prim ((list-rest (or '.. '_.) expr tail-of-dot-expr))
   `(_. ,(proper:to-prim expr) ,@(proper:tail-of-dot-to-prim tail-of-dot-expr)))
 
-(defun-match proper:to-prim ((list '_= (and
-										(or (non-kw-symbol _)
-											(list-rest '_. _))
-										set-this)
+(defun-match proper:to-prim ((list (or '_= 'set!) (and
+												   (or (non-kw-symbol _)
+													   (list-rest '_. _))
+												   set-this)
 								   value-expr))
   `(_= ,(proper:to-prim set-this) ,(proper:to-prim value-expr)))
 
@@ -228,7 +233,7 @@
   `(_newline-sequence ,@(proper:map-to-prim exprs)))
 
 (defun-match proper:to-prim ([(or '_: ':) (tail elements)])
-  (coerce `('_: ,@(proper:map-to-prim elements)) 'vector))
+  (coerce `(_: ,@(proper:map-to-prim elements)) 'vector))
 
 (defun-match proper:to-prim ([hd (tail elements)])
   (coerce `(,(proper:to-prim hd) ,@(proper:to-prim elements)) 'vector))
@@ -249,19 +254,6 @@
   (let ((context (car proper:symbol-macros)))
 	(setf (gethash name context) function)))
 
-(defun-match proper:to-prim ((list 'define-macro (non-kw-symbol name) 
-								   arguments (tail body)))
-  (let ((args (gensym))
-		(anything-else (gensym)))
-	(proper:add-to-global-macro-context 
-	 name 
-	 (eval `(lambda (&rest ,args)
-			  (match ,args
-					 ((list ,@arguments))
-					 (,anything-else
-					  (error ,(format "macro %S (%S): failed to match %%S" arguments name) ,anything-else))))))
-	(symbol-name name)))
-
 (defmacro* proper:define-macro (name arguments &body body)
   (let ((args (gensym))
 		(anything-else (gensym)))
@@ -272,7 +264,7 @@
 			   ((list ,@arguments)
 				,@body)
 			   (,anything-else 
-				(error ,(format "macro %S (%S): failed to match %%S" arguments name) ,anything-else)))))))
+				(error ,(format "macro %S (%S): failed to match %%S" name arguments) ,anything-else)))))))
 
 (defmacro* proper:define-symbol-macro (name symbol-pattern &body body)
   (let ((arg (gensym))
@@ -284,7 +276,7 @@
 			   (,symbol-pattern
 				,@body)
 			   (,anything-else 
-				(error ,(format "symbol-macro %S (%S): failed to match %%S" arguments name) ,anything-else)))))))
+				(error ,(format "symbol-macro %S (%S): failed to match %%S" name symbol-pattern) ,anything-else)))))))
 
 (defmacro* proper:define-simple-symbol-macro (name &body body)
   (let ((arg (gensym))
@@ -299,6 +291,11 @@
 							  (proper:macro _ expander)
 							  (tail arguments)))
   (recur (apply expander arguments)))
+
+(defun-match proper:to-prim ((list 
+							  (proper:symbol-macro _ expander)
+							  (tail arguments)))
+  (recur `(,(funcall expander _) ,@arguments)))
 
 (defun-match- proper:macro-expand-1 ((list 
 									  (proper:macro _ expander)
@@ -317,7 +314,7 @@
    `(_function ,args ,@body)))
 
 (proper:define-macro 
- let ((list-rest binders) (tail body))
+ _let ((list-rest binders) (tail body))
  (let ((names (cons 'arguments (mapcar #'car binders)))
 	   (expressions (mapcar #'cadr binders)))
    `(_. (_lambda ,names ,@body)
@@ -329,7 +326,7 @@
 
 (proper:define-macro
  progn ((tail body))
- `(let () ,@body))
+ `(_let () ,@body))
 
 (proper:define-macro 
  throw (expr)
@@ -343,21 +340,21 @@
  match-fail ()
  "match-fail-e1aa3b7e7ce9731266013c178de842b5")
 
-(proper:define-macro 
+(proper:define-macro
  match1-id ((non-kw-symbol s) vexpr (tail body))
- `(let ((,s ,vexpr))
-	,@body))
+ `(_let ((,s ,vexpr))
+		,@body))
 
 (proper:define-macro
  match1-simple-atom ((or (keyword a)
 						 (number a)
-						 (string a)) 
+						 (string a))
 					 vexpr (tail body))
  (let ((val (gensym)))
-   `(let ((,val ,vexpr))
-	  (if (_=== ,val ,k)
-		  (progn ,@body)
-		(match-fail)))))
+   `(_let ((,val ,vexpr))
+		  (if (_=== ,val ,a)
+			  (progn ,@body)
+			(match-fail)))))
 
 (defun-match- proper:make-last-return (nil)
   nil)
@@ -381,26 +378,27 @@
 		 (,@(proper:make-last-return body))))))
 
 (proper:define-macro 
- match1-array ([: (tail sub-patterns)] vexpr (tail body))
+ match1-array ((or [(or ': '_:) (tail sub-patterns)]
+				   (list 'array (tail sub-patterns))) vexpr (tail body))
  (match sub-patterns
 		((list)
 		 (let ((val (gensym)))
-		   `(let ((,val ,vexpr))
-			  (if-or-match-fail
-			   (_&& (_instanceof ,val Array)
-					(_=== (_. ,val length) 0))
-			   ,@body))))
+		   `(_let ((,val ,vexpr))
+				  (if-or-match-fail
+				   (_&& (_instanceof ,val Array)
+						(_=== (_. ,val length) 0))
+				   ,@body))))
 		((list (list 'tail pattern))
 		 `(match1 ,pattern ,vexpr ,@body))
 		((list hdp (tail sub-patterns))
 		 (let ((val (gensym))
 			   (hd (gensym)))
-		   `(let ((,val ,vexpr))
-			  (if-or-match-fail 
-			   (_&& (_instanceof ,val Array)
-					(_> (_. ,val length) 0))
-			   (match1 ,hdp [,val 0]
-					   (match1 [: ,@sub-patterns] (_. ,val (slice 1)) ,@body))))))))
+		   `(_let ((,val ,vexpr))
+				  (if-or-match-fail 
+				   (_&& (_instanceof ,val Array)
+						(_> (_. ,val length) 0))
+				   (match1 ,hdp [,val 0]
+						   (match1 [: ,@sub-patterns] (_. ,val (slice 1)) ,@body))))))))
 
 (proper:define-macro 
  match1 (mexpr vexpr (tail body))
@@ -416,7 +414,8 @@
 		   ,(prim:transcode->string (proper:to-prim e))
 		   ,vexpr
 		   ,@body))
-		([: (tail sub-patterns)]
+		((or [(or '_: ':) (tail sub-patterns)]
+			 (list 'array (tail sub-patterns)))
 		 `(match1-array ,mexpr ,vexpr ,@body))))
 
 (eval-when (load compile eval) 
@@ -452,17 +451,36 @@
 							   "pattern in the head of each.")))))
  (let ((return-value (gensym))
 	   (value (gensym))) 
-   `(let 
-		()
-	  (_var ,return-value _undefined)
-	  (_var ,value ,match-value)
-	  ,@(loop for sub-form in body append 
-			  (let ((pattern (car sub-form))
-					(sub-body (cdr sub-form)))
-				`((_= ,return-value (match1 ,pattern ,value ,@body))
-				  (_if (_! (_=== (match-fail) ,return-value))
-					   ((_return ,return-value))))))
-	  (_throw (_+ ,(format "match-fail at (%S) for value " `(match ,match-value ,@body)) ,value)))))
+   `(_let 
+	 ()
+	 (_var ,return-value _undefined)
+	 (_var ,value ,match-value)
+	 ,@(loop for sub-form in body append 
+			 (let ((pattern (car sub-form))
+				   (sub-body (cdr sub-form)))
+			   `((_= ,return-value (match1 ,pattern ,value ,@sub-body))
+				 (_if (_! (_=== (match-fail) ,return-value))
+					  ((_return ,return-value))))))
+	 (_throw (_+ ,(format "match-fail at (%S) for value " `(match ,match-value ,@body)) ,value)))))
+
+
+(defun-match- proper:simple-lambda-p ((list 'lambda arg-list (tail body)))
+  (proper:all-satisfy (lambda (x)
+						(and (symbolp x)
+							 (not (keywordp x)))) arg-list))
+
+(proper:define-macro 
+ lambda (args (tail body))
+ (if (proper:simple-lambda-p `(lambda ,args ,@body))
+	 `(_lambda ,args ,@body)
+   (let ((otherwise (gensym)))
+	 `(_lambda 
+	   () 
+	   (match (_. Array prototype slice (call arguments 0))
+			  ([: ,@args]
+			   ,@body)
+			  (,otherwise (_throw (_+ "No match error in lambda " ,(format "%S" `(lambda ,args ,@body))))))))))
+
 
 (proper:define-macro 
  define-macro (name (list-rest patterns) (tail body))
@@ -474,11 +492,12 @@
 						  ,@body)
 						 (,args 
 						  (error "Macro %s failed for args %S" ',name ,args)))))))
+   
    (proper:add-to-macro-context name transform-lambda)
-   '_undefined))
+   `(_var ,name "macro - no dynamic value.")))
 
-(proper:define-symbol-macro  
- define-macro (name pattern (tail body))
+(proper:define-macro  
+ define-symbol-macro (name pattern (tail body))
  (let* ((arg (gensym))
 		(transform-lambda 
 		 (eval `(lambda (,arg)
@@ -490,8 +509,18 @@
    (proper:add-to-symbol-macro-context name transform-lambda)
    '_undefined))
 
-(proper:define-simple-symbol-macro  
- define-macro (name (tail body))
+(proper:define-macro 
+ define ((tail parts))
+ (match parts
+		((list (non-kw-symbol name) value-expr)
+		 `(_var ,name ,value-expr))
+		((list (list (non-kw-symbol name) (tail args)) (tail body))
+		 `(_var ,name (lambda ,args ,@body)))
+		(other-form
+		 (error "gazelle/proper define must either by (define symbol expr) or (define (name arg-pattern ...) body0 ...), got %S" `(define ,@parts)))))
+
+(proper:define-macro  
+ define-simple-symbol-macro (name (tail body))
  (let* ((arg (gensym))
 		(transform-lambda 
 		 (eval `(lambda (,arg)
@@ -503,6 +532,8 @@
   (reverse acc))
 (defun-match proper:reduce-unit-body-once ((list form (tail forms)) acc)
   (recur forms (cons (proper:to-prim form) acc)))
+(defun-match proper:reduce-unit-body-once ((list (tail forms)))
+  (recur forms nil))
 
 (defun proper:</c (rhs)
   (eval `(lambda (lhs)
@@ -520,15 +551,300 @@
 		`(converged ,new-arg ,count)
 	  (recur f new-arg max-count (+ 1 count)))))
 
+(proper:define-macro 
+ _proper:include 
+ (filename)
+ (let ((s-expressions
+		(gzu:read-file filename)))
+   `(_newline-sequence ,@s-expressions)))
+
+(proper:define-macro
+ _proper:macro-context ((tail body))
+ (let ((proper:macros 
+		(cons (make-hash-table) proper:macros))
+	   (proper:symbol-macros 
+		(cons (make-hash-table) proper:symbol-macros)))
+   `(_proper:unit ,@body)))
 
 (proper:define-macro 
  _proper:unit 
  ((tail body))
- (let ((proper:macros (cons (make-hash-table) proper:macros))
-	   (proper:symbol-macros (cons (make-hash-table) proper:symbol-macros)))
-   (match (proper:fixed-point #'proper:reduce-unit-body-once body)
-		  ((list 'converged ,final-body ,count)
-		   `(_lambda () ,final-body))
-		  ((list 'did-not-converge ,non-final-body ,count)
-		   (error "_proper:unit compilation did not converge.  Do you have a loop in macroexpansion in the body %s?" body)))))
+ (match (proper:fixed-point #'proper:reduce-unit-body-once body)
+		((list 'converged final-body count)
+		 `((_lambda () ,@final-body)))
+		((list 'did-not-converge non-final-body count)
+		 (error (format 
+				 (concat "_proper:unit compilation did not converge."
+						 "  Do you have a loop in macroexpansion in"
+						 " the body %s?") body)))))
+
+
+
+(proper:define-macro 
+ _proper:at-compile-time 
+ ((tail body))
+ (eval body)
+ 'undefined)
+
+(defvar proper:*rjs-root* nil)
+(defun proper:read-rjs-dir (d)
+  (interactive "DPlease enter your require-js project root.")
+  d)
+(defun proper:set-rjs-root ()
+  (interactive)
+  (setq proper:*rjs-root* nil)
+  (proper:fetch-rjs-root))
+(defun proper:fetch-rjs-root ()
+  (if proper:*rjs-root*
+	  proper:*rjs-root*
+	(let ((d (call-interactively #'proper:read-rjs-dir)))
+	  (prog1 d
+		(setq proper:*rjs-root* d)))))
+
+(defvar proper:*module-manifest* nil)
+(defun proper:inside-module-p ()
+  (if proper:*module-manifest* t nil))
+
+(defun proper:module-spec->module-file (spec)
+  (let ((root (proper:fetch-rjs-root)))
+	(replace-regexp-in-string "/+" "/" (concat root spec ".gazelle"))))
+
+(defun-match- proper:module-module-specs ((list 'module module-specs (tail body)))
+  module-specs)
+
+(defun-match- proper:module-body ((list 'module module-specs (tail body)))
+  body)
+
+(eval-when (compile load eval)
+  (defpattern proper:as-form (&optional (source-name (gensym))
+										(local-name (gensym)))
+	`(or (non-kw-symbol (and ,source-name ,local-name))
+		 (list (non-kw-symbol (and ,source-name ,local-name)))
+		 (list (non-kw-symbol ,source-name)
+			   (non-kw-symbol ,local-name))))
+  (defun-match- proper:as-form-p ((proper:as-form))
+	t)
+  (defun-match proper:as-form-p (anything-else)
+	nil)
+
+  (defun-match- proper:as-forms-p ((list (tail items)))
+	(proper:all-satisfy #'proper:as-form-p items))
+  (defpattern proper:as-forms (&optional (pattern (gensym)))
+	(p #'proper:as-forms-p ,pattern)))
+
+(defun proper:module-location->symbol (loc)
+  (intern (concat "module-" (substring (md5 (file-truename (concat (proper:fetch-rjs-root) loc)))
+									   0 10))))
+
+(defun proper:lookup-manifest-type (symbol manifest)
+  (gzu:alist-lookup :type (gethash symbol manifest)))
+
+(defun proper:setup-macro-as (source local 
+									 module-location 
+									 local-module-name
+									 manifest macros symbol-macros)
+  (proper:add-to-macro-context local 
+							   (proper:pages-lookup source macros)))
+
+(defun proper:setup-value-as (source local 
+									 module-location 
+									 local-module-name
+									 manifest macros symbol-macros)
+  (proper:message "adding as symbol macro, %S expanding to %S" local 
+				  `(_. ,(proper:module-location->symbol module-location) ,source))
+  (proper:add-to-symbol-macro-context 
+   local
+   (lexical-let ((local-module-name local-module-name)
+				 (source source)) 
+	 (lambda (_)
+	   `(_. ,local-module-name ,source)))))
+
+(defun proper:setup-as-form (as-form
+							 module-location
+							 local-module-name
+							 manifest
+							 macros
+							 symbol-macros)
+  (proper:message "Setting up as form %S" as-form)
+  (loop for form in (cdr as-form) do
+		(match form
+			   ((proper:as-form source local)
+				(match (proper:lookup-manifest-type source manifest)
+					   (:macro (proper:setup-macro-as source local 
+													  module-location 
+													  local-module-name
+													  manifest macros symbol-macros))
+					   ((or :value :function)
+						(proper:setup-value-as 
+						 source local
+						 module-location 
+						 local-module-name
+						 manifest macros symbol-macros)))))))
+
+(proper:define-macro
+ _proper:require-spec
+ ((or (and (string module-location)
+		   (let1 local-module-name (proper:module-location->symbol module-location)))
+	  (list (string module-location)
+			(symbol local-module-name)))
+  (tail parts))
+ (match (proper:compile-module module-location)
+		((list manifest macros symbol-macros)
+		 (let ((require-forms (mapcar #'proper:reduce-require-form parts)))
+		   (proper:message 
+			"Importing reduced forms %S from %S." require-forms module-location) 
+		   (loop for as-form in require-forms
+				 do
+				 (proper:setup-as-form as-form
+									   module-location 
+									   local-module-name
+									   manifest
+									   macros
+									   symbol-macros)))))
+ (format "%S" `(,module-location ,@parts)))
+
+(defun proper:module-specs->crypto-symbols (specs)
+  (mapcar (lambda (spec)
+			(match spec
+				   ((list (string location) (tail parts))
+					(proper:module-location->symbol location))
+				   ((list (list (string location) (symbol local-symbol))
+						  (tail parts))
+					local-symbol)
+				   (other-value
+					(error "Unrecognized module require specification %S" spec))))
+		  specs))
+
+(defun proper:module-specs->locations (specs)
+  (mapcar 
+   (lambda (spec)
+	 (match spec
+			((list (string location) (tail parts))
+			 location)
+			((list (list (string location)
+						 (symbol local-name))
+				   (tail parts))
+			 location))) specs))
+
+(defun proper:module-gazelle-file->js-file (file)
+  (let ((new (replace-regexp-in-string "\.gazelle$" ".js" file)))
+	(if (string= new file)
+		(concat file ".js")
+	  new)))
+
+(defvar proper:*module-compile-cache* 
+  (make-hash-table :test 'equal))
+(defun proper:reset-module-cache ()
+  (setq proper:*module-compile-cache* (make-hash-table :test 'equal)))
+(defvar proper:*use-module-cache* t)
+
+(defun proper:compile-module (spec)
+  (proper:message "Attempting to compile/load from cache %S" spec)
+  (when (not proper:*use-module-cache*)
+	(proper:message "Module cache is disable.")
+	(proper:reset-module-cache))
+  (match-let* ((file (proper:module-spec->module-file spec))
+			   (current-hash (gzu:file-hash file))
+			   ((cons previous-hash previous-compilation)
+				(gethash file proper:*module-compile-cache*)))
+			  (if (equal previous-hash current-hash)
+				  (progn 
+					(proper:message "Module cache hit on %S" spec)
+					previous-compilation)
+				(progn 
+				  (proper:message "Module cache miss on %S" spec)
+				  (let ((new-compilation (proper:really-compile-module spec)))
+					(setf (gethash file proper:*module-compile-cache*)
+						  (cons current-hash new-compilation))
+					new-compilation)))))
+
+(proper:define-macro 
+ let (binders (tail body))
+ (let ((values (gensym))
+	   (anything-else (gensym)))
+   `(match [: ,@(mapcar #'cadr binders)]
+		   ([: ,@(mapcar #'car binders)]
+			,@body)
+		   (,anything-else
+			(_throw (_+ "Match error in " ,(format "%S" `(let ,binders ,@body))))))))
+
+(defun proper:read-module-file (file)
+  (match (gzu:read-file file)
+		 ((list (and the-module 
+					 (list 'module (list (tail specs))
+						   (tail body))))
+		  the-module)
+		 (other-code 
+		  (error (concat
+				  "Couldn't find a module in %S %S, "
+				  "a module file must consist of a single `module`
+				  form.") file other-code))))
+
+(proper:define-macro 
+ require (specs (tail body))
+ (proper:message "specs is %S" specs)
+ `((_value require)
+   [: ,@(proper:module-specs->locations specs)]
+   (lambda (,@(proper:module-specs->crypto-symbols specs))
+	 (_proper:unit 
+	  ,@(loop for spec in specs collect
+			  `(_proper:require-spec ,@spec))
+	  ,@body))))
+
+(defun-match- proper:reduce-require-form ((and form (list :as (tail pairs))))
+  form)
+
+(defun proper:really-compile-module (spec)
+  (proper:message "Really compiling module %S" spec)
+  (let* ((file (proper:module-spec->module-file spec))
+		 (output-file (proper:module-gazelle-file->js-file file))
+		 (contents (proper:read-module-file file))
+		 (specs (proper:module-module-specs contents))
+		 (body (proper:module-body contents)))
+	(let* ((proper:*module-manifest* (make-hash-table))
+		   (proper:symbol-macros (cons (make-hash-table)
+									   proper:symbol-macros))
+		   (proper:macros (cons (make-hash-table) proper:macros))
+		   (current-module (gensym "current-module-"))
+		   (gazelle-code 
+			`((_value define)
+			  [: ,@(proper:module-specs->locations specs)]
+			  (_function ,(proper:module-specs->crypto-symbols specs)
+						 (_var ,current-module (_{}))
+						 (_proper:unit 
+						  (define-macro define+ ((tail parts))
+							(match parts
+								   ((list (non-kw-symbol name) value-expr)
+									(setf (gethash name proper:*module-manifest*)
+										  '((:type . :value)))
+									(proper:add-to-symbol-macro-context 
+									 name
+									 (lambda (_) '(_. ,current-module ,name)))
+									`(_= (_. ,current-module ,name) ,value-expr))
+								   ((list (list (non-kw-symbol name) (tail args)) (tail body))
+									(setf (gethash name proper:*module-manifest*)
+										  '((:type . :function)))
+									(proper:add-to-symbol-macro-context 
+									 name
+									 (lambda (_) '(_. ,current-module ,name)))
+									`(_= (_. ,current-module ,name) (lambda ,args ,@body)))
+								   (other-form
+									(error (concat "gazelle/proper define must either"
+												   " by (define symbol expr) or (define"
+												   " (name arg-pattern ...) body0 ...)," 
+												   " got %S") `(define+ ,@parts)))))
+						  (define-macro define-macro+ (name (list-rest patterns) (tail body))
+							(setf (gethash name proper:*module-manifest*)
+								  '((:type . :macro)))
+							`(define-macro ,name ,patterns ,@body))
+						  ,@(loop for spec in specs collect
+								  `(_proper:require-spec ,@spec))
+						  ,@body)
+						 (_return ,current-module)))))
+	  (gzu:with-file-buffer-maybe-open 
+	   (output-file :save t)
+	   (delete-region (point-min) (point-max))
+	   (prim:transcode
+		(proper:to-prim gazelle-code)))
+	  (list proper:*module-manifest* proper:macros proper:symbol-macros))))
 

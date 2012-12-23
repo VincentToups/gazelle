@@ -233,7 +233,6 @@ manglings.  Additionally, dashed ids are replaced by camel case."
   (prim:in-parens 
    (prim:transcode condition))
   (prim:transcode-block expressions)
-  (message (format "rest is: %S" rest))
   (prim:transcode-tail-of-if rest))
 
 (assert (string= (prim:transcode->string '(_if :test-value ((_var x :x) (_var y :y))
@@ -304,6 +303,12 @@ manglings.  Additionally, dashed ids are replaced by camel case."
    (prim:transcode-csvs args))
   (prim:transcode-block body))
 
+(defun-match prim:transcode ((list '_return (list (and which (or '_for '_while '_try '_var)) (tail body))))
+  (recur `(,which ,@body)))
+
+(defun-match prim:transcode ((list '_return (list (and which (or '_throw '_continue '_break)) expression)))
+  (recur `(,which ,expression)))
+
 (defun-match prim:transcode ((list '_return expression))
   (prim:insert "return ")
   (prim:in-parens 
@@ -315,13 +320,14 @@ manglings.  Additionally, dashed ids are replaced by camel case."
    (prim:transcode expression))
   (prim:transcode-block body))
 
-(defun-match prim:transcode ((list-rest '_for (non-kw-symbol name) 
-										'_in expression body))
+(defun-match prim:transcode ((list-rest '_for (list (non-kw-symbol name) 
+										'_in expression) body))
   (prim:insert "for ")
-  (prim:transcode name)
-  (prim:insert " in ")
   (prim:in-parens
-   (prim:transcode expression))
+   (prim:transcode name)
+   (prim:insert " in ")
+   (prim:in-parens
+	(prim:transcode expression)))
   (prim:transcode-block body))
 
 (defun-match prim:transcode ((list-rest '_for (list init cond update) body))
@@ -439,6 +445,7 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 		(prim:insert ".")
 		(prim:transcode-tail-of-dot-expr tail-of-dot-expr))))
 
+
 (defun-match prim:transcode ((list '_= 
 								   (and
 									(or (non-kw-symbol _)
@@ -448,6 +455,10 @@ manglings.  Additionally, dashed ids are replaced by camel case."
   (prim:transcode set-this)
   (prim:insert " = ")
   (prim:transcode value-expr))
+
+(defun-match prim:transcode ((list '_value value-expr))
+  (prim:in-parens 
+   (prim:transcode value-expr)))
 
 (defun-match prim:transcode ((list '_! expr))
   (prim:in-parens
@@ -524,6 +535,7 @@ manglings.  Additionally, dashed ids are replaced by camel case."
   (loop for element in elements do
 		(prim:in-brackets 
 		 (prim:transcode element))))
+
 
 (eval-when (compile load eval) 
   (defun-match- prim:flat-seq-of-sym-val-pairs (nil)

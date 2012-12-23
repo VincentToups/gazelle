@@ -1,0 +1,9 @@
+(require 
+ (("hooves/operator-functions" (:as + incr)))
+ (_+ 1 1)
+ (var x 10)
+ (incr x)
+ (console.log (_+ "X is " x))
+ (+ 1 2))
+
+

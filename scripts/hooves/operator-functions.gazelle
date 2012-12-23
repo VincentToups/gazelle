@@ -1,0 +1,11 @@
+(module
+ ()
+ (define+ (+ hd (tail tl))
+   (var result hd)
+   (for (i :in tl)
+		(set! result (_+ result [tl i])))
+   result)
+
+ (define-macro+ incr ((symbol place))
+   `(set! ,place (+ 1 ,place))))
+
