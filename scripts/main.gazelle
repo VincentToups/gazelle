@@ -1,9 +1,15 @@
 (require 
- (("hooves/operator-functions" (:as + incr)))
+ (("hooves/operator-functions" :all)
+  ("hooves/lisp-idioms" (:with-prefix idioms- :all))
+  ("jquery/jquery" (:as $)))
  (_+ 1 1)
  (var x 10)
  (incr x)
- (console.log (_+ "X is " x))
+ (console.log (_+ "X minus one is " (- x 1)))
+ (console.log (+ "7 < 10" (< 7 10)))
+ (console.log (+ "7 > 10" (> 7 10)))
+ (console.log (+ "using idioms- " (idioms-apply + [: 1 2])))
+ (.. ($ "body") (append "Hello World.")) 
  (+ 1 2))
 
 

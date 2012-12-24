@@ -4,8 +4,13 @@
 (provide 'proper)
 
 (eval-when (load compile eval) 
+  (defmacro* proper:enclose (symbols &body body)
+	`(lexical-let ,(loop for s in symbols collect `(,s ,s))
+	   ,@body))
   (defun proper:message (&rest args)
-	(message (concat "proper: " (apply #'format args))))
+	(message (replace-regexp-in-string (regexp-quote "%")
+									   "%%" 
+									   (concat "proper: " (apply #'format args)))))
   (defvar proper:macros (list (make-hash-table)))
   (setq proper:macros (list (make-hash-table)))
   (defvar proper:symbol-macros (list (make-hash-table)))
@@ -221,6 +226,13 @@
 
 (defun-match proper:to-prim ((list '_~ expr))
   `(_~ ,(proper:to-prim expr)))
+
+(defun-match proper:to-prim ((list (or 'include-js '_include-js) (! (string file))))
+  `(_include-js ,file))
+
+(defun-match proper:to-prim ((list (or '{} '_{})
+								   (tail (prim:{}-body tail))))
+  `(_{} ,@tail))
 
 (defun-match proper:to-prim ((list (prim:binop op) e1 e2))
   `(,op ,(proper:to-prim e1)
@@ -654,10 +666,9 @@
 				  `(_. ,(proper:module-location->symbol module-location) ,source))
   (proper:add-to-symbol-macro-context 
    local
-   (lexical-let ((local-module-name local-module-name)
-				 (source source)) 
-	 (lambda (_)
-	   `(_. ,local-module-name ,source)))))
+   (proper:enclose (local-module-name source) 
+				   (lambda (_)
+					 `(_. ,local-module-name ,source)))))
 
 (defun proper:setup-as-form (as-form
 							 module-location
@@ -690,7 +701,7 @@
   (tail parts))
  (match (proper:compile-module module-location)
 		((list manifest macros symbol-macros)
-		 (let ((require-forms (mapcar #'proper:reduce-require-form parts)))
+		 (let ((require-forms (mapcar (proper:reduce-require-form/c manifest) parts)))
 		   (proper:message 
 			"Importing reduced forms %S from %S." require-forms module-location) 
 		   (loop for as-form in require-forms
@@ -791,8 +802,34 @@
 			  `(_proper:require-spec ,@spec))
 	  ,@body))))
 
-(defun-match- proper:reduce-require-form ((and form (list :as (tail pairs))))
+(defun-match- proper:reduce-require-form (manifest (and form (list :as (tail pairs))))
   form)
+
+(defun-match proper:reduce-require-form (manifest :all)
+  `(:as ,@(gzu:hash-table-keys manifest)))
+
+(defun-match proper:reduce-require-form (manifest (list :with-prefix 
+														(! (symbol prefix))
+														sub-form))
+  (let ((reduced-sub-form (proper:reduce-require-form manifest sub-form))
+		(prefix-string (symbol-name prefix)))
+	`(:as ,@(loop for form in (cdr reduced-sub-form)
+				  collect
+				  (match form 
+						 ((proper:as-form source local)
+						  (list source 
+								(intern (concat prefix-string (symbol-name local)))))
+						 (anything-else
+						  (error 
+						   (concat "Error reducing prefix module include"
+								   " directive.  Expected as forms, got %S") 
+						   anything-else)))))))
+
+(defun proper:reduce-require-form/c (manifest)
+  (proper:enclose (manifest)
+				  (lambda (form)
+					(proper:reduce-require-form manifest form))))
+
 
 (defun proper:really-compile-module (spec)
   (proper:message "Really compiling module %S" spec)
@@ -819,14 +856,20 @@
 										  '((:type . :value)))
 									(proper:add-to-symbol-macro-context 
 									 name
-									 (lambda (_) '(_. ,current-module ,name)))
+									 (lexical-let  
+										 ((lcurrent-module current-module)
+										  (lname name))
+									   (lambda (_) `(_. ,lcurrent-module ,lname))))
 									`(_= (_. ,current-module ,name) ,value-expr))
 								   ((list (list (non-kw-symbol name) (tail args)) (tail body))
 									(setf (gethash name proper:*module-manifest*)
 										  '((:type . :function)))
 									(proper:add-to-symbol-macro-context 
 									 name
-									 (lambda (_) '(_. ,current-module ,name)))
+									 (lexical-let
+									  ((lcurrent-module current-module) 
+									   (lname name))
+									  (lambda (_) `(_. ,lcurrent-module ,lname))))
 									`(_= (_. ,current-module ,name) (lambda ,args ,@body)))
 								   (other-form
 									(error (concat "gazelle/proper define must either"

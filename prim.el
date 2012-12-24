@@ -303,7 +303,7 @@ manglings.  Additionally, dashed ids are replaced by camel case."
    (prim:transcode-csvs args))
   (prim:transcode-block body))
 
-(defun-match prim:transcode ((list '_return (list (and which (or '_for '_while '_try '_var)) (tail body))))
+(defun-match prim:transcode ((list '_return (list (and which (or '_for '_while '_try '_var '_=)) (tail body))))
   (recur `(,which ,@body)))
 
 (defun-match prim:transcode ((list '_return (list (and which (or '_throw '_continue '_break)) expression)))
@@ -475,6 +475,12 @@ manglings.  Additionally, dashed ids are replaced by camel case."
    (prim:insert "~")
    (prim:transcode-in-parens expr)))
 
+(defun-match prim:transcode ((list '_include-js (! (string file))))
+  (let ((contents (gzu:with-file-buffer-maybe-open 
+				   (file)
+				   (buffer-substring (point-min)
+									 (point-max)))))
+	(prim:insert contents)))
 
 (eval-when (compile load eval) 
   (defpattern prim:binop (pattern)

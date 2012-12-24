@@ -1,0 +1,6 @@
+(module 
+ ()
+ (define+ (apply f an-array)
+   (.. f (apply undefined an-array)))
+ (define+ (funcall f (tail args))
+   (apply f args)))

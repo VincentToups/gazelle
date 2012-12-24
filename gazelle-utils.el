@@ -164,5 +164,10 @@
    (md5 (buffer-substring (point-min)
 						  (point-max)))))
 
+(defun gzu:hash-table-keys (tbl)
+  (let ((keys '()))
+	(maphash (lambda (k v) (push k keys)) tbl)
+	(reverse keys)))
+
 (provide 'gazelle-utils)
 
