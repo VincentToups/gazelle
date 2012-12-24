@@ -55,6 +55,72 @@ could develop their Javascript project in separate files this way and
 never used Gazelle's module system.  However, the module system
 provides powerful features for code organization.
 
+Quick Syntax Notes
+------------------
+
+Gazelle is like Javascript but provides some thin wrappers on
+Javascript ideas.  
+
+Dotted symbols are supported, so you can write.
+
+    (console.log "Hello World")
+
+You can also write 
+
+    (.. console (log "Hello World"))
+
+The former expands into the latter.
+
+Arrays are constructed using the following syntax:
+
+    [: a b c d] 
+
+The ":" is required, because
+
+    [an-array 3]
+
+represents the Javascript
+
+    anArray[3]
+
+Objects are denoted via:
+
+   (var object ({} x 10 y 11})
+
+Object indexing is either
+
+   object.x
+
+or 
+
+   [object "x"]
+
+For loops are written in the expected way, translated
+to s-expressions:
+
+    (for (i :in array-thing)
+         (do-something [array-thing i]))
+
+They do not return a value.  
+
+`if` expands to the ternary conditional.  Eg:
+
+    (if cond e1 e2)
+
+is
+
+    (cond ? e1 : e2)
+
+One can write a "flat" `if` using the _primitive_ if, eg;
+
+    (_if cond (true-branch0 true-branch ...)
+              (false-branch0 false-branch))
+
+This does not produce a value.  The code in `prim` is quite readable,
+and proper, for the most part, provides non-underscored versions of
+many primitive operations.
+	
+
 Using Modules
 -------------
 
@@ -136,7 +202,7 @@ An import mapping is one of
 
 The meaning of a single symbol is to take the external symbol in the
 imported module and map it onto a local symbol.  The list with a
-single symbol as the same meaning.  When two symbols are present, the
+single symbol has the same meaning.  When two symbols are present, the
 first designates the name of an entity in the module and the second
 designates the local name.  
 
