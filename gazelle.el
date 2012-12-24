@@ -5,6 +5,8 @@
   (require 'prim)
   (require 'proper))
 
+(provide 'gazelle)
+
 (defun* gz:gazelle-file->js-file (filename)
   (let ((t1 (replace-regexp-in-string 
 			 "\.gazelle$" ".js" filename)))
@@ -38,4 +40,6 @@
 	(gz:transcode-file filename)))
 
 
-
+(defun gz:set-project-directory (d)
+  (interactive "DPlease enter your project's scripts directory.")
+  (setq proper:*rjs-root* d))

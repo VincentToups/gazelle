@@ -746,28 +746,83 @@
 (defvar proper:*module-compile-cache* 
   (make-hash-table :test 'equal))
 (defun proper:reset-module-cache ()
+  (interactive)
   (setq proper:*module-compile-cache* (make-hash-table :test 'equal)))
 (defvar proper:*use-module-cache* t)
+(defun proper:toggle-module-cache ()
+  (interactive)
+  (if proper:*use-module-cache* 
+	  (progn 
+		(proper:message "Disabling module cache.")
+		(setq proper:*use-module-cache* nil))
+	(progn 
+	  (proper:message "Enabling module cache.")
+	  (setq proper:*use-module-cache* t))))
 
-(defun proper:compile-module (spec)
-  (proper:message "Attempting to compile/load from cache %S" spec)
+
+(defun proper:extract-module-dependencies (spec)
+  (match-let* ((contents (proper:read-module-file file))
+			   (req-specs (proper:module-module-specs contents)))
+			  (proper:module-specs->locations req-specs)))
+
+(defun proper:module-needs-recompile (spec)
   (when (not proper:*use-module-cache*)
-	(proper:message "Module cache is disable.")
+	(proper:message "Module cache is disabled.")
 	(proper:reset-module-cache))
   (match-let* ((file (proper:module-spec->module-file spec))
 			   (current-hash (gzu:file-hash file))
 			   ((cons previous-hash previous-compilation)
-				(gethash file proper:*module-compile-cache*)))
-			  (if (equal previous-hash current-hash)
-				  (progn 
-					(proper:message "Module cache hit on %S" spec)
-					previous-compilation)
-				(progn 
-				  (proper:message "Module cache miss on %S" spec)
-				  (let ((new-compilation (proper:really-compile-module spec)))
-					(setf (gethash file proper:*module-compile-cache*)
-						  (cons current-hash new-compilation))
-					new-compilation)))))
+				(gethash file proper:*module-compile-cache*))
+			   (dependencies (proper:extract-module-dependencies spec))
+			   (dep-result (gzu:any-satisfy #'proper:module-needs-recompile dependencies))
+			   (result (or (not (equal current-hash previous-hash))
+						   dep-result)))
+			  (when result
+				(proper:message (concat "Module %s needs recompile (current %s," 
+										" previous %s, dependencies %S, dep-result %S, result %s) .") 
+								spec
+								current-hash 
+								previous-hash 
+								dependencies
+								dep-result
+								result))
+			  result))
+
+
+
+;; (defun proper:compile-module (spec)
+;;   (proper:message "Attempting to compile/load from cache %S" spec)
+;;   (when (not proper:*use-module-cache*)
+;; 	(proper:message "Module cache is disabled.")
+;; 	(proper:reset-module-cache))
+;;   (match-let* ((file (proper:module-spec->module-file spec))
+;; 			   (current-hash (gzu:file-hash file))
+;; 			   ((cons previous-hash previous-compilation)
+;; 				(gethash file proper:*module-compile-cache*)))
+;; 			  (if (equal previous-hash current-hash)
+;; 				  (progn 
+;; 					(proper:message "Module cache hit on %S" spec)
+;; 					previous-compilation)
+;; 				(progn 
+;; 				  (proper:message "Module cache miss on %S" spec)
+;; 				  (let ((new-compilation (proper:really-compile-module spec)))
+;; 					(setf (gethash file proper:*module-compile-cache*)
+;; 						  (cons current-hash new-compilation))
+;; 					new-compilation)))))
+
+(defun proper:compile-module (spec)
+  (proper:message "Attempting to compile/load from cache %S" spec)
+  (let ((file (proper:module-spec->module-file spec)))
+	(if (proper:module-needs-recompile spec)
+		(let ((new-compilation (proper:really-compile-module spec))
+			  (new-hash (gzu:file-hash file)))
+		  (setf (gethash file proper:*module-compile-cache*)
+				(cons new-hash new-compilation))
+		  new-compilation)
+	  (match-let 
+	   (((cons old-hash old-compilation)
+		 (gethash file proper:*module-compile-cache*)))
+	   old-compilation))))
 
 (proper:define-macro 
  let (binders (tail body))

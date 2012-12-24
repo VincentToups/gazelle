@@ -32,8 +32,17 @@
 			 `(define-external-binop ,op-name))))
 
  (define-external-binops 
-   < <= > >= & || && | == === % ^ << >> >>>)
+   < <= > >= & | == === % ^ << >> >>>)
 
- (define-macro+ incr ((symbol place))
-   `(set! ,place (+ 1 ,place))))
+ (define-macro+ && (a b)
+   `(_&& ,a ,b))
+
+ (define-macro+ || (a b)
+   `(_|| ,a ,b))
+
+ (define-macro+ incr ((non-kw-symbol place))
+   `(set! ,place (+ 1 ,place)))
+
+ (define-macro+ decr ((non-kw-symbol place))
+   `(set! ,place (- ,place 1))))
 

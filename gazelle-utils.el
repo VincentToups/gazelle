@@ -169,5 +169,11 @@
 	(maphash (lambda (k v) (push k keys)) tbl)
 	(reverse keys)))
 
+(defun-match- gzu:any-satisfy (f nil)
+  nil)
+(defun-match gzu:any-satisfy (f (list hd (tail tl)))
+  (if (funcall f hd) t
+	(recur f tl)))
+
 (provide 'gazelle-utils)
 

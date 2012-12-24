@@ -1,18 +1,18 @@
 ((define))(["hooves/lisp-idioms"], function (moduleminus295baa4e1e)  {
-  var currentModuleminus201518 = {    
+  var currentModuleminus239804 = {    
     
   };
   (function ()    {
     var defineplus = "macro - no dynamic value.";
     var defineMacroplus = "macro - no dynamic value.";
     "(\"hooves/lisp-idioms\" (:as apply funcall))";
-    currentModuleminus201518.plus = function ()      {
+    currentModuleminus239804.plus = function ()      {
       return ((function (arguments)        {
-        var G201590 = undefined;
-        var G201591 = Array.prototype.slice.call(arguments, 0);
-        G201590 = (function (arguments, G201592)          {
+        var G239876 = undefined;
+        var G239877 = Array.prototype.slice.call(arguments, 0);
+        G239876 = (function (arguments, G239878)          {
           return ((function ()            {
-            if ((!((((G201592 instanceof Array))&&(((G201592.length)>0))))))              {
+            if ((!((((G239878 instanceof Array))&&(((G239878.length)>0))))))              {
               return ("match-fail-e1aa3b7e7ce9731266013c178de842b5");
               } else               {
               return ((function (arguments, hd)                {
@@ -22,59 +22,59 @@
                     result = (result+(tl[i]));
                     };
                   return (result);
-                  }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G201592.slice(1)));
-                }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G201592[0]));
+                  }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G239878.slice(1)));
+                }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G239878[0]));
               };
             })());
-          }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G201591);
-        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G201590))))          {
-          return (G201590);
+          }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G239877);
+        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G239876))))          {
+          return (G239876);
           };
-        G201590 = (function (arguments, G201589)          {
+        G239876 = (function (arguments, G239875)          {
           throw ((("No match error in lambda ")+("(lambda (hd (tail tl)) (var result hd) (for (i :in tl) (set! result (_+ result [tl i]))) result)")));
-          }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G201591);
-        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G201590))))          {
-          return (G201590);
+          }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G239877);
+        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G239876))))          {
+          return (G239876);
           };
-        throw ((("match-fail at ((match (_\. Array prototype slice (call arguments 0)) ([: hd (tail tl)] (var result hd) (for (i :in tl) (set! result (_+ result [tl i]))) result) (G201589 (_throw (_+ \"No match error in lambda \" \"(lambda (hd (tail tl)) (var result hd) (for (i :in tl) (set! result (_+ result [tl i]))) result)\"))))) for value ")+G201591));
+        throw ((("match-fail at ((match (_\. Array prototype slice (call arguments 0)) ([: hd (tail tl)] (var result hd) (for (i :in tl) (set! result (_+ result [tl i]))) result) (G239875 (_throw (_+ \"No match error in lambda \" \"(lambda (hd (tail tl)) (var result hd) (for (i :in tl) (set! result (_+ result [tl i]))) result)\"))))) for value ")+G239877));
         }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments))));
       };
-    currentModuleminus201518.minus = function ()      {
+    currentModuleminus239804.minus = function ()      {
       return ((function (arguments)        {
-        var G201615 = undefined;
-        var G201616 = Array.prototype.slice.call(arguments, 0);
-        G201615 = (function (arguments, G201617)          {
+        var G239901 = undefined;
+        var G239902 = Array.prototype.slice.call(arguments, 0);
+        G239901 = (function (arguments, G239903)          {
           return ((function ()            {
-            if ((!((((G201617 instanceof Array))&&(((G201617.length)>0))))))              {
+            if ((!((((G239903 instanceof Array))&&(((G239903.length)>0))))))              {
               return ("match-fail-e1aa3b7e7ce9731266013c178de842b5");
               } else               {
               return ((function (arguments, hd)                {
                 return ((function (arguments, tl)                  {
-                  return ((hd-((moduleminus295baa4e1e.apply)(currentModuleminus201518.plus, tl))));
-                  }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G201617.slice(1)));
-                }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G201617[0]));
+                  return ((hd-((moduleminus295baa4e1e.apply)(currentModuleminus239804.plus, tl))));
+                  }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G239903.slice(1)));
+                }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G239903[0]));
               };
             })());
-          }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G201616);
-        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G201615))))          {
-          return (G201615);
+          }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G239902);
+        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G239901))))          {
+          return (G239901);
           };
-        G201615 = (function (arguments, G201614)          {
+        G239901 = (function (arguments, G239900)          {
           throw ((("No match error in lambda ")+("(lambda (hd (tail tl)) (_- hd (apply + tl)))")));
-          }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G201616);
-        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G201615))))          {
-          return (G201615);
+          }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G239902);
+        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G239901))))          {
+          return (G239901);
           };
-        throw ((("match-fail at ((match (_\. Array prototype slice (call arguments 0)) ([: hd (tail tl)] (_- hd (apply + tl))) (G201614 (_throw (_+ \"No match error in lambda \" \"(lambda (hd (tail tl)) (_- hd (apply + tl)))\"))))) for value ")+G201616));
+        throw ((("match-fail at ((match (_\. Array prototype slice (call arguments 0)) ([: hd (tail tl)] (_- hd (apply + tl))) (G239900 (_throw (_+ \"No match error in lambda \" \"(lambda (hd (tail tl)) (_- hd (apply + tl)))\"))))) for value ")+G239902));
         }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments))));
       };
-    currentModuleminus201518.times = function ()      {
+    currentModuleminus239804.times = function ()      {
       return ((function (arguments)        {
-        var G201640 = undefined;
-        var G201641 = Array.prototype.slice.call(arguments, 0);
-        G201640 = (function (arguments, G201642)          {
+        var G239926 = undefined;
+        var G239927 = Array.prototype.slice.call(arguments, 0);
+        G239926 = (function (arguments, G239928)          {
           return ((function ()            {
-            if ((!((((G201642 instanceof Array))&&(((G201642.length)>0))))))              {
+            if ((!((((G239928 instanceof Array))&&(((G239928.length)>0))))))              {
               return ("match-fail-e1aa3b7e7ce9731266013c178de842b5");
               } else               {
               return ((function (arguments, hd)                {
@@ -84,101 +84,98 @@
                     result = (result*(tl[i]));
                     };
                   return (result);
-                  }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G201642.slice(1)));
-                }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G201642[0]));
+                  }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G239928.slice(1)));
+                }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G239928[0]));
               };
             })());
-          }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G201641);
-        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G201640))))          {
-          return (G201640);
+          }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G239927);
+        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G239926))))          {
+          return (G239926);
           };
-        G201640 = (function (arguments, G201639)          {
+        G239926 = (function (arguments, G239925)          {
           throw ((("No match error in lambda ")+("(lambda (hd (tail tl)) (var result hd) (for (i :in tl) (set! result (_* result [tl i]))) result)")));
-          }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G201641);
-        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G201640))))          {
-          return (G201640);
+          }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G239927);
+        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G239926))))          {
+          return (G239926);
           };
-        throw ((("match-fail at ((match (_\. Array prototype slice (call arguments 0)) ([: hd (tail tl)] (var result hd) (for (i :in tl) (set! result (_* result [tl i]))) result) (G201639 (_throw (_+ \"No match error in lambda \" \"(lambda (hd (tail tl)) (var result hd) (for (i :in tl) (set! result (_* result [tl i]))) result)\"))))) for value ")+G201641));
+        throw ((("match-fail at ((match (_\. Array prototype slice (call arguments 0)) ([: hd (tail tl)] (var result hd) (for (i :in tl) (set! result (_* result [tl i]))) result) (G239925 (_throw (_+ \"No match error in lambda \" \"(lambda (hd (tail tl)) (var result hd) (for (i :in tl) (set! result (_* result [tl i]))) result)\"))))) for value ")+G239927));
         }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments))));
       };
-    currentModuleminus201518.divide = function ()      {
+    currentModuleminus239804.divide = function ()      {
       return ((function (arguments)        {
-        var G201665 = undefined;
-        var G201666 = Array.prototype.slice.call(arguments, 0);
-        G201665 = (function (arguments, G201667)          {
+        var G239951 = undefined;
+        var G239952 = Array.prototype.slice.call(arguments, 0);
+        G239951 = (function (arguments, G239953)          {
           return ((function ()            {
-            if ((!((((G201667 instanceof Array))&&(((G201667.length)>0))))))              {
+            if ((!((((G239953 instanceof Array))&&(((G239953.length)>0))))))              {
               return ("match-fail-e1aa3b7e7ce9731266013c178de842b5");
               } else               {
               return ((function (arguments, hd)                {
                 return ((function (arguments, tl)                  {
-                  return ((hd/((moduleminus295baa4e1e.apply)(currentModuleminus201518.times, tl))));
-                  }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G201667.slice(1)));
-                }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G201667[0]));
+                  return ((hd/((moduleminus295baa4e1e.apply)(currentModuleminus239804.times, tl))));
+                  }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G239953.slice(1)));
+                }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G239953[0]));
               };
             })());
-          }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G201666);
-        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G201665))))          {
-          return (G201665);
+          }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G239952);
+        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G239951))))          {
+          return (G239951);
           };
-        G201665 = (function (arguments, G201664)          {
+        G239951 = (function (arguments, G239950)          {
           throw ((("No match error in lambda ")+("(lambda (hd (tail tl)) (_/ hd (apply * tl)))")));
-          }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G201666);
-        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G201665))))          {
-          return (G201665);
+          }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G239952);
+        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G239951))))          {
+          return (G239951);
           };
-        throw ((("match-fail at ((match (_\. Array prototype slice (call arguments 0)) ([: hd (tail tl)] (_/ hd (apply * tl))) (G201664 (_throw (_+ \"No match error in lambda \" \"(lambda (hd (tail tl)) (_/ hd (apply * tl)))\"))))) for value ")+G201666));
+        throw ((("match-fail at ((match (_\. Array prototype slice (call arguments 0)) ([: hd (tail tl)] (_/ hd (apply * tl))) (G239950 (_throw (_+ \"No match error in lambda \" \"(lambda (hd (tail tl)) (_/ hd (apply * tl)))\"))))) for value ")+G239952));
         }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments))));
       };
     var defineExternalBinop = "macro - no dynamic value.";
     var defineExternalBinops = "macro - no dynamic value.";
-    currentModuleminus201518.lessThan = function (G201678, G201679)      {
-      return ((G201678<G201679));
+    currentModuleminus239804.lessThan = function (G239964, G239965)      {
+      return ((G239964<G239965));
       };
-    currentModuleminus201518.lessThanequal = function (G201703, G201704)      {
-      return ((G201703<=G201704));
+    currentModuleminus239804.lessThanequal = function (G239989, G239990)      {
+      return ((G239989<=G239990));
       };
-    currentModuleminus201518.greaterThan = function (G201728, G201729)      {
-      return ((G201728>G201729));
+    currentModuleminus239804.greaterThan = function (G240014, G240015)      {
+      return ((G240014>G240015));
       };
-    currentModuleminus201518.greaterThanequal = function (G201753, G201754)      {
-      return ((G201753>=G201754));
+    currentModuleminus239804.greaterThanequal = function (G240039, G240040)      {
+      return ((G240039>=G240040));
       };
-    currentModuleminus201518.ampersand = function (G201778, G201779)      {
-      return ((G201778&G201779));
+    currentModuleminus239804.ampersand = function (G240064, G240065)      {
+      return ((G240064&G240065));
       };
-    currentModuleminus201518.pipepipe = function (G201803, G201804)      {
-      return ((G201803||G201804));
+    currentModuleminus239804.pipe = function (G240089, G240090)      {
+      return ((G240089|G240090));
       };
-    currentModuleminus201518.ampersandampersand = function (G201828, G201829)      {
-      return ((G201828&&G201829));
+    currentModuleminus239804.equalequal = function (G240114, G240115)      {
+      return ((G240114==G240115));
       };
-    currentModuleminus201518.pipe = function (G201853, G201854)      {
-      return ((G201853|G201854));
+    currentModuleminus239804.equalequalequal = function (G240139, G240140)      {
+      return ((G240139===G240140));
       };
-    currentModuleminus201518.equalequal = function (G201878, G201879)      {
-      return ((G201878==G201879));
+    currentModuleminus239804.modsign = function (G240164, G240165)      {
+      return ((G240164%G240165));
       };
-    currentModuleminus201518.equalequalequal = function (G201903, G201904)      {
-      return ((G201903===G201904));
+    currentModuleminus239804.caret = function (G240189, G240190)      {
+      return ((G240189^G240190));
       };
-    currentModuleminus201518.modsign = function (G201928, G201929)      {
-      return ((G201928%G201929));
+    currentModuleminus239804.lessThanlessThan = function (G240214, G240215)      {
+      return ((G240214<<G240215));
       };
-    currentModuleminus201518.caret = function (G201953, G201954)      {
-      return ((G201953^G201954));
+    currentModuleminus239804.greaterThangreaterThan = function (G240239, G240240)      {
+      return ((G240239>>G240240));
       };
-    currentModuleminus201518.lessThanlessThan = function (G201978, G201979)      {
-      return ((G201978<<G201979));
-      };
-    currentModuleminus201518.greaterThangreaterThan = function (G202003, G202004)      {
-      return ((G202003>>G202004));
-      };
-    currentModuleminus201518.greaterThangreaterThangreaterThan = function (G202028, G202029)      {
-      return ((G202028>>>G202029));
+    currentModuleminus239804.greaterThangreaterThangreaterThan = function (G240264, G240265)      {
+      return ((G240264>>>G240265));
       };
     ;
+    var ampersandampersand = "macro - no dynamic value.";
+    var pipepipe = "macro - no dynamic value.";
     var incr = "macro - no dynamic value.";
+    var decr = "macro - no dynamic value.";
     })();
-  return (currentModuleminus201518);
+  return (currentModuleminus239804);
   })
