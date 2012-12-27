@@ -31,7 +31,7 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 	  ("=" "equal")
 	  ("%" "modsign")
 	  ("!" "bang")
-	  ("?" "who")
+	  ("?" "Predicate")
 	  (":" "colon")
 	  ("&" "ampersand")
 	  ("^" "caret")
@@ -171,7 +171,8 @@ manglings.  Additionally, dashed ids are replaced by camel case."
   (prim:insert "\"")
   (loop for character in (coerce string 'list) do
 		(match character
-			   (?\n (insert "\\n"))
+			   (?\n (insert "\\
+"))
 			   (?\t (insert "\\t"))
 			   (?\" (insert "\\\""))
 			   (?\\ (insert "\\"))
@@ -438,8 +439,17 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 		(prim:insert ".")
 		(prim:transcode-tail-of-dot-expr tail-of-dot-expr))))
 
-(defun-match prim:transcode ((list-rest '_. expr tail-of-dot-expr))
-  (prim:transcode-in-parens expr)
+(defun-match prim:transcode 
+  ((list-rest '_. 
+			  (and expr
+				   (! (or (list hd (tail tl))
+						  [hd (tail tl)]) 
+					  actually 
+					  (format (concat "_. expressions must begin with a symbol, "
+									  "a function call, or an array access. Got %S.") 
+							  actually))) 
+			  tail-of-dot-expr))
+  (prim:transcode expr)
   (if tail-of-dot-expr
 	  (progn 
 		(prim:insert ".")

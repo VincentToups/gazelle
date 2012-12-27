@@ -1,5 +1,5 @@
 ((define))([], function ()  {
-  var currentModuleminus237419 = {    
+  var currentModuleminus18189 = {    
     
   };
   (function ()    {
@@ -9478,7 +9478,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 
 })( window );
 ;
-    currentModuleminus237419.$ = window.jQuery;
+    currentModuleminus18189.$ = window.jQuery;
     })();
-  return (currentModuleminus237419);
+  return (currentModuleminus18189);
   })

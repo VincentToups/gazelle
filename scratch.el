@@ -9,4 +9,6 @@
 (bc-load "gazelle-utils.el")
 (bc-load "prim.el")
 (bc-load "proper.el")
+(bc-load "gazelle.el")
+
 

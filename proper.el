@@ -852,10 +852,11 @@
  `((_value require)
    [: ,@(proper:module-specs->locations specs)]
    (lambda (,@(proper:module-specs->crypto-symbols specs))
-	 (_proper:unit 
-	  ,@(loop for spec in specs collect
-			  `(_proper:require-spec ,@spec))
-	  ,@body))))
+	 (_proper:macro-context
+	  (_proper:unit 
+	   ,@(loop for spec in specs collect
+			   `(_proper:require-spec ,@spec))
+	   ,@body)))))
 
 (defun-match- proper:reduce-require-form (manifest (and form (list :as (tail pairs))))
   form)
@@ -922,9 +923,9 @@
 									(proper:add-to-symbol-macro-context 
 									 name
 									 (lexical-let
-									  ((lcurrent-module current-module) 
-									   (lname name))
-									  (lambda (_) `(_. ,lcurrent-module ,lname))))
+										 ((lcurrent-module current-module) 
+										  (lname name))
+									   (lambda (_) `(_. ,lcurrent-module ,lname))))
 									`(_= (_. ,current-module ,name) (lambda ,args ,@body)))
 								   (other-form
 									(error (concat "gazelle/proper define must either"
