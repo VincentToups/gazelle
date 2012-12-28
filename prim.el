@@ -322,7 +322,7 @@ manglings.  Additionally, dashed ids are replaced by camel case."
   (prim:transcode-block body))
 
 (defun-match prim:transcode ((list-rest '_for (list (non-kw-symbol name) 
-										'_in expression) body))
+													'_in expression) body))
   (prim:insert "for ")
   (prim:in-parens
    (prim:transcode name)
@@ -491,6 +491,18 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 				   (buffer-substring (point-min)
 									 (point-max)))))
 	(prim:insert contents)))
+
+(defun-match- prim:commentify (object)
+  (match object
+		 ((string s)
+		  (replace-regexp-in-string "^" "// " s))
+		 (anything-else 
+		  (recur (format "%S" anything-else)))))
+
+(defun-match prim:transcode ((list '_comment (tail comments)))
+  (loop for comment in comments do 
+		(prim:insert (prim:commentify comment))
+		(prim:newline)))
 
 (eval-when (compile load eval) 
   (defpattern prim:binop (pattern)

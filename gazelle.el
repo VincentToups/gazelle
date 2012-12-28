@@ -32,8 +32,6 @@
 		(kill-buffer out-buffer))
 	out-file))
 
-(gz:transcode-file "/home/toups/src/elisp/gazelle/scripts/main.gazelle")
-
 (defun* gz:transcode-this-file ()
   (interactive)
   (let ((filename (buffer-file-name (current-buffer))))
