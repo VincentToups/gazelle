@@ -580,7 +580,7 @@
 		(cons (make-hash-table) proper:macros))
 	   (proper:symbol-macros 
 		(cons (make-hash-table) proper:symbol-macros)))
-   `(_proper:unit ,@body)))
+   (proper:to-prim `(_proper:unit ,@body))))
 
 (proper:define-macro 
  _proper:unit 
