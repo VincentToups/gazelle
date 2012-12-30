@@ -1,11 +1,12 @@
 ((define))([], function ()  {
-  var currentModuleminus61509 = {    
+  var currentModuleminus108229 = {    
     
   };
   (function ()    {
-    var defineplus = "macro - no dynamic value.";
-    var defineMacroplus = "macro - no dynamic value.";
-    /*!
+    return ((function ()      {
+      var defineplus = "macro - no dynamic value.";
+      var defineMacroplus = "macro - no dynamic value.";
+      /*!
  * jQuery JavaScript Library v1.8.3
  * http://jquery.com/
  *
@@ -9478,7 +9479,8 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 
 })( window );
 ;
-    currentModuleminus61509.$ = window.jQuery;
+      currentModuleminus108229.$ = window.jQuery;
+      })());
     })();
-  return (currentModuleminus61509);
+  return (currentModuleminus108229);
   })

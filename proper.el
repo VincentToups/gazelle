@@ -81,6 +81,21 @@
 			 `(_. ,(proper:to-prim head)
 				  ,@parts)))
 
+(defun-match proper:to-prim ((or '_false 'false))
+  '_false)
+
+(defun-match proper:to-prim ((or '_undefined 'undefined))
+  '_undefined)
+
+(defun-match proper:to-prim ((or '_true 'true))
+  '_true)
+
+(defun-match proper:to-prim ((or '_null 'null))
+  '_null)
+
+(defun-match proper:to-prim ((or '_{} '{}))
+  '_{})
+
 (defun proper:map-to-prim (seq)
   (loop for item in seq collect (proper:to-prim item)))
 
@@ -234,9 +249,14 @@
 (defun-match proper:to-prim ((list (or 'comment '_comment) (tail comments)))
   `(_comment ,@comments))
 
+(defun proper:to-prim_{}-tail (tail)
+  (loop for el in tail and i from 0 collect
+		(if (evenp i) el
+		  (proper:to-prim el))))
+
 (defun-match proper:to-prim ((list (or '{} '_{})
 								   (tail (prim:{}-body tail))))
-  `(_{} ,@tail))
+  `(_{} ,@(proper:to-prim_{}-tail tail)))
 
 (defun-match proper:to-prim ((list (prim:binop op) e1 e2))
   `(,op ,(proper:to-prim e1)
@@ -270,17 +290,38 @@
   (let ((context (car proper:symbol-macros)))
 	(setf (gethash name context) function)))
 
-(defmacro* proper:define-macro (name arguments &body body)
-  (let ((args (gensym))
-		(anything-else (gensym)))
+(eval-when (load compile eval)
+  (defun-match proper:fix-macro-expansion-patterns ((list pattern (tail forms)))
+	`(,(cons 'list pattern) ,@forms)))
+
+(defmacro* proper:define-macro-vector-body (name vector-of-bodies)
+  (let* ((list-of-bodies 
+		  (mapcar #'proper:fix-macro-expansion-patterns
+				  (coerce vector-of-bodies 'list)))
+		 (args (gensym))
+		 (anything-else (gensym)))
 	`(proper:add-to-global-macro-context 
 	  ',name 
 	  (lambda (&rest ,args)
 		(match ,args 
-			   ((list ,@arguments)
-				,@body)
+			   ,@list-of-bodies
 			   (,anything-else 
-				(error ,(format "macro %S (%S): failed to match %%S" name arguments) ,anything-else)))))))
+				(error ,(format "macro %S (%S): failed to match %%S" name vector-of-bodies) ,anything-else)))))))
+
+(defmacro* proper:define-macro (name arguments &body body)
+  (if (and (vectorp arguments)
+		   (null body))
+	  `(proper:define-macro-vector-body ,name ,arguments)
+	(let ((args (gensym))
+		  (anything-else (gensym)))
+	  `(proper:add-to-global-macro-context 
+		',name 
+		(lambda (&rest ,args)
+		  (match ,args 
+				 ((list ,@arguments)
+				  ,@body)
+				 (,anything-else 
+				  (error ,(format "macro %S (%S): failed to match %%S" name arguments) ,anything-else))))))))
 
 (defmacro* proper:define-symbol-macro (name symbol-pattern &body body)
   (let ((arg (gensym))
@@ -499,18 +540,27 @@
 
 
 (proper:define-macro 
- define-macro (name (list-rest patterns) (tail body))
- (let* ((args (gensym))
-		(transform-lambda 
-		 (eval `(lambda (&rest ,args)
-				  (match ,args
-						 ((list ,@patterns)
-						  ,@body)
-						 (,args 
-						  (error "Macro %s failed for args %S" ',name ,args)))))))
-   
-   (proper:add-to-macro-context name transform-lambda)
-   `(_var ,name "macro - no dynamic value.")))
+ define-macro 
+ [((name (list-rest patterns) (tail body))
+   (let* ((args (gensym))
+		  (transform-lambda 
+		   (eval `(lambda (&rest ,args)
+					(match ,args
+						   ((list ,@patterns)
+							,@body)
+						   (,args 
+							(error "Macro %s failed for args %S" ',name ,args)))))))
+	 (proper:add-to-macro-context name transform-lambda)
+	 `(_var ,name "macro - no dynamic value.")))
+  ((name [(tail sub-bodies)])
+   (let* ((args (gensym))
+		  (transform-lambda 
+		   (eval `(lambda (&rest ,args)
+					(match ,args
+						   ,@(mapcar #'proper:fix-macro-expansion-patterns sub-bodies)
+						   (,args (error "Macro %s failed for args %S" ',name ,args)))))))
+	 (proper:add-to-macro-context name transform-lambda)
+	 `(_var ,name "macro - no dynamic value.")))])
 
 (proper:define-macro  
  define-symbol-macro (name pattern (tail body))
@@ -524,6 +574,35 @@
 						  (error "Macro %s failed for args %S" ',name ,args)))))))
    (proper:add-to-symbol-macro-context name transform-lambda)
    '_undefined))
+
+;; (proper:define-macro 
+;;  define-function 
+;;  [((name [(tail bodies)])
+;;    (let ((recur-sigil (symbol-name (gensym)))
+;; 		 (return-value (gensym))
+;; 		 (args (gensym))
+;; 		 (actual-function (gensym))
+;; 		 (anything-else (gensym)))
+;; 	 `(_var ,name 
+;; 			(_function 
+;; 			 ()
+;; 			 (_var recur (_function 
+;; 						  ()
+;; 						  (_{} recur-sigil ',recur-sigil
+;; 							   args arguments)))
+;;  			 (_var 
+;; 			  ,actual-function 
+;; 			  (_function 
+;; 			   ()
+;; 			   (match arguments 
+;; 					  ,@(mapcar 
+;; 						 (lambda (body)
+;; 						   (match body
+;; 								  ((list patternette real-body)
+;; 								   `((array ,@patternette)
+;; 									 ,@real-body)))))
+;; 					  (,anything-else 
+;; 					   (_throw (_+ ,(format "Match fail in %S against: " name) ,anything-else))))))))))])
 
 (proper:define-macro 
  define ((tail parts))
@@ -827,6 +906,46 @@
 				  "Couldn't find a module in %S %S, "
 				  "a module file must consist of a single `module`
 				  form.") file other-code))))
+
+(defun proper:prefix_ (s)
+  (intern (concat "_" (symbol-name s))))
+
+(defun proper:expand-essentials (define define-macro)
+  `(_newline-sequence 
+	(,define (+ hd (tail tl))
+	  (for (i :in tl)
+		   (set! hd (_+ hd [tl i])))
+	  hd)
+	(,define (* hd (tail tl))
+	  (for (i :in tl)
+		   (set! hd (_* hd [tl i]))))
+	(,define (- hd (tail tl))
+	  (_- hd (.. + (apply _undefined tl))))
+	(,define (/ hd (tail tl))
+	  (_/ hd (.. * (apply _undefined tl))))
+	,@(loop for op in '(< <= > >= == === >> << >>> & | ^) collect 
+			`(define (,op a b)
+			   (,(proper:prefix_ op) a b)))
+	(,define-macro && 
+	  [((a b)
+		`(_&& ,a ,b))
+	   ((a (tail rest))
+		`(_&& ,a (&& ,@rest)))])
+	(,define-macro ||
+	  [((a b)
+		`(_&& ,a ,b))
+	   ((a (tail rest))
+		`(_&& ,a (|| ,@rest)))])))
+
+(proper:define-macro 
+ gazelle:essentials
+ [((:export (and export-flag (or 't 'nil)))
+   (let ((define (if export-flag 'define+ 'define))
+		 (define-macro (if export-flag 'define-macro+ 'define-macro)))
+	 (proper:expand-essentials define define-macro)
+	))
+  (()
+   `(gazelle:essentials :export nil))])
 
 (proper:define-macro 
  require (specs (tail body))

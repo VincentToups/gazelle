@@ -41,3 +41,7 @@
 (defun gz:set-project-directory (d)
   (interactive "DPlease enter your project's scripts directory.")
   (setq proper:*rjs-root* d))
+
+; test
+; (gz:transcode-file "/home/toups/src/elisp/gazelle/scripts/main.gazelle")
+

@@ -6,7 +6,7 @@
       "(\"jquery/jquery\" (:as $))";
       (1+1);
       var x = 10;
-      x = (moduleminus58c4bce870.plus)(1, x);
+      incr(x);
       (console.log)((("X minus one is ")+((moduleminus58c4bce870.minus)(x, 1))));
       (console.log)((moduleminus58c4bce870.plus)("7 < 10", (moduleminus58c4bce870.lessThan)(7, 10)));
       (console.log)((moduleminus58c4bce870.plus)("7 > 10", (moduleminus58c4bce870.greaterThan)(7, 10)));
