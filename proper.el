@@ -360,6 +360,7 @@
 									  (tail arguments)))
   (apply expander arguments))
 
+
 (defun-match proper:to-prim ((list hd (tail rest)))
   `(,(proper:to-prim hd)
 	,@(mapcar #'proper:to-prim rest)))
@@ -673,9 +674,9 @@
 							  [(,args ,@body)])))))))
 
 (proper:define-macro 
- lambda*
+ lambda
  ((tail forms))
- `(designated-lambda nil ,@forms))
+ `(designated-lambda anonymous ,@forms))
 
 
 (proper:define-macro 
