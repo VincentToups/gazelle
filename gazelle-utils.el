@@ -46,6 +46,8 @@
   (if (funcall f hd)
 	  (recur f tl (cons hd acc))
 	(recur f tl acc)))
+(defun-match gzu:filter (f (p #'listp lst))
+  (recur f lst nil))
 
 (defun gzu:emptyish-string-p (s)
   (and (stringp s)
@@ -79,7 +81,7 @@
 		 (parts (split-string s (format "\n"))))
 	(join (filter #'gzu:not-emptyish-string-p
 				  (cons (replace-regexp-in-string "^;[^\n]*" "" (car parts))
-				(cdr parts)))
+						(cdr parts)))
 		  (format "\n"))))
 
 (defun gzu:kill-leading-comments (s)
@@ -174,6 +176,17 @@
 (defun-match gzu:any-satisfy (f (list hd (tail tl)))
   (if (funcall f hd) t
 	(recur f tl)))
+
+(defun-match- gzu:flatten (nil acc)
+  acc)
+(defun-match gzu:flatten ((list (p #'listp lst) (tail rest)) acc)
+  (recur rest (append acc (gzu:flatten lst))))
+(defun-match gzu:flatten ((list (p #'vectorp lst) (tail rest)) acc)
+  (recur rest (append acc (gzu:flatten (coerce lst 'list)))))
+(defun-match gzu:flatten ((list hd (tail tl)) acc)
+  (recur tl (append acc (list hd))))
+(defun-match gzu:flatten ((p #'listp l))
+  (recur l nil))
 
 (provide 'gazelle-utils)
 

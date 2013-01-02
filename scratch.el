@@ -11,5 +11,6 @@
 (bc-load "proper.el")
 (bc-load "gazelle.el")
 
-;; You fucked up the implementation of define-macro in an attempt to
-;; support multiple bodies per clojure, in a vector
+(defmacro* dont-do (&body body)
+  nil)
+

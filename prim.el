@@ -289,10 +289,11 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 		  ,pattern))))
 
 (defun-match prim:transcode ((list-rest '_function (prim:argument-list args) body))
-  (prim:insert "function ")
+  (prim:insert "(function ")
   (prim:in-parens
    (prim:transcode-csvs args))
-  (prim:transcode-block body))
+  (prim:transcode-block body)
+  (prim:insert ")"))
 
 (defun-match prim:transcode ((list-rest '_function 
 										(non-kw-symbol name)

@@ -1,6 +1,17 @@
 (module 
  ()
- ;; comment
+ (define+ (append)
+   (.. Array prototype concat 
+	   (apply [:] 
+			  (.. Array prototype slice (apply arguments)))))
+ (define+ (filter [
+				   ((fun [:] acc)
+					acc)
+				   ((fun [: hd (tail tl)] acc)
+					(if (fun hd)
+						(recur fun tl (.. acc (concat [: hd])))
+					  (recur fun tl acc)))
+				   ]))
  (define+ (apply f an-array)
    (.. f (apply undefined an-array)))
  (define+ (funcall f (tail args))

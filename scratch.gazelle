@@ -1,0 +1,19 @@
+(complex-lambda product
+				[
+				 (([:] acc)
+				  acc)
+				 (([: hd (tail tl)] acc)
+				  (recur tl (* acc hd)))
+				 ((object)
+				  (recur object 1))
+				 ])
+
+(define (product 
+		 [
+		  (([:] acc)
+		   acc)
+		  (([: hd (tail tl)] acc)
+		   (recur tl (* acc hd)))
+		  ((object)
+		   (recur object 1))
+		  ]))
