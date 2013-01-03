@@ -1,227 +1,227 @@
 ((define))(["hooves/lisp-idioms"], (function (moduleminus295baa4e1e)  {
-  var currentModuleminus165179 = {    
+  var currentModuleminus83598 = {    
     
   };
   ((function ()    {
     var defineplus = "macro - no dynamic value.";
     var defineMacroplus = "macro - no dynamic value.";
     "(\"hooves/lisp-idioms\" (:as apply funcall))";
-    currentModuleminus165179.plus = (function ()      {
-      var returnValueminus165334 = undefined;
+    currentModuleminus83598.plus = (function ()      {
+      var returnValueminus83762 = undefined;
       var recur = (function ()        {
         return ({          
-          recurSigil:"recurSigilminus165333",
+          recurSigil:"recurSigilminus83761",
           args:arguments
         });
         });
-      var recurP165337 = (function (valminus165338)        {
-        return (((valminus165338.recurSigil)===("recurSigilminus165333")));
+      var recurP83765 = (function (valminus83766)        {
+        return (((valminus83766.recurSigil)===("recurSigilminus83761")));
         });
-      var actualFunminus165336 = (function ()        {
+      var actualFunminus83764 = (function ()        {
         return ((function (arguments)          {
-          var G165340 = undefined;
-          var G165341 = Array.prototype.slice.apply(arguments);
-          G165340 = (function (arguments)            {
-            var aMatchArray165342 = G165341;
-            if ((((!(((aMatchArray165342.length)>=1))))||((!((aMatchArray165342 instanceof Array))))))              {
+          var G83768 = undefined;
+          var G83769 = Array.prototype.slice.apply(arguments);
+          G83768 = (function (arguments)            {
+            var aMatchArray83770 = G83769;
+            if ((((!(((aMatchArray83770.length)>=1))))||((!((aMatchArray83770 instanceof Array))))))              {
               return ("match-fail-e1aa3b7e7ce9731266013c178de842b5");
               };
-            var hd = aMatchArray165342[0];
-            var tl = Array.prototype.slice.call(aMatchArray165342, 1);
+            var hd = aMatchArray83770[0];
+            var tl = Array.prototype.slice.call(aMatchArray83770, 1);
             var result = hd;
             for (i in (tl))              {
               result = (result+(tl[i]));
               };
             return (result);
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G165340))))            {
-            return (G165340);
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G83768))))            {
+            return (G83768);
             };
-          G165340 = (function (arguments, anythingElseminus165339)            {
-            throw ((("Match fail in hooves/operator-functions-+ against: ")+anythingElseminus165339));
-            }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G165341);
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G165340))))            {
-            return (G165340);
+          G83768 = (function (arguments, anythingElseminus83767)            {
+            throw ((("Match fail in hooves/operator-functions-+ against: ")+anythingElseminus83767));
+            }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G83769);
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G83768))))            {
+            return (G83768);
             };
-          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ((array hd (tail tl)) (var result hd) (for (i :in tl) (set! result (_+ result [tl i]))) result) (anything-else-165339 (_throw (_+ \"Match fail in hooves/operator-functions-+ against: \" anything-else-165339))))) for value ")+G165341));
+          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ((array hd (tail tl)) (var result hd) (for (i :in tl) (set! result (_+ result [tl i]))) result) (anything-else-83767 (_throw (_+ ''Match fail in hooves/operator-functions-+ against: '' anything-else-83767))))) for value ")+G83769));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments))));
         });
-      returnValueminus165334 = actualFunminus165336.apply(this, arguments);
-      while (recurP165337(returnValueminus165334))        {
-        returnValueminus165334 = actualFunminus165336.apply(this, returnValueminus165334.args);
+      returnValueminus83762 = actualFunminus83764.apply(this, arguments);
+      while (recurP83765(returnValueminus83762))        {
+        returnValueminus83762 = actualFunminus83764.apply(this, returnValueminus83762.args);
         };
-      return (returnValueminus165334);
+      return (returnValueminus83762);
       });
-    currentModuleminus165179.minus = (function ()      {
-      var returnValueminus165366 = undefined;
+    currentModuleminus83598.minus = (function ()      {
+      var returnValueminus83794 = undefined;
       var recur = (function ()        {
         return ({          
-          recurSigil:"recurSigilminus165365",
+          recurSigil:"recurSigilminus83793",
           args:arguments
         });
         });
-      var recurP165369 = (function (valminus165370)        {
-        return (((valminus165370.recurSigil)===("recurSigilminus165365")));
+      var recurP83797 = (function (valminus83798)        {
+        return (((valminus83798.recurSigil)===("recurSigilminus83793")));
         });
-      var actualFunminus165368 = (function ()        {
+      var actualFunminus83796 = (function ()        {
         return ((function (arguments)          {
-          var G165372 = undefined;
-          var G165373 = Array.prototype.slice.apply(arguments);
-          G165372 = (function (arguments)            {
-            var aMatchArray165374 = G165373;
-            if ((((!(((aMatchArray165374.length)>=1))))||((!((aMatchArray165374 instanceof Array))))))              {
+          var G83800 = undefined;
+          var G83801 = Array.prototype.slice.apply(arguments);
+          G83800 = (function (arguments)            {
+            var aMatchArray83802 = G83801;
+            if ((((!(((aMatchArray83802.length)>=1))))||((!((aMatchArray83802 instanceof Array))))))              {
               return ("match-fail-e1aa3b7e7ce9731266013c178de842b5");
               };
-            var hd = aMatchArray165374[0];
-            var tl = Array.prototype.slice.call(aMatchArray165374, 1);
-            return ((hd-((moduleminus295baa4e1e.apply)(currentModuleminus165179.plus, tl))));
+            var hd = aMatchArray83802[0];
+            var tl = Array.prototype.slice.call(aMatchArray83802, 1);
+            return ((hd-((moduleminus295baa4e1e.apply)(currentModuleminus83598.plus, tl))));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G165372))))            {
-            return (G165372);
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G83800))))            {
+            return (G83800);
             };
-          G165372 = (function (arguments, anythingElseminus165371)            {
-            throw ((("Match fail in hooves/operator-functions-- against: ")+anythingElseminus165371));
-            }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G165373);
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G165372))))            {
-            return (G165372);
+          G83800 = (function (arguments, anythingElseminus83799)            {
+            throw ((("Match fail in hooves/operator-functions-- against: ")+anythingElseminus83799));
+            }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G83801);
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G83800))))            {
+            return (G83800);
             };
-          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ((array hd (tail tl)) (_- hd (apply + tl))) (anything-else-165371 (_throw (_+ \"Match fail in hooves/operator-functions-- against: \" anything-else-165371))))) for value ")+G165373));
+          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ((array hd (tail tl)) (_- hd (apply + tl))) (anything-else-83799 (_throw (_+ ''Match fail in hooves/operator-functions-- against: '' anything-else-83799))))) for value ")+G83801));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments))));
         });
-      returnValueminus165366 = actualFunminus165368.apply(this, arguments);
-      while (recurP165369(returnValueminus165366))        {
-        returnValueminus165366 = actualFunminus165368.apply(this, returnValueminus165366.args);
+      returnValueminus83794 = actualFunminus83796.apply(this, arguments);
+      while (recurP83797(returnValueminus83794))        {
+        returnValueminus83794 = actualFunminus83796.apply(this, returnValueminus83794.args);
         };
-      return (returnValueminus165366);
+      return (returnValueminus83794);
       });
-    currentModuleminus165179.times = (function ()      {
-      var returnValueminus165398 = undefined;
+    currentModuleminus83598.times = (function ()      {
+      var returnValueminus83826 = undefined;
       var recur = (function ()        {
         return ({          
-          recurSigil:"recurSigilminus165397",
+          recurSigil:"recurSigilminus83825",
           args:arguments
         });
         });
-      var recurP165401 = (function (valminus165402)        {
-        return (((valminus165402.recurSigil)===("recurSigilminus165397")));
+      var recurP83829 = (function (valminus83830)        {
+        return (((valminus83830.recurSigil)===("recurSigilminus83825")));
         });
-      var actualFunminus165400 = (function ()        {
+      var actualFunminus83828 = (function ()        {
         return ((function (arguments)          {
-          var G165404 = undefined;
-          var G165405 = Array.prototype.slice.apply(arguments);
-          G165404 = (function (arguments)            {
-            var aMatchArray165406 = G165405;
-            if ((((!(((aMatchArray165406.length)>=1))))||((!((aMatchArray165406 instanceof Array))))))              {
+          var G83832 = undefined;
+          var G83833 = Array.prototype.slice.apply(arguments);
+          G83832 = (function (arguments)            {
+            var aMatchArray83834 = G83833;
+            if ((((!(((aMatchArray83834.length)>=1))))||((!((aMatchArray83834 instanceof Array))))))              {
               return ("match-fail-e1aa3b7e7ce9731266013c178de842b5");
               };
-            var hd = aMatchArray165406[0];
-            var tl = Array.prototype.slice.call(aMatchArray165406, 1);
+            var hd = aMatchArray83834[0];
+            var tl = Array.prototype.slice.call(aMatchArray83834, 1);
             var result = hd;
             for (i in (tl))              {
               result = (result*(tl[i]));
               };
             return (result);
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G165404))))            {
-            return (G165404);
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G83832))))            {
+            return (G83832);
             };
-          G165404 = (function (arguments, anythingElseminus165403)            {
-            throw ((("Match fail in hooves/operator-functions-* against: ")+anythingElseminus165403));
-            }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G165405);
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G165404))))            {
-            return (G165404);
+          G83832 = (function (arguments, anythingElseminus83831)            {
+            throw ((("Match fail in hooves/operator-functions-* against: ")+anythingElseminus83831));
+            }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G83833);
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G83832))))            {
+            return (G83832);
             };
-          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ((array hd (tail tl)) (var result hd) (for (i :in tl) (set! result (_* result [tl i]))) result) (anything-else-165403 (_throw (_+ \"Match fail in hooves/operator-functions-* against: \" anything-else-165403))))) for value ")+G165405));
+          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ((array hd (tail tl)) (var result hd) (for (i :in tl) (set! result (_* result [tl i]))) result) (anything-else-83831 (_throw (_+ ''Match fail in hooves/operator-functions-* against: '' anything-else-83831))))) for value ")+G83833));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments))));
         });
-      returnValueminus165398 = actualFunminus165400.apply(this, arguments);
-      while (recurP165401(returnValueminus165398))        {
-        returnValueminus165398 = actualFunminus165400.apply(this, returnValueminus165398.args);
+      returnValueminus83826 = actualFunminus83828.apply(this, arguments);
+      while (recurP83829(returnValueminus83826))        {
+        returnValueminus83826 = actualFunminus83828.apply(this, returnValueminus83826.args);
         };
-      return (returnValueminus165398);
+      return (returnValueminus83826);
       });
-    currentModuleminus165179.divide = (function ()      {
-      var returnValueminus165430 = undefined;
+    currentModuleminus83598.divide = (function ()      {
+      var returnValueminus83858 = undefined;
       var recur = (function ()        {
         return ({          
-          recurSigil:"recurSigilminus165429",
+          recurSigil:"recurSigilminus83857",
           args:arguments
         });
         });
-      var recurP165433 = (function (valminus165434)        {
-        return (((valminus165434.recurSigil)===("recurSigilminus165429")));
+      var recurP83861 = (function (valminus83862)        {
+        return (((valminus83862.recurSigil)===("recurSigilminus83857")));
         });
-      var actualFunminus165432 = (function ()        {
+      var actualFunminus83860 = (function ()        {
         return ((function (arguments)          {
-          var G165436 = undefined;
-          var G165437 = Array.prototype.slice.apply(arguments);
-          G165436 = (function (arguments)            {
-            var aMatchArray165438 = G165437;
-            if ((((!(((aMatchArray165438.length)>=1))))||((!((aMatchArray165438 instanceof Array))))))              {
+          var G83864 = undefined;
+          var G83865 = Array.prototype.slice.apply(arguments);
+          G83864 = (function (arguments)            {
+            var aMatchArray83866 = G83865;
+            if ((((!(((aMatchArray83866.length)>=1))))||((!((aMatchArray83866 instanceof Array))))))              {
               return ("match-fail-e1aa3b7e7ce9731266013c178de842b5");
               };
-            var hd = aMatchArray165438[0];
-            var tl = Array.prototype.slice.call(aMatchArray165438, 1);
-            return ((hd/((moduleminus295baa4e1e.apply)(currentModuleminus165179.times, tl))));
+            var hd = aMatchArray83866[0];
+            var tl = Array.prototype.slice.call(aMatchArray83866, 1);
+            return ((hd/((moduleminus295baa4e1e.apply)(currentModuleminus83598.times, tl))));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G165436))))            {
-            return (G165436);
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G83864))))            {
+            return (G83864);
             };
-          G165436 = (function (arguments, anythingElseminus165435)            {
-            throw ((("Match fail in hooves/operator-functions-/ against: ")+anythingElseminus165435));
-            }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G165437);
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G165436))))            {
-            return (G165436);
+          G83864 = (function (arguments, anythingElseminus83863)            {
+            throw ((("Match fail in hooves/operator-functions-/ against: ")+anythingElseminus83863));
+            }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), G83865);
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G83864))))            {
+            return (G83864);
             };
-          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ((array hd (tail tl)) (_/ hd (apply * tl))) (anything-else-165435 (_throw (_+ \"Match fail in hooves/operator-functions-/ against: \" anything-else-165435))))) for value ")+G165437));
+          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ((array hd (tail tl)) (_/ hd (apply * tl))) (anything-else-83863 (_throw (_+ ''Match fail in hooves/operator-functions-/ against: '' anything-else-83863))))) for value ")+G83865));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments))));
         });
-      returnValueminus165430 = actualFunminus165432.apply(this, arguments);
-      while (recurP165433(returnValueminus165430))        {
-        returnValueminus165430 = actualFunminus165432.apply(this, returnValueminus165430.args);
+      returnValueminus83858 = actualFunminus83860.apply(this, arguments);
+      while (recurP83861(returnValueminus83858))        {
+        returnValueminus83858 = actualFunminus83860.apply(this, returnValueminus83858.args);
         };
-      return (returnValueminus165430);
+      return (returnValueminus83858);
       });
     var defineExternalBinop = "macro - no dynamic value.";
     var defineExternalBinops = "macro - no dynamic value.";
-    currentModuleminus165179.lessThan = (function (G165448, G165449)      {
-      return ((G165448<G165449));
+    currentModuleminus83598.lessThan = (function (G83876, G83877)      {
+      return ((G83876<G83877));
       });
-    currentModuleminus165179.lessThanequal = (function (G165475, G165476)      {
-      return ((G165475<=G165476));
+    currentModuleminus83598.lessThanequal = (function (G83903, G83904)      {
+      return ((G83903<=G83904));
       });
-    currentModuleminus165179.greaterThan = (function (G165502, G165503)      {
-      return ((G165502>G165503));
+    currentModuleminus83598.greaterThan = (function (G83930, G83931)      {
+      return ((G83930>G83931));
       });
-    currentModuleminus165179.greaterThanequal = (function (G165529, G165530)      {
-      return ((G165529>=G165530));
+    currentModuleminus83598.greaterThanequal = (function (G83957, G83958)      {
+      return ((G83957>=G83958));
       });
-    currentModuleminus165179.ampersand = (function (G165556, G165557)      {
-      return ((G165556&G165557));
+    currentModuleminus83598.ampersand = (function (G83984, G83985)      {
+      return ((G83984&G83985));
       });
-    currentModuleminus165179.pipe = (function (G165583, G165584)      {
-      return ((G165583|G165584));
+    currentModuleminus83598.pipe = (function (G84011, G84012)      {
+      return ((G84011|G84012));
       });
-    currentModuleminus165179.equalequal = (function (G165610, G165611)      {
-      return ((G165610==G165611));
+    currentModuleminus83598.equalequal = (function (G84038, G84039)      {
+      return ((G84038==G84039));
       });
-    currentModuleminus165179.equalequalequal = (function (G165637, G165638)      {
-      return ((G165637===G165638));
+    currentModuleminus83598.equalequalequal = (function (G84065, G84066)      {
+      return ((G84065===G84066));
       });
-    currentModuleminus165179.modsign = (function (G165664, G165665)      {
-      return ((G165664%G165665));
+    currentModuleminus83598.modsign = (function (G84092, G84093)      {
+      return ((G84092%G84093));
       });
-    currentModuleminus165179.caret = (function (G165691, G165692)      {
-      return ((G165691^G165692));
+    currentModuleminus83598.caret = (function (G84119, G84120)      {
+      return ((G84119^G84120));
       });
-    currentModuleminus165179.lessThanlessThan = (function (G165718, G165719)      {
-      return ((G165718<<G165719));
+    currentModuleminus83598.lessThanlessThan = (function (G84146, G84147)      {
+      return ((G84146<<G84147));
       });
-    currentModuleminus165179.greaterThangreaterThan = (function (G165745, G165746)      {
-      return ((G165745>>G165746));
+    currentModuleminus83598.greaterThangreaterThan = (function (G84173, G84174)      {
+      return ((G84173>>G84174));
       });
-    currentModuleminus165179.greaterThangreaterThangreaterThan = (function (G165772, G165773)      {
-      return ((G165772>>>G165773));
+    currentModuleminus83598.greaterThangreaterThangreaterThan = (function (G84200, G84201)      {
+      return ((G84200>>>G84201));
       });
     ;
     var ampersandampersand = "macro - no dynamic value.";
@@ -229,5 +229,5 @@
     var incr = "macro - no dynamic value.";
     var decr = "macro - no dynamic value.";
     }))();
-  return (currentModuleminus165179);
+  return (currentModuleminus83598);
   }))

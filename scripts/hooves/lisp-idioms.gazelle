@@ -15,4 +15,9 @@
  (define+ (apply f an-array)
    (.. f (apply undefined an-array)))
  (define+ (funcall f (tail args))
-   (apply f args)))
+   (apply f args))
+ (define-macro+ let
+   ((list (tail binders)) (tail body))
+   `(match [: ,@(mapcar #'cadr binders)]
+		   ([: ,@(mapcar #'car binders)]
+			,@body))))

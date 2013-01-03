@@ -184,7 +184,7 @@
 
 (defun-match- proper:tail-of-try-to-prim (nil acc)
   acc)
-(defun-match proper:tail-of-try-to-prim ((list-rest '_catch 
+(defun-match proper:tail-of-try-to-prim ((list-rest (or 'catch :catch '_catch) 
 													(list (non-kw-symbol name))
 													(list-rest catch-body)
 													tail-of-try)
@@ -192,19 +192,25 @@
   (recur tail-of-try
 		 (append acc `(_catch (,(proper:to-prim name))
 							  ,(proper:map-to-prim catch-body)))))
-(defun-match proper:tail-of-try-to-prim ((list-rest '_catch 
-													(list (non-kw-symbol name) '_if expr)
+(defun-match proper:tail-of-try-to-prim ((list-rest (or 'catch :catch '_catch) 
+													(list (non-kw-symbol name) 
+														  (or 'if :if '_if) 
+														  expr)
 													(list-rest catch-body)
 													tail-of-try)
 										 acc)
   (recur tail-of-try (append acc `(_catch (,(proper:to-prim name) _if ,(proper:to-prim expr))
 										  ,(proper:map-to-prim catch-body)))))
-(defun-match proper:tail-of-try-to-prim ((list-rest '_finally 
+
+(defun-match proper:tail-of-try-to-prim ((list (or :finally 'finally '_finally)
 													(list-rest finally-body))
 										 acc)
   (append acc `(_finally ,(proper:map-to-prim finally-body))))
 
-(defun-match proper:to-prim ((list-rest '_try 
+(defun-match proper:tail-of-try-to-prim ((list-rest tail))
+  (recur tail nil))
+
+(defun-match proper:to-prim ((list-rest (or 'try '_try) 
 										(list-rest body)
 										tail-of-try))
   `(_try ,(proper:map-to-prim body)
@@ -378,6 +384,8 @@
 	   (expressions (mapcar #'cadr binders)))
    `(_. (_lambda ,names ,@body)
 		(call this (_? (_=== (_typeof arguments) "undefined") undefined arguments) ,@expressions))))
+
+
 
 (proper:define-macro 
  if (condexpr trueexpr falseexpr)
@@ -631,7 +639,7 @@
 			   `((_= ,return-value (match1 ,pattern ,value ,@sub-body))
 				 (_if (_! (_=== (match-fail) ,return-value))
 					  ((_return ,return-value))))))
-	 (_throw (_+ ,(format "match-fail at (%S) for value " `(match ,match-value ,@body)) ,value)))))
+	 (_throw (_+ ,(replace-regexp-in-string "\"" "''" (format "match-fail at (%S) for value " `(match ,match-value ,@body))) ,value)))))
 
 
 (defun-match- proper:simple-lambda-p ((list 'lambda arg-list (tail body)))
@@ -801,10 +809,13 @@
 
 (defun-match- proper:fixed-point (f arg)
   (proper:fixed-point f arg 100 0))
+
 (defun-match proper:fixed-point (f arg max-count)
   (proper:fixed-point f arg max-count 0))
+
 (defun-match proper:fixed-point (f arg max-count (equal max-count))
-  `(did-not-converge ,arg ,count))
+  `(did-not-converge ,arg ,max-count))
+
 (defun-match proper:fixed-point (f arg max-count (p (proper:</c max-count) count))
   (let ((new-arg (funcall f arg)))
 	(if (equalp new-arg arg) 
@@ -833,10 +844,10 @@
 		((list 'converged final-body count)
 		 `((_lambda () ,@final-body)))
 		((list 'did-not-converge non-final-body count)
-		 (error (format 
+		 (error  
 				 (concat "_proper:unit compilation did not converge."
 						 "  Do you have a loop in macroexpansion in"
-						 " the body %s?") body)))))
+						 " the body %s?") non-final-body))))
 
 
 
@@ -1127,8 +1138,41 @@
    (designated-lambda require-form (,@(proper:module-specs->crypto-symbols specs))
 					  (_proper:macro-context
 					   ,@(loop for spec in specs collect
-			  `(_proper:require-spec ,@spec))
-	  ,@body))))
+							   `(_proper:require-spec ,@spec))
+					   ,@body))))
+
+(defun proper:spec-location->naive-name (location)
+  (intern (car (last (split-string location (regexp-quote "/"))))))
+
+(defun proper:spec-locations->use-names (locations)
+  (let ((table (make-hash-table :test 'equal)))
+	(loop for loc in locations collect 
+		  (let* ((name (proper:spec-location->naive-name loc))
+				 (seen (gethash name table)))
+
+			(if seen 
+				(let ((actual-name (intern 
+									(concat (symbol-name name)
+											(format "%s" (length seen))))))
+
+				  (setf (gethash name table)
+						(cons actual-name seen))
+				  actual-name)
+			  (progn 
+
+				(setf (gethash name table)
+					  (list name))
+
+				name))))))
+
+;; (proper:define-macro 
+;;  use (specs)
+;;  (proper:message "Reducing use form.")
+;;  (let ((global-names (proper:spec-locations->use-names 
+;; 					  (proper:module-specs->locations specs))))
+;;    `(_newline-sequence
+;; 	 (_var _r ((_value require) [: ,@(proper:module-specs->locations specs)]))
+;; 	 ,@())))
 
 (defun-match- proper:reduce-require-form (manifest (and form (list :as (tail pairs))))
   form)
@@ -1159,6 +1203,7 @@
 					(proper:reduce-require-form manifest form))))
 
 
+
 (defun proper:really-compile-module (spec)
   (proper:message "Really compiling module %S" spec)
   (let* ((file (proper:module-spec->module-file spec))
@@ -1168,8 +1213,9 @@
 		 (body (proper:module-body contents)))
 	(let* ((proper:*module-manifest* (make-hash-table))
 		   (proper:symbol-macros (cons (make-hash-table)
-									   proper:symbol-macros))
-		   (proper:macros (cons (make-hash-table) proper:macros))
+									   (last proper:symbol-macros)))
+		   (proper:macros (cons (make-hash-table) (last proper:macros)))
+		   ;; Only use the global macro space for compiling modules.
 		   (current-module (gensym "current-module-"))
 		   (gazelle-code 
 			`((_value define)
