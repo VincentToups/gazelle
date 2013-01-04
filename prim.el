@@ -313,8 +313,7 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 
 (defun-match prim:transcode ((list '_return expression))
   (prim:insert "return ")
-  (prim:in-parens 
-   (prim:transcode expression)))
+  (prim:transcode expression))
 
 (defun-match prim:transcode ((list-rest '_while expression body))
   (prim:insert "while ")
@@ -538,6 +537,10 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 			  (symbol k)
 			  (number k))
 		  (prim:transcode expr))
+		 ((list '_. (tail tl))
+		  (prim:transcode expr))
+		 ((list '_value expr)
+		  (prim:transcode-in-parens-when-needed expr))
 		 (anything-else
 		  (prim:in-parens
 		   (prim:transcode expr)))))
