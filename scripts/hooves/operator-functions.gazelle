@@ -40,6 +40,9 @@
  (define-macro+ || (a b)
    `(_|| ,a ,b))
 
+ (define+ (! o)
+   (_! o))
+
  (define-macro+ incr ((non-kw-symbol place))
    `(set! ,place (+ 1 ,place)))
 

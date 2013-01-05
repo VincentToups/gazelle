@@ -455,6 +455,13 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 		(prim:insert ".")
 		(prim:transcode-tail-of-dot-expr tail-of-dot-expr))))
 
+(defun-match prim:transcode ((list '_new constructor (tail arguments)))
+  (prim:in-parens 
+   (prim:insert "new ")
+   (prim:transcode-in-parens-when-needed constructor)
+   (prim:in-parens 
+	(prim:transcode-csvs arguments))))
+
 
 (defun-match prim:transcode ((list '_= 
 								   (and

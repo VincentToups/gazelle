@@ -115,6 +115,10 @@
   `(_var ,(proper:to-prim s)
 		 ,(proper:to-prim expr)))
 
+(defun-match proper:to-prim ((list (or '_new 'new) constructor (tail arguments)))
+  `(_new ,(proper:to-prim constructor)
+		 ,@(proper:map-to-prim arguments)))
+
 (defun-match- proper:tail-of-if-to-prim (nil acc)
   acc)
 (defun-match proper:tail-of-if-to-prim ((list-rest '_else ebody tail-of-if) acc)
@@ -234,6 +238,10 @@
 (defun-match proper:to-prim ((list-rest (or '.. '_.) expr tail-of-dot-expr))
   `(_. ,(proper:to-prim expr) ,@(proper:tail-of-dot-to-prim tail-of-dot-expr)))
 
+
+
+
+
 (defun-match proper:to-prim ((list (or '_= 'set!) (and
 												   (or (non-kw-symbol _)
 													   (list-rest '_. _))
@@ -241,7 +249,7 @@
 								   value-expr))
   `(_= ,(proper:to-prim set-this) ,(proper:to-prim value-expr)))
 
-(defun-match proper:to-prim ((list '_! expr))
+(defun-match proper:to-prim ((list (or '! '_!) expr))
   `(_! ,(proper:to-prim expr)))
 
 (defun-match proper:to-prim ((list '_- expr))
@@ -960,27 +968,27 @@
 (proper:define-macro
  _proper:require-spec
  [(((or (and (string module-location)
-		   (let1 local-module-name (proper:module-location->symbol module-location)))
-	  (list (string module-location)
-			(symbol local-module-name)))
-  (tail parts))
- (match (proper:compile-module module-location)
-		((list manifest macros symbol-macros)
-		 (proper:message "Compiled/loaded module %s" module-location)
-		 (proper:message "* manifest has keys %S" (gzu:hash-table-keys manifest))
-		 (proper:message "* top of macros has keys %S" (gzu:hash-table-keys (car macros)))
-		 (let ((require-forms (mapcar (proper:reduce-require-form/c manifest) parts)))
-		   (proper:message 
-			"Importing reduced forms %S from %S." require-forms module-location) 
-		   (loop for as-form in require-forms
-				 do
-				 (proper:setup-as-form as-form
-									   module-location 
-									   local-module-name
-									   manifest
-									   macros
-									   symbol-macros)))
-		 `(_comment (,module-location ,@parts)))))
+			 (let1 local-module-name (proper:module-location->symbol module-location)))
+		(list (string module-location)
+			  (symbol local-module-name)))
+	(tail parts))
+   (match (proper:compile-module module-location)
+		  ((list manifest macros symbol-macros)
+		   (proper:message "Compiled/loaded module %s" module-location)
+		   (proper:message "* manifest has keys %S" (gzu:hash-table-keys manifest))
+		   (proper:message "* top of macros has keys %S" (gzu:hash-table-keys (car macros)))
+		   (let ((require-forms (mapcar (proper:reduce-require-form/c manifest) parts)))
+			 (proper:message 
+			  "Importing reduced forms %S from %S." require-forms module-location) 
+			 (loop for as-form in require-forms
+				   do
+				   (proper:setup-as-form as-form
+										 module-location 
+										 local-module-name
+										 manifest
+										 macros
+										 symbol-macros)))
+		   `(_comment (,module-location ,@parts)))))
   (((list 'js loc name))
    `(_comment ((js ,loc ,name))))])
 
@@ -1159,7 +1167,7 @@
 			   (rjs.config 
 				({} node-require require
 					base-url "./scripts/"))
-			  (_return rjs)))
+			   (_return rjs)))
    [: ,@(proper:module-specs->locations specs)]
    (designated-lambda require-form (,@(proper:module-specs->crypto-symbols specs))
 					  (_proper:macro-context
@@ -1248,6 +1256,8 @@
 			  [: ,@(proper:module-specs->locations specs)]
 			  (_function ,(proper:module-specs->crypto-symbols specs)
 						 (_var ,current-module (_{}))
+						 (define (set-module-object value)
+						   (_= ,current-module value))
 						 (_proper:unit 
 						  (define-macro define+ ((tail parts))
 							(match parts
