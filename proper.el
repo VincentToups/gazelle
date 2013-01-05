@@ -529,11 +529,13 @@
 	(let ((pattern-list (gensym))
 		  (r (gensym)))
 	  `(p #'proper:simple-array-subpatterns-with-tail-p 
-		  (funcall 
+		  (maybe-funcall 
 		   (lambda (,pattern-list)
-			 (let ((,r (reverse ,pattern-list)))
-			   (list (reverse (cdr ,r))
-					 (cadr (car ,r)))))
+			 (if (listp ,pattern-list) 
+				 (let ((,r (reverse ,pattern-list)))
+				   (list (reverse (cdr ,r))
+						 (cadr (car ,r))))
+			   *match-fail*))
 		   (list ,symbols-pat ,tail-symbol-pat))))))
 
 
@@ -541,31 +543,31 @@
  match1-array ((or [(or ': '_:) (tail sub-patterns)]
 				   (list 'array (tail sub-patterns))) vexpr (tail body))
  (match sub-patterns
-		((proper:simple-array-subpatterns symbols)
-		 (let ((n (length symbols))
-			   (a (gensym "a-match-array")))
-		   `(_let ()
-				  (_var ,a ,vexpr)
-				  (_if (_|| (_! (_=== (_. ,a length) ,n))
-							(_! (_instanceof ,a Array)))
-					   ((_return "match-fail-e1aa3b7e7ce9731266013c178de842b5")))
-				  ,@(loop for s in symbols and
-						  i from 0 collect
-						  `(_var ,s [,a ,i]))
-				  ,@body)))
-		((proper:simple-array-subpatterns-with-tail symbols tail-symbol)
-		 (let ((n (length symbols))
-			   (a (gensym "a-match-array")))
-		   `(_let ()
-				  (_var ,a ,vexpr)
-				  (_if (_|| (_! (_>= (_. ,a length) ,n))
-							(_! (_instanceof ,a Array)))
-					   ((_return "match-fail-e1aa3b7e7ce9731266013c178de842b5")))
-				  ,@(loop for s in symbols and
-						  i from 0 collect
-						  `(_var ,s [,a ,i]))
-				  (_var ,tail-symbol (_. Array prototype slice (call ,a ,n)))
-				  ,@body)))
+		;; ((proper:simple-array-subpatterns symbols)
+		;;  (let ((n (length symbols))
+		;; 	   (a (gensym "a-match-array")))
+		;;    `(_let ()
+		;; 		  (_var ,a ,vexpr)
+		;; 		  (_if (_|| (_! (_=== (_. ,a length) ,n))
+		;; 					(_! (_instanceof ,a Array)))
+		;; 			   ((_return "match-fail-e1aa3b7e7ce9731266013c178de842b5")))
+		;; 		  ,@(loop for s in symbols and
+		;; 				  i from 0 collect
+		;; 				  `(_var ,s [,a ,i]))
+		;; 		  ,@body)))
+		;; ((proper:simple-array-subpatterns-with-tail symbols tail-symbol)
+		;;  (let ((n (length symbols))
+		;; 	   (a (gensym "a-match-array")))
+		;;    `(_let ()
+		;; 		  (_var ,a ,vexpr)
+		;; 		  (_if (_|| (_! (_>= (_. ,a length) ,n))
+		;; 					(_! (_instanceof ,a Array)))
+		;; 			   ((_return "match-fail-e1aa3b7e7ce9731266013c178de842b5")))
+		;; 		  ,@(loop for s in symbols and
+		;; 				  i from 0 collect
+		;; 				  `(_var ,s [,a ,i]))
+		;; 		  (_var ,tail-symbol (_. Array prototype slice (call ,a ,n)))
+		;; 		  ,@body)))
 		((list)
 		 (let ((val (gensym)))
 		   `(_let ((,val ,vexpr))
@@ -588,6 +590,60 @@
 								   (_. Array prototype slice (call ,val 1))
 								   ,@body))))))))
 
+(eval-when (eval compile load)
+  (defun proper:non-kw-symbol (o)
+	(and (symbolp o)
+		 (not (keywordp o))))
+  (defpattern proper:{}-tail (&optional (symbols (gensym))
+									   (patterns (gensym)))
+	`(maybe-funcall 
+	  (lambda (value)
+		(if (listp value)
+			(let ((evens (gzu:even-indexes value))
+				  (odds (gzu:odd-indexes value)))
+			  (if (= (length evens)
+					 (length odds))
+				  (if (proper:all-satisfy #'proper:non-kw-symbol evens)
+					  (list evens odds)
+					*match-fail*)
+			  *match-fail*))
+		*match-fail*))
+	  (list ,symbols ,patterns))))
+
+(proper:define-macro 
+ match1-object-helper ((list syms pats) vexpr (tail body))
+ (if (proper:all-satisfy #'proper:non-kw-symbol pats)
+	 (let ((value (gensym "match-object-value-")))
+	   `(let 
+			()
+		  (_var ,value ,vexpr)
+		  ,@(loop for s in syms and 
+				  p in pats append
+				  `((_var ,p (_. ,value ,s))
+					(_if (_=== "undefined" (_typeof ,p))
+						 ((_return "match-fail-e1aa3b7e7ce9731266013c178de842b5")))))
+		  ,@body))
+   (let ((value (gensym "match-object-value-")))
+	 `(let ()
+		(_var ,value ,vexpr)
+		(match1 
+		 [: ,@(mapcar #'(lambda (p)
+						`(defined ,p)) pats)]
+		 [: ,@(mapcar 
+			  (lambda (s)
+				`(_. ,value ,s))
+			  syms)]
+		 ,@body)))))
+
+(proper:define-macro 
+ match1-defined ((list 'defined pattern) vexpr (tail body))
+ (let ((val (gensym "match-defined-")))
+   `(let ()
+	  (_var ,val ,vexpr)
+	  (_if (_=== "undefined" (_typeof ,val))
+		   ((_return "match-fail-e1aa3b7e7ce9731266013c178de842b5")))
+	  (match1 ,pattern ,val ,@body))))
+
 (proper:define-macro 
  match1 (mexpr vexpr (tail body))
  (match mexpr
@@ -604,7 +660,11 @@
 		   ,@body))
 		((or [(or '_: ':) (tail sub-patterns)]
 			 (list 'array (tail sub-patterns)))
-		 `(match1-array ,mexpr ,vexpr ,@body))))
+		 `(match1-array ,mexpr ,vexpr ,@body))
+		((list 'defined pattern)
+		 `(match1-defined ,mexpr ,vexpr ,@body))
+		((list (or '{} '_{}) (tail (proper:{}-tail symbols patterns)))
+		 `(match1-object-helper (,symbols ,patterns) ,vexpr ,@body))))
 
 (eval-when (load compile eval) 
   (defun-match- proper:proper-list-p (nil)
@@ -894,6 +954,15 @@
 (defun-match- proper:module-module-specs ((list 'module module-specs (tail body)))
   module-specs)
 
+(defun-match- proper:module-module-specs-for-deps ((list 'module module-specs (tail body)))
+  (loop for spec in module-specs 
+		when (match spec 
+					((list (list 'js loc name))
+					 nil)
+					(elsewise t))
+		collect spec))
+
+
 (defun-match- proper:module-body ((list 'module module-specs (tail body)))
   body)
 
@@ -1046,7 +1115,7 @@
 
 (defun proper:extract-module-dependencies (spec)
   (match-let* ((contents (proper:read-module-file file))
-			   (req-specs (proper:module-module-specs contents)))
+			   (req-specs (proper:module-module-specs-for-deps contents)))
 			  (proper:module-specs->locations req-specs)))
 
 (defun proper:module-needs-recompile (spec)

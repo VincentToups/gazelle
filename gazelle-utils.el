@@ -188,5 +188,11 @@
 (defun-match gzu:flatten ((p #'listp l))
   (recur l nil))
 
+(defun gzu:even-indexes (lst)
+  (loop for item in lst and i from 0 when (= 0 (mod i 2)) collect item))
+
+(defun gzu:odd-indexes (lst)
+  (loop for item in lst and i from 0 when (not (= 0 (mod i 2))) collect item))
+
 (provide 'gazelle-utils)
 
