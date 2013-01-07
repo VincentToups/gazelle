@@ -418,21 +418,7 @@
  match-fail ()
  "match-fail-e1aa3b7e7ce9731266013c178de842b5")
 
-(proper:define-macro
- match1-id ((non-kw-symbol s) vexpr (tail body))
- `(_let ((,s ,vexpr))
-		,@body))
 
-(proper:define-macro
- match1-simple-atom ((or (keyword a)
-						 (number a)
-						 (string a))
-					 vexpr (tail body))
- (let ((val (gensym)))
-   `(_let ((,val ,vexpr))
-		  (if (_=== ,val ,a)
-			  (progn ,@body)
-			(match-fail)))))
 
 (defun-match- proper:make-last-return (nil)
   nil)
@@ -539,56 +525,7 @@
 		   (list ,symbols-pat ,tail-symbol-pat))))))
 
 
-(proper:define-macro 
- match1-array ((or [(or ': '_:) (tail sub-patterns)]
-				   (list 'array (tail sub-patterns))) vexpr (tail body))
- (match sub-patterns
-		;; ((proper:simple-array-subpatterns symbols)
-		;;  (let ((n (length symbols))
-		;; 	   (a (gensym "a-match-array")))
-		;;    `(_let ()
-		;; 		  (_var ,a ,vexpr)
-		;; 		  (_if (_|| (_! (_=== (_. ,a length) ,n))
-		;; 					(_! (_instanceof ,a Array)))
-		;; 			   ((_return "match-fail-e1aa3b7e7ce9731266013c178de842b5")))
-		;; 		  ,@(loop for s in symbols and
-		;; 				  i from 0 collect
-		;; 				  `(_var ,s [,a ,i]))
-		;; 		  ,@body)))
-		;; ((proper:simple-array-subpatterns-with-tail symbols tail-symbol)
-		;;  (let ((n (length symbols))
-		;; 	   (a (gensym "a-match-array")))
-		;;    `(_let ()
-		;; 		  (_var ,a ,vexpr)
-		;; 		  (_if (_|| (_! (_>= (_. ,a length) ,n))
-		;; 					(_! (_instanceof ,a Array)))
-		;; 			   ((_return "match-fail-e1aa3b7e7ce9731266013c178de842b5")))
-		;; 		  ,@(loop for s in symbols and
-		;; 				  i from 0 collect
-		;; 				  `(_var ,s [,a ,i]))
-		;; 		  (_var ,tail-symbol (_. Array prototype slice (call ,a ,n)))
-		;; 		  ,@body)))
-		((list)
-		 (let ((val (gensym)))
-		   `(_let ((,val ,vexpr))
-				  (if-or-match-fail
-				   (_&& (_instanceof ,val Array)
-						(_=== (_. ,val length) 0))
-				   ,@body))))
-		((list (list 'tail pattern))
-		 `(match1 ,pattern ,vexpr ,@body))
-		((list hdp (tail sub-patterns))
-		 (let ((val (gensym))
-			   (hd (gensym)))
-		   `(_let ()
-				  (_var ,val ,vexpr)
-				  (if-or-match-fail 
-				   (_&& (_instanceof ,val Array)
-						(_> (_. ,val length) 0))
-				   (match1 ,hdp [,val 0]
-						   (match1 [: ,@sub-patterns] 
-								   (_. Array prototype slice (call ,val 1))
-								   ,@body))))))))
+
 
 (eval-when (eval compile load)
   (defun proper:non-kw-symbol (o)
@@ -609,62 +546,6 @@
 			  *match-fail*))
 		*match-fail*))
 	  (list ,symbols ,patterns))))
-
-(proper:define-macro 
- match1-object-helper ((list syms pats) vexpr (tail body))
- (if (proper:all-satisfy #'proper:non-kw-symbol pats)
-	 (let ((value (gensym "match-object-value-")))
-	   `(let 
-			()
-		  (_var ,value ,vexpr)
-		  ,@(loop for s in syms and 
-				  p in pats append
-				  `((_var ,p (_. ,value ,s))
-					(_if (_=== "undefined" (_typeof ,p))
-						 ((_return "match-fail-e1aa3b7e7ce9731266013c178de842b5")))))
-		  ,@body))
-   (let ((value (gensym "match-object-value-")))
-	 `(let ()
-		(_var ,value ,vexpr)
-		(match1 
-		 [: ,@(mapcar #'(lambda (p)
-						`(defined ,p)) pats)]
-		 [: ,@(mapcar 
-			  (lambda (s)
-				`(_. ,value ,s))
-			  syms)]
-		 ,@body)))))
-
-(proper:define-macro 
- match1-defined ((list 'defined pattern) vexpr (tail body))
- (let ((val (gensym "match-defined-")))
-   `(let ()
-	  (_var ,val ,vexpr)
-	  (_if (_=== "undefined" (_typeof ,val))
-		   ((_return "match-fail-e1aa3b7e7ce9731266013c178de842b5")))
-	  (match1 ,pattern ,val ,@body))))
-
-(proper:define-macro 
- match1 (mexpr vexpr (tail body))
- (match mexpr
-		((non-kw-symbol mexpr)
-		 `(match1-id ,mexpr ,vexpr ,@body))
-		((or (keyword a)
-			 (number a)
-			 (string a))
-		 `(match1-simple-atom ,mexpr ,vexpr ,@body))
-		((list 'quote e)
-		 `(match1-simple-atom 
-		   ,(prim:transcode->string (proper:to-prim e))
-		   ,vexpr
-		   ,@body))
-		((or [(or '_: ':) (tail sub-patterns)]
-			 (list 'array (tail sub-patterns)))
-		 `(match1-array ,mexpr ,vexpr ,@body))
-		((list 'defined pattern)
-		 `(match1-defined ,mexpr ,vexpr ,@body))
-		((list (or '{} '_{}) (tail (proper:{}-tail symbols patterns)))
-		 `(match1-object-helper (,symbols ,patterns) ,vexpr ,@body))))
 
 (eval-when (load compile eval) 
   (defun-match- proper:proper-list-p (nil)
@@ -688,6 +569,146 @@
 	  `(p (lambda (,arg)
 			(proper:all-satisfy #'proper:proper-list-p ,arg))
 		  ,pattern))))
+
+(defvar proper:match-fail-val "match-fail-e1aa3b7e7ce9731266013c178de842b5")
+
+(eval-when (load compile eval)
+  (defpattern proper:atom (&optional (pattern (gensym)))
+	`(or (keyword ,pattern)
+		 (number ,pattern)
+		 (string ,pattern))))
+
+(defun-match- proper:expand-match1-body ((non-kw-symbol s) val body acc)
+  (append acc 
+		  `((_var ,s ,val)
+			,@body)))
+
+(defun-match proper:expand-match1-body ((proper:atom a) val body acc)
+  (append acc 
+		  `((_if (_! (_=== ,a ,val))
+				 ((_return ,proper:match-fail-val)))
+			,@body)))
+
+(defun-match proper:expand-match1-body ([: (tail 
+											(proper:list-of-ids ids))]
+										val body acc)
+  (let ((n (length ids))) 
+	(append acc
+			`((_if (_! (_=== ,n (_. ,val length)))
+				   ((_return ,proper:match-fail-val)))
+			  ,@(loop for id in ids and index from 0 collect
+					  `(_var ,id [,val ,index]))
+			  ,@body))))
+
+(defun proper:patterns-with-tail? (patterns)
+  (and (> (length patterns) 0)
+	   (let ((final-pattern (car (last patterns))))
+		 (and (listp final-pattern)
+			  (= 2 (length final-pattern))
+			  (eq (car final-pattern) 'tail)))))
+
+(defun proper:all-but-last (lst)
+  (reverse (cdr (reverse lst))))
+
+(defun-match proper:expand-match1-body ((list 'defined sub-pattern)
+										val body acc)
+  (let ((acc (append acc
+					 `((_if (_=== "undefined" (_typeof ,val))
+							((_return ,proper:match-fail-val)))))))
+	(proper:expand-match1-body sub-pattern val body acc)))
+
+(defun-match proper:expand-match1-body ((list 'undefined sub-pattern)
+										val body acc)
+  (let ((acc (append acc
+					 `((_if (_! (_=== "undefined" (_typeof ,val)))
+							((_return ,proper:match-fail-val)))))))
+	(proper:expand-match1-body sub-pattern val body acc)))
+
+(defun-match proper:expand-match1-body ((list 'quote expr)
+										val body acc)
+  (proper:expand-match1-body (prim:transcode->string (proper:to-prim expr))
+							 val body acc))
+
+(defun-match proper:expand-match1-body ((or [(or : '_:) (tail patterns)]
+											(list 'array (tail patterns)))
+										val body acc)
+  (cond 
+   ((not (proper:patterns-with-tail? patterns))
+	(let* ((match-temps
+			(mapcar (lambda (x)
+					  (gensym "match-temp-"))
+					patterns))
+		   (acc (append acc 
+						`((_if (_! (_=== ,(length patterns)
+										 (_. ,val length)))
+							   ((_return ,proper:match-fail-val)))
+						  ,@(loop for temp in match-temps
+								  and i from 0 
+								  collect
+								  `(_var ,temp [,val ,i]))))))
+	  (loop for pattern in patterns and
+			temp in match-temps do
+			(setq acc 
+				  (proper:expand-match1-body pattern temp () acc)))
+	  (append acc body)))
+   ((proper:patterns-with-tail? patterns)
+	(let*
+		((normal-patterns (proper:all-but-last patterns))
+		 (n-normal (length normal-patterns))
+		 (tail-pattern (cadr (car (last patterns))))
+		 (simple-part-name (gensym "match-array-simple-part-"))
+		 (acc (append acc 
+					  `((_if (_! (_>= (_. ,val length) ,n-normal))
+							 ((_return ,proper:match-fail-val)))
+						(_var ,simple-part-name (Array.prototype.slice.call ,val 0 ,n-normal)))))
+		 (acc (proper:expand-match1-body `[: ,@normal-patterns] simple-part-name nil
+										 acc))
+		 (tail-name (gensym "match-array-tail-part-"))
+		 (acc (append acc 
+					  `((_var ,tail-name (Array.prototype.slice.call ,val ,n-normal)))))
+		 (acc (proper:expand-match1-body tail-pattern tail-name body acc)))
+	  acc))))
+
+(defun-match proper:expand-match1-body ((list (or '{} '_{})
+											  (tail (! (proper:{}-tail symbols patterns))))
+										val body acc)
+  (cond 
+   ((proper:all-satisfy #'proper:non-kw-symbol patterns)
+	;;simple case
+	(append acc 
+			`(,@(loop for s in symbols and p in patterns append 
+					  `((_var ,p (_. ,val s))
+						(_if (_=== "undefined" (_typeof ,p))
+							 ((_return ,proper:match-fail-val)))))
+			  ,@body)))
+   (:otherwise 
+	(let ((temps (mapcar (lambda (x) 
+						   (gensym "match-object-temp-"))
+						 patterns)))
+	  (loop for 
+			symbol in symbols and
+			temp in temps and
+			pattern in patterns do
+			(let ((new-acc (append acc
+								   `((_var ,temp (_. ,val ,symbol))
+									 (_if (_=== "undefined" (_typeof ,temp))
+										  ((_return ,proper:match-fail-val)))))))
+			  (setq acc 
+					(proper:expand-match1-body pattern temp nil new-acc))))
+	  (append acc body)))))
+
+
+(defun-match proper:expand-match1-body (pattern val-expr body)
+  (let ((val (gensym "match-val-"))) 
+	(recur pattern val body 
+		   `(_let ()
+				  (_var ,val ,val-expr)))))
+
+(proper:define-macro 
+ match1 
+ (pattern value-expr (tail body))
+ (proper:expand-match1-body pattern value-expr body))
+
 
 (proper:define-macro 
  match (match-value 
@@ -814,6 +835,8 @@
 						  args arguments))))
 	   (_var ,recur-p 
 			 (_function (,val)
+						(_if (_=== "undefined" (_typeof ,val))
+							 ((_return false)))
 						(_return 
 						 (_=== (_. ,val recur-sigil) ',recur-sigil))))
 	   (_var 

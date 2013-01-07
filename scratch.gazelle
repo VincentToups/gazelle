@@ -1,3 +1,7 @@
+(match ({} x 10 y 11)
+	   (({} x 10 y a)
+		   a))
+
 (define (product 
 		 [
 		  (([:] acc)
@@ -20,3 +24,14 @@
 
 (define simple 
   (lambda (x) (_+ "what!? " x)))
+
+(define (Test-Object name)
+  (set! this.name name)
+  (set! this.introduce-self 
+		(lambda 
+		  [((:politely)
+			(_+ "Hello sir or madame, I'm " this.name))
+		   ((:informally)
+			(_+ "Sup bro, I am " this.name))])))
+
+
