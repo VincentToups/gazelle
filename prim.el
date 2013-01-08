@@ -9,6 +9,8 @@ manglings.  Additionally, dashed ids are replaced by camel case."
   (let* ((s (if (symbolp s) (symbol-name s) s))
 		 (s1 (replace-regexp-in-string
 			  (regexp-quote "->") "-to-" s))
+		 (s1 (replace-regexp-in-string
+			  (regexp-quote "===") "-triple-equal-" s1))
 		 (s1 (replace-regexp-in-string "-\\([a-z]\\)" 
 									   (lambda (x)
 										 (upcase (substring x 1))) 
@@ -151,6 +153,13 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 (defun-match prim:transcode ('_undefined)
   (prim:insert "undefined"))
 
+(defun-match prim:transcode ('_break)
+  (prim:insert "break"))
+
+(defun-match prim:transcode ('_continue)
+  (prim:insert "continue"))
+
+
 (defun-match prim:transcode ((non-kw-symbol s))
   (prim:insert (prim:mangle s)))
 
@@ -254,6 +263,62 @@ manglings.  Additionally, dashed ids are replaced by camel case."
   var q = \"q\";
   }"))
 
+(defun-match- prim:split-at-_case (nil acc)
+  (list (reverse acc) nil))
+(defun-match prim:split-at-_case ((list (and which (or '_default '_case)) (tail rest)) acc)
+  (list (reverse acc) (cons which rest)))
+(defun-match prim:split-at-_case ((list other-expr (tail rest)) acc)
+  (recur rest (cons other-expr acc)))
+(defun-match prim:split-at-_case (o)
+  (recur o nil))
+
+(defun-match- prim:remove-one-case-statement ((list (and which 
+														 (or '_default '_case)) (tail rest)))
+  (match (prim:split-at-_case rest)
+		 ((list case1 rest)
+		  (list `(,which ,@case1) rest))))
+
+(defun-match- prim:split-switch-body (nil acc)
+  (reverse acc))
+(defun-match prim:split-switch-body (body acc)
+  (match (prim:remove-one-case-statement body)
+		 ((list case-statement rest)
+		  (recur rest (cons case-statement acc)))))
+(defun-match prim:split-switch-body (body)
+  (recur body nil))
+
+(defun-match- prim:transcode-case-statement ((list '_case
+												   value
+												   (tail body)))
+  (prim:insert "case ")
+  (prim:transcode value)
+  (prim:insert ":")
+  (prim:newline)
+  (prim:transcode-newline-sequence body))
+
+(defun-match prim:transcode-case-statement ((list '_default
+												   (tail body)))
+  (prim:insert "default ")
+  (prim:insert ":")
+  (prim:newline)
+  (prim:transcode-newline-sequence body))
+
+
+(defun-match- prim:transcode-tail-of-switch ((list (tail body)))
+  (let ((statements (prim:split-switch-body body)))
+	(loop for statement in statements do
+		  (prim:transcode-case-statement statement))))
+
+(defun-match prim:transcode ((list '_switch vexpr (tail tail-of-switch)))
+  (prim:insert "switch ")
+  (prim:transcode-in-parens vexpr)
+  (prim:insert "{")
+  (prim:newline)
+  (prim:with-tab+ 
+   (prim:transcode-tail-of-switch tail-of-switch))
+  (prim:newline)
+  (prim:insert "}"))
+
 (defun-match prim:transcode ((list '_? cond true-branch false-branch))
   (prim:in-parens 
    (prim:in-parens 
@@ -346,15 +411,15 @@ manglings.  Additionally, dashed ids are replaced by camel case."
   (prim:in-parens 
    (prim:transcode expr)))
 
-(defun-match prim:transcode ((list '_break expr))
-  (prim:insert "break ")
-  (prim:in-parens 
-   (prim:transcode expr)))
+;; (defun-match prim:transcode ((list '_break expr))
+;;   (prim:insert "break ")
+;;   (prim:in-parens 
+;;    (prim:transcode expr)))
 
-(defun-match prim:transcode ((list '_continue expr))
-  (prim:insert "continue ")
-  (prim:in-parens 
-   (prim:transcode expr)))
+;; (defun-match prim:transcode ((list '_continue expr))
+;;   (prim:insert "continue ")
+;;   (prim:in-parens 
+;;    (prim:transcode expr)))
 
 (defun-match prim:transcode ((list '_instanceof object-expr cons-expr))
   (prim:in-parens
@@ -593,7 +658,7 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 (defun-match- prim:group-by-2 (nil acc)
   (reverse acc))
 (defun-match prim:group-by-2 ((list a) acc)
-  (error "Odd number of elements in prim:group-by-tow."))
+  (error "Odd number of elements in prim:group-by-two."))
 (defun-match prim:group-by-2 ((list a b (tail rest)) acc)
   (recur rest (cons (list a b) acc)))
 (defun-match prim:group-by-2 ((list-rest lst))

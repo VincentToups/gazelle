@@ -34,11 +34,17 @@
  (define-external-binops 
    < <= > >= & | == === % ^ << >> >>>)
 
- (define-macro+ && (a b)
-   `(_&& ,a ,b))
+ (define-macro+ && 
+   [((a b)
+	 `(_&& ,a ,b))
+	((a (tail rest))
+	 `(_&& ,a (&& ,@rest)))])
 
- (define-macro+ || (a b)
-   `(_|| ,a ,b))
+ (define-macro+ ||
+   [((a b)
+	 `(_&& ,a ,b))
+	((a (tail rest))
+	 `(_&& ,a (|| ,@rest)))])
 
  (define+ (! o)
    (_! o))

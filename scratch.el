@@ -14,3 +14,20 @@
 (defmacro* dont-do (&body body)
   nil)
 
+(eval-when (load compile eval) 
+  (define-derived-mode gazelle-mode
+	emacs-lisp-mode "Gazelle"
+	"Major mode for Gazelle."
+	(setq case-fold-search nil))
+
+  
+
+  (push '("\\.gazelle" . (lambda () 
+						   (gazelle-mode)
+						   (define-key gazelle-mode-map 
+							 "\C-c\C-k" 'gz:transcode-this-file))) 
+		auto-mode-alist))
+
+(defun scratch:tc (e)
+  (prim:transcode 
+   (proper:to-prim e)))

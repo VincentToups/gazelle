@@ -1,150 +1,150 @@
 define([], (function ()  {
-  var currentModuleminus334531 = {    
+  var currentModuleminus30300 = {    
     
   };
   var setModuleObject = (function (value)    {
-    currentModuleminus334531 = value;
+    currentModuleminus30300 = value;
     });
   ((function ()    {
     var defineplus = "macro - no dynamic value.";
     var defineMacroplus = "macro - no dynamic value.";
-    currentModuleminus334531.append = (function ()      {
+    currentModuleminus30300.append = (function ()      {
       return Array.prototype.concat.apply([], Array.prototype.slice.apply(arguments));
       });
-    currentModuleminus334531.filter = (function ()      {
-      var returnValueminus334586 = undefined;
+    currentModuleminus30300.filter = (function ()      {
+      var returnValueminus30355 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigilminus334585",
+          recurSigil:"recurSigilminus30354",
           args:arguments
         };
         });
-      var recurP334589 = (function (valminus334590)        {
-        if ((("undefined")===((typeof valminus334590))))          {
+      var recurP30358 = (function (valminus30359)        {
+        if ((("undefined")===((typeof valminus30359))))          {
           return false;
           };
-        return (valminus334590.recurSigil===("recurSigilminus334585"));
+        return (valminus30359.recurSigil===("recurSigilminus30354"));
         });
-      var actualFunminus334588 = (function ()        {
+      var actualFunminus30357 = (function ()        {
         return (function (arguments)          {
-          var G334592 = undefined;
-          var G334593 = Array.prototype.slice.apply(arguments);
-          G334592 = (function (arguments)            {
-            var matchValminus334594 = G334593;
-            if ((!((3===matchValminus334594.length))))              {
+          var G30361 = undefined;
+          var G30362 = Array.prototype.slice.apply(arguments);
+          G30361 = (function (arguments)            {
+            var matchValminus30363 = G30362;
+            if ((!((3===matchValminus30363.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchTempminus334595 = matchValminus334594[0];
-            var matchTempminus334596 = matchValminus334594[1];
-            var matchTempminus334597 = matchValminus334594[2];
-            var fun = matchTempminus334595;
-            if ((!((0===matchTempminus334596.length))))              {
+            var matchTempminus30364 = matchValminus30363[0];
+            var matchTempminus30365 = matchValminus30363[1];
+            var matchTempminus30366 = matchValminus30363[2];
+            var fun = matchTempminus30364;
+            if ((!((0===matchTempminus30365.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var acc = matchTempminus334597;
+            var acc = matchTempminus30366;
             return acc;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G334592))))            {
-            return G334592;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30361))))            {
+            return G30361;
             };
-          G334592 = (function (arguments)            {
-            var matchValminus334598 = G334593;
-            if ((!((3===matchValminus334598.length))))              {
+          G30361 = (function (arguments)            {
+            var matchValminus30367 = G30362;
+            if ((!((3===matchValminus30367.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchTempminus334599 = matchValminus334598[0];
-            var matchTempminus334600 = matchValminus334598[1];
-            var matchTempminus334601 = matchValminus334598[2];
-            var fun = matchTempminus334599;
-            if ((!((matchTempminus334600.length>=1))))              {
+            var matchTempminus30368 = matchValminus30367[0];
+            var matchTempminus30369 = matchValminus30367[1];
+            var matchTempminus30370 = matchValminus30367[2];
+            var fun = matchTempminus30368;
+            if ((!((matchTempminus30369.length>=1))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePartminus334602 = Array.prototype.slice.call(matchTempminus334600, 0, 1);
-            if ((!((1===matchArraySimplePartminus334602.length))))              {
+            var matchArraySimplePartminus30371 = Array.prototype.slice.call(matchTempminus30369, 0, 1);
+            if ((!((1===matchArraySimplePartminus30371.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var hd = matchArraySimplePartminus334602[0];
-            var matchArrayTailPartminus334603 = Array.prototype.slice.call(matchTempminus334600, 1);
-            var tl = matchArrayTailPartminus334603;
-            var acc = matchTempminus334601;
+            var hd = matchArraySimplePartminus30371[0];
+            var matchArrayTailPartminus30372 = Array.prototype.slice.call(matchTempminus30369, 1);
+            var tl = matchArrayTailPartminus30372;
+            var acc = matchTempminus30370;
             return ((fun(hd))?(recur(fun, tl, acc.concat([hd]))) : (recur(fun, tl, acc)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G334592))))            {
-            return G334592;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30361))))            {
+            return G30361;
             };
-          G334592 = (function (arguments)            {
-            var matchValminus334604 = G334593;
-            var anythingElseminus334591 = matchValminus334604;
-            throw ((("Match fail in hooves/lisp-idioms-filter against: ")+anythingElseminus334591));
+          G30361 = (function (arguments)            {
+            var matchValminus30373 = G30362;
+            var anythingElseminus30360 = matchValminus30373;
+            throw ((("Match fail in hooves/lisp-idioms-filter against: ")+anythingElseminus30360));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G334592))))            {
-            return G334592;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30361))))            {
+            return G30361;
             };
-          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ((array fun [:] acc) acc) ((array fun [: hd (tail tl)] acc) (if (fun hd) (recur fun tl (\.\. acc (concat [: hd]))) (recur fun tl acc))) (anything-else-334591 (_throw (_+ ''Match fail in hooves/lisp-idioms-filter against: '' anything-else-334591))))) for value ")+G334593));
+          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ((array fun [:] acc) acc) ((array fun [: hd (tail tl)] acc) (if (fun hd) (recur fun tl (\.\. acc (concat [: hd]))) (recur fun tl acc))) (anything-else-30360 (_throw (_+ ''Match fail in hooves/lisp-idioms-filter against: '' anything-else-30360))))) for value ")+G30362));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValueminus334586 = actualFunminus334588.apply(this, arguments);
-      while (recurP334589(returnValueminus334586))        {
-        returnValueminus334586 = actualFunminus334588.apply(this, returnValueminus334586.args);
+      returnValueminus30355 = actualFunminus30357.apply(this, arguments);
+      while (recurP30358(returnValueminus30355))        {
+        returnValueminus30355 = actualFunminus30357.apply(this, returnValueminus30355.args);
         };
-      return returnValueminus334586;
+      return returnValueminus30355;
       });
-    currentModuleminus334531.apply = (function (f, anArray)      {
+    currentModuleminus30300.apply = (function (f, anArray)      {
       return f.apply(undefined, anArray);
       });
-    currentModuleminus334531.funcall = (function ()      {
-      var returnValueminus334650 = undefined;
+    currentModuleminus30300.funcall = (function ()      {
+      var returnValueminus30419 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigilminus334649",
+          recurSigil:"recurSigilminus30418",
           args:arguments
         };
         });
-      var recurP334653 = (function (valminus334654)        {
-        if ((("undefined")===((typeof valminus334654))))          {
+      var recurP30422 = (function (valminus30423)        {
+        if ((("undefined")===((typeof valminus30423))))          {
           return false;
           };
-        return (valminus334654.recurSigil===("recurSigilminus334649"));
+        return (valminus30423.recurSigil===("recurSigilminus30418"));
         });
-      var actualFunminus334652 = (function ()        {
+      var actualFunminus30421 = (function ()        {
         return (function (arguments)          {
-          var G334656 = undefined;
-          var G334657 = Array.prototype.slice.apply(arguments);
-          G334656 = (function (arguments)            {
-            var matchValminus334658 = G334657;
-            if ((!((matchValminus334658.length>=1))))              {
+          var G30425 = undefined;
+          var G30426 = Array.prototype.slice.apply(arguments);
+          G30425 = (function (arguments)            {
+            var matchValminus30427 = G30426;
+            if ((!((matchValminus30427.length>=1))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePartminus334659 = Array.prototype.slice.call(matchValminus334658, 0, 1);
-            if ((!((1===matchArraySimplePartminus334659.length))))              {
+            var matchArraySimplePartminus30428 = Array.prototype.slice.call(matchValminus30427, 0, 1);
+            if ((!((1===matchArraySimplePartminus30428.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var f = matchArraySimplePartminus334659[0];
-            var matchArrayTailPartminus334660 = Array.prototype.slice.call(matchValminus334658, 1);
-            var args = matchArrayTailPartminus334660;
-            return currentModuleminus334531.apply(f, args);
+            var f = matchArraySimplePartminus30428[0];
+            var matchArrayTailPartminus30429 = Array.prototype.slice.call(matchValminus30427, 1);
+            var args = matchArrayTailPartminus30429;
+            return currentModuleminus30300.apply(f, args);
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G334656))))            {
-            return G334656;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30425))))            {
+            return G30425;
             };
-          G334656 = (function (arguments)            {
-            var matchValminus334661 = G334657;
-            var anythingElseminus334655 = matchValminus334661;
-            throw ((("Match fail in hooves/lisp-idioms-funcall against: ")+anythingElseminus334655));
+          G30425 = (function (arguments)            {
+            var matchValminus30430 = G30426;
+            var anythingElseminus30424 = matchValminus30430;
+            throw ((("Match fail in hooves/lisp-idioms-funcall against: ")+anythingElseminus30424));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G334656))))            {
-            return G334656;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30425))))            {
+            return G30425;
             };
-          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ((array f (tail args)) (apply f args)) (anything-else-334655 (_throw (_+ ''Match fail in hooves/lisp-idioms-funcall against: '' anything-else-334655))))) for value ")+G334657));
+          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ((array f (tail args)) (apply f args)) (anything-else-30424 (_throw (_+ ''Match fail in hooves/lisp-idioms-funcall against: '' anything-else-30424))))) for value ")+G30426));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValueminus334650 = actualFunminus334652.apply(this, arguments);
-      while (recurP334653(returnValueminus334650))        {
-        returnValueminus334650 = actualFunminus334652.apply(this, returnValueminus334650.args);
+      returnValueminus30419 = actualFunminus30421.apply(this, arguments);
+      while (recurP30422(returnValueminus30419))        {
+        returnValueminus30419 = actualFunminus30421.apply(this, returnValueminus30419.args);
         };
-      return returnValueminus334650;
+      return returnValueminus30419;
       });
     var let = "macro - no dynamic value.";
     }))();
-  return currentModuleminus334531;
+  return currentModuleminus30300;
   }))

@@ -94,6 +94,13 @@
 (defun-match proper:to-prim ((or '_null 'null))
   '_null)
 
+(defun-match proper:to-prim ((or '_break 'break))
+  '_break)
+
+(defun-match proper:to-prim ((or '_continue 'continue))
+  '_continue)
+
+
 (defun-match proper:to-prim ((or '_{} '{}))
   '_{})
 
@@ -142,6 +149,14 @@
 	   ,(proper:to-prim texpr)
 	   _undefined))
 
+(defun-match proper:to-prim ((list (or '_switch 'switch) v-expr (tail body)))
+  `(_switch ,(proper:to-prim v-expr)
+			,@(loop for el in body collect
+					(match el 
+						   ((or 'case '_case) '_case)
+						   ((or 'default '_default) '_default)
+						   (anything-else (proper:to-prim anything-else))))))
+
 (defun-match proper:to-prim ((list (or '_function 'function) 
 								   (prim:argument-list args) (tail body)))
   `(_function ,(mapcar #'proper:to-prim args)
@@ -174,11 +189,11 @@
 (defun-match proper:to-prim ((list '_throw expr))
   `(_throw ,(proper:to-prim expr)))
 
-(defun-match proper:to-prim ((list '_break expr))
-  `(_break ,(proper:to-prim expr)))
+;; (defun-match proper:to-prim ((list '_break expr))
+;;   `(_break ,(proper:to-prim expr)))
 
-(defun-match proper:to-prim ((list '_continue expr))
-  `(_continue ,(proper:to-prim expr)))
+;; (defun-match proper:to-prim ((list '_continue expr))
+;;   `(_continue ,(proper:to-prim expr)))
 
 (defun-match proper:to-prim ((list '_instanceof oe ce))
   `(_instanceof ,(proper:to-prim oe) ,(proper:to-prim ce)))
@@ -207,7 +222,7 @@
 										  ,(proper:map-to-prim catch-body)))))
 
 (defun-match proper:tail-of-try-to-prim ((list (or :finally 'finally '_finally)
-													(list-rest finally-body))
+											   (list-rest finally-body))
 										 acc)
   (append acc `(_finally ,(proper:map-to-prim finally-body))))
 
@@ -532,7 +547,7 @@
 	(and (symbolp o)
 		 (not (keywordp o))))
   (defpattern proper:{}-tail (&optional (symbols (gensym))
-									   (patterns (gensym)))
+										(patterns (gensym)))
 	`(maybe-funcall 
 	  (lambda (value)
 		(if (listp value)
@@ -543,8 +558,8 @@
 				  (if (proper:all-satisfy #'proper:non-kw-symbol evens)
 					  (list evens odds)
 					*match-fail*)
-			  *match-fail*))
-		*match-fail*))
+				*match-fail*))
+		  *match-fail*))
 	  (list ,symbols ,patterns))))
 
 (eval-when (load compile eval) 
@@ -570,7 +585,10 @@
 			(proper:all-satisfy #'proper:proper-list-p ,arg))
 		  ,pattern))))
 
+;;; Pattern Matcher
+
 (defvar proper:match-fail-val "match-fail-e1aa3b7e7ce9731266013c178de842b5")
+(defvar proper:signal-match-fail `(_return ,proper:match-fail-val))
 
 (eval-when (load compile eval)
   (defpattern proper:atom (&optional (pattern (gensym)))
@@ -586,16 +604,68 @@
 (defun-match proper:expand-match1-body ((proper:atom a) val body acc)
   (append acc 
 		  `((_if (_! (_=== ,a ,val))
-				 ((_return ,proper:match-fail-val)))
+				 (,proper:signal-match-fail))
 			,@body)))
 
-(defun-match proper:expand-match1-body ([: (tail 
+(defun-match proper:expand-match1-body ((list 'p fun-expr) val body acc)
+  (let ((fun (gensym "match-fun-expr-"))) 
+	(append acc 
+ 			`((_var ,fun ,fun-expr)
+			  (_if (_! (,fun ,val))
+				   (,proper:signal-match-fail))
+			  ,@body))))
+
+(defun-match proper:expand-match1-body ((list 'p fun-expr pattern) val body acc)
+  (let* ((fun (gensym "match-fun-expr-"))
+		 (acc (append acc 
+					  `((_var ,fun ,fun-expr)
+						(_if (_! (,fun ,val))
+							 (,proper:signal-match-fail))))))
+	(recur pattern val body acc)))
+
+
+
+(defun-match proper:expand-match1-body ((list 'or (tail sub-patterns)) val body acc)
+  (let* ((previous-match-succeeded (gensym "previous-match-succeeded-"))
+		 (acc (append acc `((_var ,previous-match-succeeded _true))))
+		 (switch-statement `(_switch 1)))
+	(loop for pat in sub-patterns do
+		  (let ((sub-body 
+				 `(_case 1 
+						 ,@(let ((proper:signal-match-fail `(_= ,previous-match-succeeded _false))) 
+							  (proper:expand-match1-body 
+							   pat 
+							   val 
+							   `((_if ,previous-match-succeeded (_break))
+								 (_= ,previous-match-succeeded _true)) nil)))))
+			(setq switch-statement (append switch-statement sub-body))))
+	(setq switch-statement
+		  (append switch-statement `(_default ,proper:signal-match-fail)))
+	(append acc `(,switch-statement
+				  ,@body))))
+
+(defun-match proper:expand-match1-body ((list 'and (tail sub-patterns)) val body acc)
+  (append acc 
+		  (loop for pat in sub-patterns append 
+				(proper:expand-match1-body pat val nil nil))
+		  body))
+
+(defun-match proper:expand-match1-body ((list 'let (tail bindings)) val body acc)
+  (append acc 
+		  (loop for binding in bindings collect 
+				(match binding 
+					   ((list (non-kw-symbol s)
+							  expr)
+						`(_var ,s ,expr))))
+		  body))
+
+(defun-match proper:expand-match1-body ([(or : '_:) (tail 
 											(proper:list-of-ids ids))]
 										val body acc)
   (let ((n (length ids))) 
 	(append acc
 			`((_if (_! (_=== ,n (_. ,val length)))
-				   ((_return ,proper:match-fail-val)))
+				   (,proper:signal-match-fail))
 			  ,@(loop for id in ids and index from 0 collect
 					  `(_var ,id [,val ,index]))
 			  ,@body))))
@@ -614,14 +684,14 @@
 										val body acc)
   (let ((acc (append acc
 					 `((_if (_=== "undefined" (_typeof ,val))
-							((_return ,proper:match-fail-val)))))))
+							(,proper:signal-match-fail))))))
 	(proper:expand-match1-body sub-pattern val body acc)))
 
 (defun-match proper:expand-match1-body ((list 'undefined sub-pattern)
 										val body acc)
   (let ((acc (append acc
 					 `((_if (_! (_=== "undefined" (_typeof ,val)))
-							((_return ,proper:match-fail-val)))))))
+							(,proper:signal-match-fail))))))
 	(proper:expand-match1-body sub-pattern val body acc)))
 
 (defun-match proper:expand-match1-body ((list 'quote expr)
@@ -641,7 +711,7 @@
 		   (acc (append acc 
 						`((_if (_! (_=== ,(length patterns)
 										 (_. ,val length)))
-							   ((_return ,proper:match-fail-val)))
+							   (,proper:signal-match-fail))
 						  ,@(loop for temp in match-temps
 								  and i from 0 
 								  collect
@@ -659,8 +729,43 @@
 		 (simple-part-name (gensym "match-array-simple-part-"))
 		 (acc (append acc 
 					  `((_if (_! (_>= (_. ,val length) ,n-normal))
-							 ((_return ,proper:match-fail-val)))
+							 (,proper:signal-match-fail))
 						(_var ,simple-part-name (Array.prototype.slice.call ,val 0 ,n-normal)))))
+		 (acc (proper:expand-match1-body `[: ,@normal-patterns] simple-part-name nil
+										 acc))
+		 (tail-name (gensym "match-array-tail-part-"))
+		 (acc (append acc 
+					  `((_var ,tail-name (Array.prototype.slice.call ,val ,n-normal)))))
+		 (acc (proper:expand-match1-body tail-pattern tail-name body acc)))
+	  acc))))
+
+(defun-match proper:expand-match1-body ((or [:- (tail patterns)]
+											(list 'array (tail patterns)))
+										val body acc)
+  (cond 
+   ((not (proper:patterns-with-tail? patterns))
+	(let* ((match-temps
+			(mapcar (lambda (x)
+					  (gensym "match-temp-"))
+					patterns))
+		   (acc (append acc 
+						`(,@(loop for temp in match-temps
+								  and i from 0 
+								  collect
+								  `(_var ,temp [,val ,i]))))))
+	  (loop for pattern in patterns and
+			temp in match-temps do
+			(setq acc 
+				  (proper:expand-match1-body pattern temp () acc)))
+	  (append acc body)))
+   ((proper:patterns-with-tail? patterns)
+	(let*
+		((normal-patterns (proper:all-but-last patterns))
+		 (n-normal (length normal-patterns))
+		 (tail-pattern (cadr (car (last patterns))))
+		 (simple-part-name (gensym "match-array-simple-part-"))
+		 (acc (append acc 
+					  `((_var ,simple-part-name (Array.prototype.slice.call ,val 0 ,n-normal)))))
 		 (acc (proper:expand-match1-body `[: ,@normal-patterns] simple-part-name nil
 										 acc))
 		 (tail-name (gensym "match-array-tail-part-"))
@@ -679,7 +784,7 @@
 			`(,@(loop for s in symbols and p in patterns append 
 					  `((_var ,p (_. ,val s))
 						(_if (_=== "undefined" (_typeof ,p))
-							 ((_return ,proper:match-fail-val)))))
+							 (,proper:signal-match-fail))))
 			  ,@body)))
    (:otherwise 
 	(let ((temps (mapcar (lambda (x) 
@@ -692,11 +797,36 @@
 			(let ((new-acc (append acc
 								   `((_var ,temp (_. ,val ,symbol))
 									 (_if (_=== "undefined" (_typeof ,temp))
-										  ((_return ,proper:match-fail-val)))))))
+										  (,proper:signal-match-fail))))))
 			  (setq acc 
 					(proper:expand-match1-body pattern temp nil new-acc))))
 	  (append acc body)))))
 
+(defun-match proper:expand-match1-body ((list (or '{}- '_{}-)
+											  (tail (! (proper:{}-tail symbols patterns))))
+										val body acc)
+  (cond 
+   ((proper:all-satisfy #'proper:non-kw-symbol patterns)
+	;;simple case
+	(append acc 
+			`(,@(loop for s in symbols and p in patterns append 
+					  `((_var ,p (_. ,val s))
+						(_if (_=== "undefined" (_typeof ,p))
+							 (,proper:signal-match-fail))))
+			  ,@body)))
+   (:otherwise 
+	(let ((temps (mapcar (lambda (x) 
+						   (gensym "match-object-temp-"))
+						 patterns)))
+	  (loop for 
+			symbol in symbols and
+			temp in temps and
+			pattern in patterns do
+			(let ((new-acc (append acc
+								   `((_var ,temp (_. ,val ,symbol))))))
+			  (setq acc 
+					(proper:expand-match1-body pattern temp nil new-acc))))
+	  (append acc body)))))
 
 (defun-match proper:expand-match1-body (pattern val-expr body)
   (let ((val (gensym "match-val-"))) 
@@ -707,7 +837,8 @@
 (proper:define-macro 
  match1 
  (pattern value-expr (tail body))
- (proper:expand-match1-body pattern value-expr body))
+ (let ((proper:signal-match-fail `(_return ,proper:match-fail-val))) 
+   (proper:expand-match1-body pattern value-expr body)))
 
 
 (proper:define-macro 
@@ -1395,10 +1526,10 @@
 												   " by (define symbol expr) or (define"
 												   " (name arg-pattern ...) body0 ...)," 
 												   " got %S") `(define+ ,@parts)))))
-						  (define-macro define-macro+ (name (list-rest patterns) (tail body))
+						  (define-macro define-macro+ (name (tail rest))
 							(setf (gethash name proper:*module-manifest*)
 								  '((:type . :macro)))
-							`(define-macro ,name ,patterns ,@body))
+							`(define-macro ,name ,@rest))
 						  ,@(loop for spec in specs collect
 								  `(_proper:require-spec ,@spec))
 						  ,@body)
