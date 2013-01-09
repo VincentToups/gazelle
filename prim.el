@@ -11,6 +11,8 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 			  (regexp-quote "->") "-to-" s))
 		 (s1 (replace-regexp-in-string
 			  (regexp-quote "===") "-triple-equal-" s1))
+		 (s1 (replace-regexp-in-string
+			  (regexp-quote "{}") "-braces-" s1))
 		 (s1 (replace-regexp-in-string "-\\([a-z]\\)" 
 									   (lambda (x)
 										 (upcase (substring x 1))) 
@@ -21,7 +23,7 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 	(replace-regexp-in-string 
 	 (rx 
 	  (| "|" "~" "+" "-" "*" "%" "$" "&" "^" "!" ":" "/" "\\" "#" "@" "?" "="
-		 "<" ">"))
+		 "<" ">" "{" "}"))
 	 (match-lambda
 	  ("|" "pipe")
 	  ("+" "plus")
@@ -41,7 +43,9 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 	  ("\\" "mdivide")
 	  ("#" "hash")
 	  ("~" "tilda")
-	  ("@" "at"))
+	  ("@" "at")
+	  ("{" "openBrace")
+	  ("}" "closeBrace"))
 	 s1)))
 
 (defmacro* prim:in-parens (&body body)

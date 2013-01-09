@@ -1,21 +1,32 @@
 (module 
  ()
+
+ (define+ (map fun an-array)
+   (var output [:])
+   (for (i :in an-array)
+		(output.push (fun [an-array i])))
+   output)
+
  (define+ (append)
    (.. Array prototype concat 
 	   (apply [:] 
 			  (.. Array prototype slice (apply arguments)))))
+
  (define+ (filter [
-				   ((fun [:] acc)
+				   ((fun [:] (defined acc))
 					acc)
-				   ((fun [: hd (tail tl)] acc)
+				   ((fun [: hd (tail tl)] (defined acc))
 					(if (fun hd)
 						(recur fun tl (.. acc (concat [: hd])))
 					  (recur fun tl acc)))
 				   ]))
+
  (define+ (apply f an-array)
    (.. f (apply undefined an-array)))
+
  (define+ (funcall f (tail args))
    (apply f args))
+
  (define-macro+ let
    ((list (tail binders)) (tail body))
    `(match [: ,@(mapcar #'cadr binders)]

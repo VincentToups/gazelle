@@ -1,0 +1,20 @@
+(module 
+ ()
+ (define+ (defined? x)
+   (_! (_=== (_typeof x) "undefined")))
+ (define+ (undefined? x)
+   (_=== (_typeof x) "undefined"))
+ (define+ (number? o)
+   (_=== (_typeof o) "number"))
+ (define+ (string? o)
+   (_=== (_typeof o) "string"))
+ (define+ (array? o)
+   (_instanceof o Array))
+ (define+ (empty? o)
+   (_=== 0 (.. o length)))
+ (define-macro+ collect{} ((tail ids))
+   `(_{} ,@(loop for id in ids append (list id id))))
+ (define-macro+ @ ((tail ids))
+   `(_. this ,@ids)))
+
+

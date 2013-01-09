@@ -1,3 +1,7 @@
+(match [: 1 2]
+	   ([: a b :- c d]
+		c))
+
 (match ({} x 10 y 11)
 	   (({}- z (or (defined a)
 				   (let (a 10))))
@@ -9,9 +13,9 @@
 
 (define (product 
 		 [
-		  (([:] acc)
+		  (([:] (defined acc))
 		   acc)
-		  (([: hd (tail tl)] acc)
+		  (([: hd (tail tl)] (defined acc))
 		   (recur tl (_* acc hd)))
 		  ((object)
 		   (recur object 1))
@@ -39,13 +43,20 @@
 		   ((:informally)
 			(_+ "Sup bro, I am " this.name))])))
 
-(define (test-optionals
-		 ({}- optional1 (or (defined optional1)
-							(let (optional1 "Dogman")))
-			  optional2 (or (defined optional2)
-							(let (optional2 "Ok")))))
+(define (test-optionals :-
+						({}- optional1 (or (defined optional1)
+										   (let (optional1 "Dogman")))
+							 optional2 (or (defined optional2)
+										   (let (optional2 "Ok")))))
   [: optional1 optional2])
 
-(define (test-array-optionals a b (tail [:- (or (defined x)
-												(let (x 1000)))]))
+(define (test-optionals2 :-
+						 (options{} 
+						  (optional1 "Dogman")
+						  (optional2 "Ok")))
+  [: optional1 optional2])
+
+(define (test-array-optionals a b :- (defined-or x 10))
   x)
+
+
