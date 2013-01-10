@@ -34,7 +34,8 @@
 
 (defun* gz:transcode-this-file ()
   (interactive)
-  (let ((filename (buffer-file-name (current-buffer))))
+  (let ((filename (buffer-file-name (current-buffer)))
+		(proper:short-term-checked-modules (make-hash-table :test 'equal)))
 	(gz:transcode-file filename)))
 
 

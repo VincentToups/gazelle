@@ -1,163 +1,163 @@
 define([], (function ()  {
-  var currentModuleminus43898 = {    
+  var currentModuleminus99276 = {    
     
   };
   var setModuleObject = (function (value)    {
-    currentModuleminus43898 = value;
+    currentModuleminus99276 = value;
     });
   ((function ()    {
     var defineplus = "macro - no dynamic value.";
     var defineMacroplus = "macro - no dynamic value.";
-    currentModuleminus43898.map = (function (fun, anArray)      {
+    currentModuleminus99276.map = (function (fun, anArray)      {
       var output = [];
       for (i in (anArray))        {
         output.push(fun(anArray[i]));
         };
       return output;
       });
-    currentModuleminus43898.append = (function ()      {
+    currentModuleminus99276.append = (function ()      {
       return Array.prototype.concat.apply([], Array.prototype.slice.apply(arguments));
       });
-    currentModuleminus43898.filter = (function ()      {
-      var returnValueminus43975 = undefined;
+    currentModuleminus99276.filter = (function ()      {
+      var returnValueminus99353 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigilminus43974",
+          recurSigil:"recurSigilminus99352",
           args:arguments
         };
         });
-      var recurP43978 = (function (valminus43979)        {
-        if ((("undefined")===((typeof valminus43979))))          {
+      var recurP99356 = (function (valminus99357)        {
+        if ((("undefined")===((typeof valminus99357))))          {
           return false;
           };
-        return (valminus43979.recurSigil===("recurSigilminus43974"));
+        return (valminus99357.recurSigil===("recurSigilminus99352"));
         });
-      var actualFunminus43977 = (function ()        {
+      var actualFunminus99355 = (function ()        {
         return (function (arguments)          {
-          var G43981 = undefined;
-          var G43982 = Array.prototype.slice.apply(arguments);
-          G43981 = (function (arguments)            {
-            var matchValminus43983 = G43982;
-            if ((!((3===matchValminus43983.length))))              {
+          var G99359 = undefined;
+          var G99360 = Array.prototype.slice.apply(arguments);
+          G99359 = (function (arguments)            {
+            var matchValminus99361 = G99360;
+            if ((!((3===matchValminus99361.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchTempminus43984 = matchValminus43983[0];
-            var matchTempminus43985 = matchValminus43983[1];
-            var matchTempminus43986 = matchValminus43983[2];
-            var fun = matchTempminus43984;
-            if ((!((0===matchTempminus43985.length))))              {
+            var matchTempminus99362 = matchValminus99361[0];
+            var matchTempminus99363 = matchValminus99361[1];
+            var matchTempminus99364 = matchValminus99361[2];
+            var fun = matchTempminus99362;
+            if ((!((0===matchTempminus99363.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((("undefined")===((typeof matchTempminus43986))))              {
+            if ((("undefined")===((typeof matchTempminus99364))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var acc = matchTempminus43986;
+            var acc = matchTempminus99364;
             return acc;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G43981))))            {
-            return G43981;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G99359))))            {
+            return G99359;
             };
-          G43981 = (function (arguments)            {
-            var matchValminus43987 = G43982;
-            if ((!((3===matchValminus43987.length))))              {
+          G99359 = (function (arguments)            {
+            var matchValminus99365 = G99360;
+            if ((!((3===matchValminus99365.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchTempminus43988 = matchValminus43987[0];
-            var matchTempminus43989 = matchValminus43987[1];
-            var matchTempminus43990 = matchValminus43987[2];
-            var fun = matchTempminus43988;
-            if ((!((matchTempminus43989.length>=1))))              {
+            var matchTempminus99366 = matchValminus99365[0];
+            var matchTempminus99367 = matchValminus99365[1];
+            var matchTempminus99368 = matchValminus99365[2];
+            var fun = matchTempminus99366;
+            if ((!((matchTempminus99367.length>=1))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePartminus43991 = Array.prototype.slice.call(matchTempminus43989, 0, 1);
-            if ((!((1===matchArraySimplePartminus43991.length))))              {
+            var matchArraySimplePartminus99369 = Array.prototype.slice.call(matchTempminus99367, 0, 1);
+            if ((!((1===matchArraySimplePartminus99369.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var hd = matchArraySimplePartminus43991[0];
-            var matchArrayTailPartminus43992 = Array.prototype.slice.call(matchTempminus43989, 1);
-            var tl = matchArrayTailPartminus43992;
-            if ((("undefined")===((typeof matchTempminus43990))))              {
+            var hd = matchArraySimplePartminus99369[0];
+            var matchArrayTailPartminus99370 = Array.prototype.slice.call(matchTempminus99367, 1);
+            var tl = matchArrayTailPartminus99370;
+            if ((("undefined")===((typeof matchTempminus99368))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var acc = matchTempminus43990;
+            var acc = matchTempminus99368;
             return ((fun(hd))?(recur(fun, tl, acc.concat([hd]))) : (recur(fun, tl, acc)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G43981))))            {
-            return G43981;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G99359))))            {
+            return G99359;
             };
-          G43981 = (function (arguments)            {
-            var matchValminus43993 = G43982;
-            var anythingElseminus43980 = matchValminus43993;
-            throw ((("Match fail in hooves/lisp-idioms-filter against: ")+anythingElseminus43980));
+          G99359 = (function (arguments)            {
+            var matchValminus99371 = G99360;
+            var anythingElseminus99358 = matchValminus99371;
+            throw ((("Match fail in hooves/lisp-idioms-filter against: ")+anythingElseminus99358));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G43981))))            {
-            return G43981;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G99359))))            {
+            return G99359;
             };
-          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ([: fun [:] (defined acc)] acc) ([: fun [: hd (tail tl)] (defined acc)] (if (fun hd) (recur fun tl (\.\. acc (concat [: hd]))) (recur fun tl acc))) (anything-else-43980 (_throw (_+ ''Match fail in hooves/lisp-idioms-filter against: '' anything-else-43980))))) for value ")+(JSON.stringify(G43982))));
+          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ([: fun [:] (defined acc)] acc) ([: fun [: hd (tail tl)] (defined acc)] (if (fun hd) (recur fun tl (\.\. acc (concat [: hd]))) (recur fun tl acc))) (anything-else-99358 (_throw (_+ ''Match fail in hooves/lisp-idioms-filter against: '' anything-else-99358))))) for value ")+(JSON.stringify(G99360))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValueminus43975 = actualFunminus43977.apply(this, arguments);
-      while (recurP43978(returnValueminus43975))        {
-        returnValueminus43975 = actualFunminus43977.apply(this, returnValueminus43975.args);
+      returnValueminus99353 = actualFunminus99355.apply(this, arguments);
+      while (recurP99356(returnValueminus99353))        {
+        returnValueminus99353 = actualFunminus99355.apply(this, returnValueminus99353.args);
         };
-      return returnValueminus43975;
+      return returnValueminus99353;
       });
-    currentModuleminus43898.apply = (function (f, anArray)      {
+    currentModuleminus99276.apply = (function (f, anArray)      {
       return f.apply(undefined, anArray);
       });
-    currentModuleminus43898.funcall = (function ()      {
-      var returnValueminus44039 = undefined;
+    currentModuleminus99276.funcall = (function ()      {
+      var returnValueminus99417 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigilminus44038",
+          recurSigil:"recurSigilminus99416",
           args:arguments
         };
         });
-      var recurP44042 = (function (valminus44043)        {
-        if ((("undefined")===((typeof valminus44043))))          {
+      var recurP99420 = (function (valminus99421)        {
+        if ((("undefined")===((typeof valminus99421))))          {
           return false;
           };
-        return (valminus44043.recurSigil===("recurSigilminus44038"));
+        return (valminus99421.recurSigil===("recurSigilminus99416"));
         });
-      var actualFunminus44041 = (function ()        {
+      var actualFunminus99419 = (function ()        {
         return (function (arguments)          {
-          var G44045 = undefined;
-          var G44046 = Array.prototype.slice.apply(arguments);
-          G44045 = (function (arguments)            {
-            var matchValminus44047 = G44046;
-            if ((!((matchValminus44047.length>=1))))              {
+          var G99423 = undefined;
+          var G99424 = Array.prototype.slice.apply(arguments);
+          G99423 = (function (arguments)            {
+            var matchValminus99425 = G99424;
+            if ((!((matchValminus99425.length>=1))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePartminus44048 = Array.prototype.slice.call(matchValminus44047, 0, 1);
-            if ((!((1===matchArraySimplePartminus44048.length))))              {
+            var matchArraySimplePartminus99426 = Array.prototype.slice.call(matchValminus99425, 0, 1);
+            if ((!((1===matchArraySimplePartminus99426.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var f = matchArraySimplePartminus44048[0];
-            var matchArrayTailPartminus44049 = Array.prototype.slice.call(matchValminus44047, 1);
-            var args = matchArrayTailPartminus44049;
-            return currentModuleminus43898.apply(f, args);
+            var f = matchArraySimplePartminus99426[0];
+            var matchArrayTailPartminus99427 = Array.prototype.slice.call(matchValminus99425, 1);
+            var args = matchArrayTailPartminus99427;
+            return currentModuleminus99276.apply(f, args);
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G44045))))            {
-            return G44045;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G99423))))            {
+            return G99423;
             };
-          G44045 = (function (arguments)            {
-            var matchValminus44050 = G44046;
-            var anythingElseminus44044 = matchValminus44050;
-            throw ((("Match fail in hooves/lisp-idioms-funcall against: ")+anythingElseminus44044));
+          G99423 = (function (arguments)            {
+            var matchValminus99428 = G99424;
+            var anythingElseminus99422 = matchValminus99428;
+            throw ((("Match fail in hooves/lisp-idioms-funcall against: ")+anythingElseminus99422));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G44045))))            {
-            return G44045;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G99423))))            {
+            return G99423;
             };
-          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ([: f (tail args)] (apply f args)) (anything-else-44044 (_throw (_+ ''Match fail in hooves/lisp-idioms-funcall against: '' anything-else-44044))))) for value ")+(JSON.stringify(G44046))));
+          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ([: f (tail args)] (apply f args)) (anything-else-99422 (_throw (_+ ''Match fail in hooves/lisp-idioms-funcall against: '' anything-else-99422))))) for value ")+(JSON.stringify(G99424))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValueminus44039 = actualFunminus44041.apply(this, arguments);
-      while (recurP44042(returnValueminus44039))        {
-        returnValueminus44039 = actualFunminus44041.apply(this, returnValueminus44039.args);
+      returnValueminus99417 = actualFunminus99419.apply(this, arguments);
+      while (recurP99420(returnValueminus99417))        {
+        returnValueminus99417 = actualFunminus99419.apply(this, returnValueminus99417.args);
         };
-      return returnValueminus44039;
+      return returnValueminus99417;
       });
     var let = "macro - no dynamic value.";
     }))();
-  return currentModuleminus43898;
+  return currentModuleminus99276;
   }))

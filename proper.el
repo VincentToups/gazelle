@@ -1357,6 +1357,8 @@
 			   (req-specs (proper:module-module-specs-for-deps contents)))
 			  (proper:module-specs->locations req-specs)))
 
+(defvar proper:short-term-checked-modules nil)
+
 (defun proper:module-needs-recompile (spec)
   (when (not proper:*use-module-cache*)
 	(proper:message "Module cache is disabled.")
