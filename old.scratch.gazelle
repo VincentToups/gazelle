@@ -1,0 +1,67 @@
+(match [: 1 2]
+	   ([: a b :- c d]
+		c))
+
+(match ({} x 10 y 11)
+	   (({}- z (or (defined a)
+				   (let (a 10))))
+		a))
+
+(match ({} x 10 y 11)
+	   (({} x 10 y a)
+		a))
+
+(define (product 
+		 [
+		  (([:] (defined acc))
+		   acc)
+		  (([: hd (tail tl)] (defined acc))
+		   (recur tl (_* acc hd)))
+		  ((object)
+		   (recur object 1))
+		  ]))
+
+(define product-two 
+  (lambda [
+		   (([:] acc)
+			acc)
+		   (([: hd (tail tl)] acc)
+			(recur tl (_* acc hd)))
+		   ((object)
+			(recur object 1))
+		   ]))
+
+(define simple 
+  (lambda (x) (_+ "what!? " x)))
+
+(define (Test-Object name)
+  (set! this.name name)
+  (set! this.introduce-self 
+		(lambda 
+		  [((:politely)
+			(_+ "Hello sir or madame, I'm " this.name))
+		   ((:informally)
+			(_+ "Sup bro, I am " this.name))])))
+
+(define (test-optionals :-
+						({}- optional1 (or (defined optional1)
+										   (let (optional1 "Dogman")))
+							 optional2 (or (defined optional2)
+										   (let (optional2 "Ok")))))
+  [: optional1 optional2])
+
+(define (test-optionals2 :-
+						 (options{} 
+						  (optional1 "Dogman")
+						  (optional2 "Ok")))
+  [: optional1 optional2])
+
+(define (test-array-optionals a b :- (defined-or x 10))
+  x)
+
+(define (- hd (tail tl))
+   (if (_> tl.length 0) 
+	   (_- hd (apply + tl))
+	 (_- hd)))
+
+

@@ -8,7 +8,9 @@
    result)
 
  (define+ (- hd (tail tl))
-   (_- hd (apply + tl)))
+   (if (_> tl.length 0) 
+	   (_- hd (apply + tl))
+	 (_- hd)))
 
  (define+ (* hd (tail tl))
    (var result hd)

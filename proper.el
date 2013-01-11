@@ -118,9 +118,10 @@
 (defun-match proper:to-prim ((string s))
   s)
 
-(defun-match proper:to-prim ((list (or 'var '_var) (non-kw-symbol s) expr))
+(defun-match proper:to-prim ((list (or 'var '_var) (non-kw-symbol s) expr (tail tail-of-var)))
   `(_var ,(proper:to-prim s)
-		 ,(proper:to-prim expr)))
+		 ,(proper:to-prim expr)
+		 ,@(proper:map-to-prim tail-of-var)))
 
 (defun-match proper:to-prim ((list (or '_new 'new) constructor (tail arguments)))
   `(_new ,(proper:to-prim constructor)
@@ -925,6 +926,14 @@
  (let ((proper:signal-match-fail `(_return ,proper:match-fail-val))) 
    (proper:expand-match1-body pattern value-expr body)))
 
+(proper:define-macro 
+ var-match
+ (pattern value-expr)
+ (let* ((proper:signal-match-fail `(_throw ,(format "Match error in var-match %S" `(,pattern ,value-expr))))
+		(val-name (gensym "match-var"))
+		(body `(_newline-sequence (_var ,val-name ,value-expr))))
+   (proper:expand-match1-body pattern val-name nil body)))
+
 
 (proper:define-macro 
  match (match-value 
@@ -1359,28 +1368,36 @@
 
 (defvar proper:short-term-checked-modules nil)
 
-(defun proper:module-needs-recompile (spec)
-  (when (not proper:*use-module-cache*)
-	(proper:message "Module cache is disabled.")
-	(proper:reset-module-cache))
-  (match-let* ((file (proper:module-spec->module-file spec))
-			   (current-hash (gzu:file-hash file))
-			   ((cons previous-hash previous-compilation)
-				(gethash file proper:*module-compile-cache*))
-			   (dependencies (proper:extract-module-dependencies spec))
-			   (dep-result (gzu:any-satisfy #'proper:module-needs-recompile dependencies))
-			   (result (or (not (equal current-hash previous-hash))
-						   dep-result)))
-			  (when result
-				(proper:message (concat "Module %s needs recompile (current %s," 
-										" previous %s, dependencies %S, dep-result %S, result %s) .") 
-								spec
-								current-hash 
-								previous-hash 
-								dependencies
-								dep-result
-								result))
-			  result))
+(defun* proper:module-needs-recompile (spec &optional (cache (make-hash-table :test 'equal)))
+  (match (gethash spec cache)
+		 (:true t)
+		 (:false nil)
+		 (otherwise 
+		  (when (not proper:*use-module-cache*)
+			(proper:message "Module cache is disabled.")
+			(proper:reset-module-cache))
+		  (match-let* ((file (proper:module-spec->module-file spec))
+					   (current-hash (gzu:file-hash file))
+					   ((cons previous-hash previous-compilation)
+						(gethash file proper:*module-compile-cache*))
+					   (dependencies (proper:extract-module-dependencies spec))
+					   (dep-result (gzu:any-satisfy 
+									(lambda (spec) (proper:module-needs-recompile spec cache)) 
+									dependencies))
+					   (result (or (not (equal current-hash previous-hash))
+								   dep-result)))
+					  (if result
+						  (progn (setf (gethash spec cache) :true)
+								 (proper:message (concat "Module %s needs recompile (current %s," 
+														  " previous %s, dependencies %S, dep-result %S, result %s) .") 
+										 spec
+										 current-hash 
+										 previous-hash 
+										 dependencies
+										 dep-result
+										 result))
+						(setf (gethash spec cache) :false))
+					  result))))
 
 (defun proper:compile-module (spec)
   (proper:message "Attempting to compile/load from cache %S" spec)

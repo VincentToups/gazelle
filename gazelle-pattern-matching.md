@@ -1,10 +1,10 @@
 On the Gazelle Pattern Matcher
 ------------------------------
 
-Gazelle's pattern matcher is use extensively in programs because it is
+[Gazelle](https://github.com/VincentToups/gazelle)'s pattern matcher is use extensively in programs because it is
 the default mechanism of performing `cond`-like computations and
 function argument destructuring.  The macro language is emacs Lisp and
-uses `Shadchen` for argument destructuring/matching.  Shadchen's
+uses [Shadchen](https://github.com/VincentToups/shadchen-el) for argument destructuring/matching.  Shadchen's
 pattern matcher is similar, but not identical, to, Shadchen, primarily
 in an attempt to make the Gazelle pattern matcher consistent with the
 types and idioms of Javascript.  This document highlights the
@@ -23,7 +23,7 @@ In Gazelle, the pattern
 
     (list p1 p2 p3)
 
-Matches a list of three elements by recursively, checking if the value
+Matches a list of three elements recursively, checking if the value
 is a list, checking if it has a `car`, and if that `car` matches `p1`
 and then matching the `cdr` of the list against `(list p2 p3)`,
 recursing again, and finally checking that the `cdr` is nil.
@@ -36,7 +36,7 @@ pattern, denoted either `(array p ...)` or as
 This is consistent with the array constructor syntax in Gazelle, which
 one may write as either `(array v1 v2 v3)` or `[: v1 v2 v3]`.  Unlike
 the `list` pattern in Shadchen, the array patterns are checked first
-by checking that an array value is indeed being matched agains (by
+by checking that an array value is indeed being matched against (by
 looking at the object's prototype), and then checking the lenght is
 equal to the number of patterns, and then checking that each pattern
 matches.  
@@ -52,7 +52,7 @@ or
 
     (list p1 p2 (tail p-tail))
 
-Where the pattern `t-pail` matches the tail of the list (possibly
+Where the pattern `p-tail` matches the tail of the list (possibly
 empty).  In Gazelle one matches the tail of an array:
 
     [: p1 p2 (tail p-tail)]

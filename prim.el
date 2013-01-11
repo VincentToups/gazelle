@@ -204,11 +204,28 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 (assert (string= "\"stringToNumber\""
 				 (prim:transcode->string :string->number)))
 
-(defun-match prim:transcode ((list '_var (non-kw-symbol s) expr))
+(defun-match prim:transcode ((list '_var (non-kw-symbol s) expr
+								   (tail tail-of-var)))
   (prim:insert "var ")
   (prim:transcode s)
   (prim:insert " = ")
+  (prim:transcode expr)
+  (if tail-of-var (prim:insert ", "))
+  (prim:transcode-tail-of-var tail-of-var))
+
+(defun-match- prim:transcode-tail-of-var ((list))
+  nil)
+(defun-match prim:transcode-tail-of-var ((list (non-kw-symbol s) expr))
+  (prim:transcode s)
+  (prim:insert " = ")
   (prim:transcode expr))
+(defun-match prim:transcode-tail-of-var ((list (non-kw-symbol s) expr
+											   (tail tail-of-var)))
+  (prim:transcode s)
+  (prim:insert " = ")
+  (prim:transcode expr)
+  (prim:insert ", ")
+  (recur tail-of-var))
 
 (assert (string= "var someValue = \"someValue\""
 				 (prim:transcode->string '(_var some-value :some-value))))
