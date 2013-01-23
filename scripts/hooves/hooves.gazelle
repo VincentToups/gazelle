@@ -15,7 +15,50 @@
  (define-macro+ collect{} ((tail ids))
    `(_{} ,@(loop for id in ids append (list id id))))
  (define-macro+ @ ((tail ids))
-   `(_. this ,@ids)))
+   `(_. this ,@ids))
+
+ (define+ (===_ partial)
+   (lambda (open)
+	 (=== open partial)))
+
+ ;; (define +open+ ({}))
+
+ ;; (define (partial f (tail partial-list))
+ ;;   (lambda ((tail arguments))
+ ;; 	 (var i 0)
+ ;; 	 (var real-args )))
+
+ (define (delay lambda-expr)
+   (set! this.lambda-expr lambda-expr)
+   this)
+
+ (define-macro+ for* (((list (non-kw-symbol index) match-expr) 
+					   (or 'in :in) expr)
+ 					  (tail body))
+   (let ((array-object (gensym "array-object")))
+	 `(_newline-sequence 
+	   (_var ,array-object ,expr)
+	   (for (,index in ,array-object)
+			(var-match ,match-expr [,array-object ,index])
+			,@body))))
+
+ (define-macro+ with-slots ((list (tail slots)) object-expr (tail body))
+   (let ((object (gensym)))
+	 `(_let ()  
+		(_var ,object ,object-expr)
+		(_proper:symbol-macro-let 
+		 ,(loop for slot in slots collect
+				(match slot 
+					   ((non-kw-symbol slot)
+						`(,slot (_. ,object ,slot)))
+					   ((list (non-kw-symbol local-name)
+							  (non-kw-symbol in-object-name))
+						`(,local-name (_. ,object ,in-object-name)))
+					   ((list (non-kw-symbol local-name)
+							  (or (string key)
+								  (number key)))
+						`(,local-name [,object ,key]))))
+		 ,@body)))))
 
  
 

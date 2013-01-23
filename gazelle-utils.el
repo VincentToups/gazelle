@@ -160,11 +160,15 @@
 		   (kill-buffer ,buffer))
 	   ,body-val)))
 
+(defvar gzu:use-modtime-as-hash nil)
+(setq gzu:use-modtime-as-hash t)
 (defun gzu:file-hash (file)
-  (gzu:with-file-buffer-maybe-open 
-   (file :save nil)
-   (md5 (buffer-substring (point-min)
-						  (point-max)))))
+  (if gzu:use-modtime-as-hash
+	  (format "%S" (gzu:file-last-modified file))
+	(gzu:with-file-buffer-maybe-open 
+	 (file :save nil)
+	 (md5 (buffer-substring (point-min)
+							(point-max))))))
 
 (defun gzu:hash-table-keys (tbl)
   (let ((keys '()))
@@ -193,6 +197,13 @@
 
 (defun gzu:odd-indexes (lst)
   (loop for item in lst and i from 0 when (not (= 0 (mod i 2))) collect item))
+
+(defun gzu:file-last-modified (f)
+  (match (file-attributes (file-truename f))
+		 ((list zero one two three four modification (tail tl))
+		  modification)))
+
+
 
 (provide 'gazelle-utils)
 

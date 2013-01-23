@@ -1,1 +1,8 @@
-(var-match [: a b c] [: 1 2 3])
+(var o ({} x 10 y [: 1 2]))
+(define (match-test) 
+  (match o.z 
+		 (undefined :matched)
+		 (otherwise 
+		  :didnt-match)))
+
+(.. [: 3 2 1] (sort))

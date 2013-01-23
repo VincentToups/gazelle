@@ -20,7 +20,9 @@
   (let ((file-visited 
 		 (find-buffer-visiting out-file))
 		(out-buffer 
-		 (find-file-noselect out-file)))
+		 (find-file-noselect out-file))
+		(proper:short-term-checked-modules 
+		 (make-hash-table :test 'equal)))
 	(with-current-buffer out-buffer
 	  (delete-region (point-min)
 					 (point-max))
@@ -46,3 +48,16 @@
 ; test
 ; (gz:transcode-file "/home/toups/src/elisp/gazelle/scripts/main.gazelle")
 
+(eval-when (load compile eval) 
+  (define-derived-mode gazelle-mode
+	emacs-lisp-mode "Gazelle"
+	"Major mode for Gazelle."
+	(setq case-fold-search nil))
+
+  
+
+  (push '("\\.gazelle" . (lambda () 
+						   (gazelle-mode)
+						   (define-key gazelle-mode-map 
+							 "\C-c\C-k" 'gz:transcode-this-file))) 
+		auto-mode-alist))

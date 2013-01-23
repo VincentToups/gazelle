@@ -1,10 +1,13 @@
 (require 
  (("hooves/operator-functions" :all)
   ("hooves/lisp-idioms" (:with-prefix idioms- :all))
+  ("hooves/hooves" :all)
   ("jquery/jquery" (:as $)))
  (_+ 1 1)
  (var x 10)
  (incr x)
+ (console.log '(from "hooves/hooves" number?) (from "hooves/hooves" number?))
+ (console.log ((from "hooves/hooves" collect{}) x))
  (console.log (_+ "X minus one is " (- x 1)))
  (console.log (+ "7 < 10" (< 7 10)))
  (console.log (+ "7 > 10" (> 7 10)))

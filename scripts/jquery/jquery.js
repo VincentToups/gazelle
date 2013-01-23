@@ -1,11 +1,11 @@
 define([], (function ()  {
-  var currentModuleminus38795 = {    
+  var currentModuleminus65181 = {    
     
   };
   var setModuleObject = (function (value)    {
-    currentModuleminus38795 = value;
+    currentModuleminus65181 = value;
     });
-  ((function ()    {
+  (function (arguments)    {
     var defineplus = "macro - no dynamic value.";
     var defineMacroplus = "macro - no dynamic value.";
     /*!
@@ -9481,7 +9481,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 
 })( window );
 ;
-    currentModuleminus38795.$ = window.jQuery;
-    }))();
-  return currentModuleminus38795;
+    currentModuleminus65181.$ = window.jQuery;
+    }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
+  return currentModuleminus65181;
   }))

@@ -1,33 +1,44 @@
 define([], (function ()  {
-  var currentModuleminus56578 = {    
+  var currentModuleminus65000 = {    
     
   };
   var setModuleObject = (function (value)    {
-    currentModuleminus56578 = value;
+    currentModuleminus65000 = value;
     });
-  ((function ()    {
+  (function (arguments)    {
     var defineplus = "macro - no dynamic value.";
     var defineMacroplus = "macro - no dynamic value.";
-    currentModuleminus56578.definedPredicate = (function (x)      {
+    currentModuleminus65000.definedPredicate = (function (x)      {
       return (!((((typeof x))===("undefined"))));
       });
-    currentModuleminus56578.undefinedPredicate = (function (x)      {
+    currentModuleminus65000.undefinedPredicate = (function (x)      {
       return (((typeof x))===("undefined"));
       });
-    currentModuleminus56578.numberPredicate = (function (o)      {
+    currentModuleminus65000.numberPredicate = (function (o)      {
       return (((typeof o))===("number"));
       });
-    currentModuleminus56578.stringPredicate = (function (o)      {
+    currentModuleminus65000.stringPredicate = (function (o)      {
       return (((typeof o))===("string"));
       });
-    currentModuleminus56578.arrayPredicate = (function (o)      {
+    currentModuleminus65000.arrayPredicate = (function (o)      {
       return (o instanceof Array);
       });
-    currentModuleminus56578.emptyPredicate = (function (o)      {
+    currentModuleminus65000.emptyPredicate = (function (o)      {
       return (0===o.length);
       });
     var collectBracesminus = "macro - no dynamic value.";
     var at = "macro - no dynamic value.";
-    }))();
-  return currentModuleminus56578;
+    currentModuleminus65000.TripleEqualminus_ = (function (partial)      {
+      return (function (open)        {
+        return TripleEqualminus(open, partial);
+        });
+      });
+    var delay = (function (lambdaExpr)      {
+      this.lambdaExpr = lambdaExpr;
+      return this;
+      });
+    var fortimes = "macro - no dynamic value.";
+    var withSlots = "macro - no dynamic value.";
+    }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
+  return currentModuleminus65000;
   }))

@@ -9,10 +9,15 @@
   (defmacro* proper:enclose (symbols &body body)
 	`(lexical-let ,(loop for s in symbols collect `(,s ,s))
 	   ,@body))
+  (defvar proper:messages-on t)
+  (defun proper:toggle-messages ()
+	(interactive)
+	(setq proper:messages-on (not proper:messages-on)))
   (defun proper:message (&rest args)
-	(message (replace-regexp-in-string (regexp-quote "%")
-									   "%%" 
-									   (concat "proper: " (apply #'format args)))))
+	(if proper:messages-on
+		(message (replace-regexp-in-string (regexp-quote "%")
+										   "%%" 
+										   (concat "proper: " (apply #'format args))))))
   (defvar proper:macros (list (make-hash-table)))
   (setq proper:macros (list (make-hash-table)))
   (defvar proper:symbol-macros (list (make-hash-table)))
@@ -178,7 +183,7 @@
 
 (defun-match proper:to-prim ((list-rest (or 'for '_for) 
 										(list (non-kw-symbol name) 
-											  (or :in '_in) expression) 
+											  (or 'in :in '_in) expression) 
 										body))
   `(_for (,(proper:to-prim name) _in ,(proper:to-prim expression))
 		 ,@(proper:map-to-prim body)))
@@ -196,10 +201,10 @@
 ;; (defun-match proper:to-prim ((list '_continue expr))
 ;;   `(_continue ,(proper:to-prim expr)))
 
-(defun-match proper:to-prim ((list '_instanceof oe ce))
+(defun-match proper:to-prim ((list (or 'instanceof '_instanceof) oe ce))
   `(_instanceof ,(proper:to-prim oe) ,(proper:to-prim ce)))
 
-(defun-match proper:to-prim ((list '_typeof o))
+(defun-match proper:to-prim ((list (or 'typeof '_typeof) o))
   `(_typeof ,(proper:to-prim o)))
 
 (defun-match- proper:tail-of-try-to-prim (nil acc)
@@ -378,6 +383,24 @@
 	  (lambda (,arg)
 		,@body))))
 
+(defun-match proper:to-prim ((list 
+							  (list 'from (string loc) (non-kw-symbol id))
+							  (tail args)))
+  (match (proper:compile-module loc)
+		 ((list manifest macros symbol-macros)
+		  (let* ((macro (proper:pages-lookup id macros)))
+			(if macro (proper:message "Found macro at id: %S in %S" id loc))
+			(if macro 
+				(recur (apply macro args))
+ 			  `(_. ((_value require) ,loc) ,id))))
+		 (anything-else 
+		  (error "Gazelle Module %S didn't compile in from form %S" `(from ,loc ,id)))))
+
+(defun-match proper:to-prim ((list 
+							  (list '_proper:expand-with-this lexpr)
+							  (tail args)))
+  (proper:message "proper:expand-with-this %S" lexpr)
+  (recur (apply lexpr args)))
 
 (defun-match proper:to-prim ((list 
 							  (proper:macro _ expander)
@@ -405,6 +428,18 @@
  (let* ((r (reverse body))
 		(body (reverse (cons `(_return ,(car r)) (cdr r)))))
    `(_function ,args ,@body)))
+
+(proper:define-macro 
+ from 
+ ((string loc) (non-kw-symbol id))
+ (match (proper:compile-module loc)
+		((list manifest macros symbol-macros)
+		 (let* ((macro (proper:pages-lookup id macros)))
+		   (if macro (proper:message "Found macro at id: %S in %S" id loc))
+		   (if macro `(_proper:expand-with-this ,macro)
+			 `(_. ((_value require) ,loc) ,id))))
+		(anything-else 
+		 (error "Gazelle Module %S didn't compile in from form %S" `(from ,loc ,id)))))
 
 (proper:define-macro 
  _let ((list-rest binders) (tail body))
@@ -598,7 +633,14 @@
 		 (number ,pattern)
 		 (string ,pattern))))
 
-(defun-match- proper:expand-match1-body ((non-kw-symbol s) val body acc)
+(defun-match- proper:expand-match1-body ('undefined
+										val body acc)
+  (let ((acc (append acc
+					 `((_if (_! (_=== "undefined" (_typeof ,val)))
+							(,proper:signal-match-fail))))))
+	(append acc body)))
+
+(defun-match proper:expand-match1-body ((non-kw-symbol s) val body acc)
   (append acc 
 		  `((_var ,s ,val)
 			,@body)))
@@ -682,7 +724,9 @@
 										val body acc)
   (let ((n (length ids))) 
 	(append acc
-			`((_if (_! (_=== ,n (_. ,val length)))
+			`((_if (_! (_=== "object" (_typeof ,val)))
+				   (,proper:signal-match-fail))
+			  (_if (_! (_=== ,n (_. ,val length)))
 				   (,proper:signal-match-fail))
 			  ,@(loop for id in ids and index from 0 collect
 					  `(_var ,id [,val ,index]))
@@ -705,6 +749,8 @@
 							(,proper:signal-match-fail))))))
 	(proper:expand-match1-body sub-pattern val body acc)))
 
+
+
 (defun-match proper:expand-match1-body ((list 'undefined sub-pattern)
 										val body acc)
   (let ((acc (append acc
@@ -716,6 +762,23 @@
 										val body acc)
   (proper:expand-match1-body (prim:transcode->string (proper:to-prim expr))
 							 val body acc))
+
+(defun-match proper:expand-match1-body ((list 'instance of-expr pattern)
+										val body acc)
+  (recur (let ((obj (gensym)))
+		   `(p (lambda (,obj)
+				 (_instanceof ,obj ,of-expr))
+			   ,pattern))
+		 val body acc))
+
+(defun-match proper:expand-match1-body ((list 'type of-expr pattern)
+										val body acc)
+  (recur (let ((obj (gensym)))
+		   `(and (p (lambda (,obj)
+					  (_=== (_typeof ,obj) ,of-expr))
+					,pattern)))
+		 val body acc))
+
 
 (defun proper:patterns-with-optional-syntax? (patterns)
   (member :- patterns))
@@ -743,8 +806,10 @@
 					  (gensym "match-temp-"))
 					patterns))
 		   (acc (append acc 
-						`((_if (_! (_=== ,(length patterns)
-										 (_. ,val length)))
+						`((_if (_! (_=== "object" (_typeof ,val)))
+							 (,proper:signal-match-fail))
+						  (_if (_! (_=== ,(length patterns)
+ 										 (_. ,val length)))
 							   (,proper:signal-match-fail))
 						  ,@(loop for temp in match-temps
 								  and i from 0 
@@ -762,7 +827,9 @@
 		 (tail-pattern (cadr (car (last patterns))))
 		 (simple-part-name (gensym "match-array-simple-part-"))
 		 (acc (append acc 
-					  `((_if (_! (_>= (_. ,val length) ,n-normal))
+					  `((_if (_! (_=== "object" (_typeof ,val)))
+							 (,proper:signal-match-fail))
+						(_if (_! (_>= (_. ,val length) ,n-normal))
 							 (,proper:signal-match-fail))
 						(_var ,simple-part-name (Array.prototype.slice.call ,val 0 ,n-normal)))))
 		 (acc (proper:expand-match1-body `[: ,@normal-patterns] simple-part-name nil
@@ -929,8 +996,8 @@
 (proper:define-macro 
  var-match
  (pattern value-expr)
- (let* ((proper:signal-match-fail `(_throw ,(format "Match error in var-match %S" `(,pattern ,value-expr))))
-		(val-name (gensym "match-var"))
+ (let* ((val-name (gensym "match-var"))
+		(proper:signal-match-fail `(_throw (_+ ,(format "Match error in var-match %S against: " `(,pattern ,value-expr)) ,val-name)))
 		(body `(_newline-sequence (_var ,val-name ,value-expr))))
    (proper:expand-match1-body pattern val-name nil body)))
 
@@ -1161,14 +1228,23 @@
  ((tail body))
  (match (proper:fixed-point #'proper:reduce-unit-body-once body)
 		((list 'converged final-body count)
-		 `((_lambda () ,@final-body)))
+		 `(_let () ,@final-body))
 		((list 'did-not-converge non-final-body count)
 		 (error  
 		  (concat "_proper:unit compilation did not converge."
 				  "  Do you have a loop in macroexpansion in"
 				  " the body %s?") non-final-body))))
 
-
+(proper:define-macro
+ _proper:symbol-macro-let ((list (tail pairs))
+					(tail body)) 
+ (let ((proper:symbol-macros (cons (make-hash-table) proper:symbol-macros))
+	   (proper:macros (cons (make-hash-table) proper:macros)))
+   (loop for (name expansion) in pairs do
+		 (proper:add-to-symbol-macro-context 
+		  name
+		  (eval `(lambda (_) ',expansion))))
+   (proper:to-prim `(_proper:unit ,@body))))
 
 (proper:define-macro 
  _proper:at-compile-time 
@@ -1366,9 +1442,11 @@
 			   (req-specs (proper:module-module-specs-for-deps contents)))
 			  (proper:module-specs->locations req-specs)))
 
-(defvar proper:short-term-checked-modules nil)
+(defvar proper:*short-term-checked-modules* nil)
 
-(defun* proper:module-needs-recompile (spec &optional (cache (make-hash-table :test 'equal)))
+(defun* proper:module-needs-recompile (spec &optional (cache proper:*short-term-checked-modules*))
+  (if (null cache)
+	  (setq cache (make-hash-table :test 'equal)))
   (match (gethash spec cache)
 		 (:true t)
 		 (:false nil)
