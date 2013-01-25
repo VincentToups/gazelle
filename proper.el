@@ -384,17 +384,19 @@
 		,@body))))
 
 (defun-match proper:to-prim ((list 
-							  (list 'from (string loc) (non-kw-symbol id))
+							  (list 'from (string loc) (non-kw-symbol id-from-head))
 							  (tail args)))
-  (match (proper:compile-module loc)
-		 ((list manifest macros symbol-macros)
-		  (let* ((macro (proper:pages-lookup id macros)))
-			(if macro (proper:message "Found macro at id: %S in %S" id loc))
-			(if macro 
-				(recur (apply macro args))
- 			  `(_. ((_value require) ,loc) ,id))))
-		 (anything-else 
-		  (error "Gazelle Module %S didn't compile in from form %S" `(from ,loc ,id)))))
+  (if (not (equal loc proper:current-module)) 
+	  (match (proper:compile-module loc)
+			 ((list manifest macros symbol-macros)
+			  (let* ((macro (proper:pages-lookup id macros)))
+				(if macro (proper:message "Found macro at id: %S in %S" id loc))
+				(if macro 
+					(recur (apply macro args))
+				  `(_. ((_value require) ,loc) ,id-from-head))))
+			 (anything-else 
+			  (error "Gazelle Module %S didn't compile in from form %S" `(from ,loc ,id-from-head))))
+	(recur `(,id-from-head ,@args))))
 
 (defun-match proper:to-prim ((list 
 							  (list '_proper:expand-with-this lexpr)
@@ -431,15 +433,17 @@
 
 (proper:define-macro 
  from 
- ((string loc) (non-kw-symbol id))
- (match (proper:compile-module loc)
-		((list manifest macros symbol-macros)
-		 (let* ((macro (proper:pages-lookup id macros)))
-		   (if macro (proper:message "Found macro at id: %S in %S" id loc))
-		   (if macro `(_proper:expand-with-this ,macro)
-			 `(_. ((_value require) ,loc) ,id))))
-		(anything-else 
-		 (error "Gazelle Module %S didn't compile in from form %S" `(from ,loc ,id)))))
+ ((string loc) (non-kw-symbol id-from))
+ (if (not (equal loc proper:current-module)) 
+	 (match (proper:compile-module loc)
+			((list manifest macros symbol-macros)
+			 (let* ((macro (proper:pages-lookup id-from macros)))
+			   (if macro (proper:message "Found macro at id-from: %S in %S" id-from loc))
+			   (if macro `(_proper:expand-with-this ,macro)
+				 `(_. ((_value require) ,loc) ,id-from))))
+			(anything-else 
+			 (error "Gazelle Module %S didn't compile in from form %S" `(from ,loc ,id-from))))
+   id-from))
 
 (proper:define-macro 
  _let ((list-rest binders) (tail body))
@@ -634,7 +638,7 @@
 		 (string ,pattern))))
 
 (defun-match- proper:expand-match1-body ('undefined
-										val body acc)
+										 val body acc)
   (let ((acc (append acc
 					 `((_if (_! (_=== "undefined" (_typeof ,val)))
 							(,proper:signal-match-fail))))))
@@ -728,8 +732,8 @@
 				   (,proper:signal-match-fail))
 			  (_if (_! (_=== ,n (_. ,val length)))
 				   (,proper:signal-match-fail))
-			  ,@(loop for id in ids and index from 0 collect
-					  `(_var ,id [,val ,index]))
+			  ,@(loop for id-it in ids and index from 0 collect
+					  `(_var ,id-it [,val ,index]))
 			  ,@body))))
 
 (defun proper:patterns-with-tail? (patterns)
@@ -807,7 +811,7 @@
 					patterns))
 		   (acc (append acc 
 						`((_if (_! (_=== "object" (_typeof ,val)))
-							 (,proper:signal-match-fail))
+							   (,proper:signal-match-fail))
 						  (_if (_! (_=== ,(length patterns)
  										 (_. ,val length)))
 							   (,proper:signal-match-fail))
@@ -1237,7 +1241,7 @@
 
 (proper:define-macro
  _proper:symbol-macro-let ((list (tail pairs))
-					(tail body)) 
+						   (tail body)) 
  (let ((proper:symbol-macros (cons (make-hash-table) proper:symbol-macros))
 	   (proper:macros (cons (make-hash-table) proper:macros)))
    (loop for (name expansion) in pairs do
@@ -1467,19 +1471,21 @@
 					  (if result
 						  (progn (setf (gethash spec cache) :true)
 								 (proper:message (concat "Module %s needs recompile (current %s," 
-														  " previous %s, dependencies %S, dep-result %S, result %s) .") 
-										 spec
-										 current-hash 
-										 previous-hash 
-										 dependencies
-										 dep-result
-										 result))
+														 " previous %s, dependencies %S, dep-result %S, result %s) .") 
+												 spec
+												 current-hash 
+												 previous-hash 
+												 dependencies
+												 dep-result
+												 result))
 						(setf (gethash spec cache) :false))
 					  result))))
 
+(defvar proper:current-module nil)
 (defun proper:compile-module (spec)
   (proper:message "Attempting to compile/load from cache %S" spec)
-  (let ((file (proper:module-spec->module-file spec)))
+  (let ((proper:current-module spec)
+		(file (proper:module-spec->module-file spec)))
 	(if (proper:module-needs-recompile spec)
 		(let ((new-compilation (proper:really-compile-module spec))
 			  (new-hash (gzu:file-hash file)))

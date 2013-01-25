@@ -161,7 +161,7 @@
 	   ,body-val)))
 
 (defvar gzu:use-modtime-as-hash nil)
-(setq gzu:use-modtime-as-hash t)
+(setq gzu:use-modtime-as-hash nil)
 (defun gzu:file-hash (file)
   (if gzu:use-modtime-as-hash
 	  (format "%S" (gzu:file-last-modified file))

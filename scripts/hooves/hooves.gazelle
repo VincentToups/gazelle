@@ -19,7 +19,15 @@
 
  (define+ (===_ partial)
    (lambda (open)
-	 (=== open partial)))
+	 (_=== open partial)))
+
+ (define-macro+ when (condexpr (tail body))
+   `(if ,condexpr 
+		(progn ,@body)))
+
+ (define-macro+ unless (condexpr (tail body))
+   `(if (_! ,condexpr)
+		(progn ,@body)))
 
  ;; (define +open+ ({}))
 
@@ -31,6 +39,19 @@
  (define (delay lambda-expr)
    (set! this.lambda-expr lambda-expr)
    this)
+
+
+ (define-macro+ define-to (object-expr (tail define-args))
+   (let ((object (gensym "define-to-object-")))
+	 `(progn
+		(_var ,object ,object-expr)
+		(define ,@define-args)
+		,(match define-args
+				((list (non-kw-symbol idx) expr)
+				 `(set! (_. ,object ,idx) ,idx))
+				((list (list (non-kw-symbol idy) (tail expr)) (tail exprs))
+				 `(set! (_. ,object ,idy) ,idy)))
+		,object)))
 
  (define-macro+ for* (((list (non-kw-symbol index) match-expr) 
 					   (or 'in :in) expr)

@@ -4,6 +4,8 @@
   ("hooves/hooves" :all)
   ("jquery/jquery" (:as $)))
  (_+ 1 1)
+ (var o ({}))
+ (define-to o (init) (+ 1 2 3))
  (var x 10)
  (incr x)
  (console.log '(from "hooves/hooves" number?) (from "hooves/hooves" number?))

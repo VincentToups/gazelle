@@ -1,8 +1,18 @@
-(var o ({} x 10 y [: 1 2]))
-(define (match-test) 
-  (match o.z 
-		 (undefined :matched)
-		 (otherwise 
-		  :didnt-match)))
+(define-macro define-to (object-expr (tail define-args))
+   (let ((object (gensym "define-to-object-")))
+	 `(_let ((,object ,object-expr))
+			(define ,@define-args)
+			,(match define-args
+					((list (non-kw-symbol id) expr)
+					 `(set! (_. ,object ,id) ,id))
+					((list (list (non-kw-symbol id) (tail expr)) (tail exprs))
+					 `(set! (_. ,object ,id) ,id)))
+			,object)))
 
-(.. [: 3 2 1] (sort))
+(var o ({}))
+
+(define-to o x 10)
+(define-to o (f x) (_+ x x))
+
+
+(print (o.f o.x))

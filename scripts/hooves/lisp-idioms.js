@@ -1,184 +1,184 @@
 define([], (function ()  {
-  var currentModuleminus64298 = {    
+  var currentModuleminus68364 = {    
     
   };
   var setModuleObject = (function (value)    {
-    currentModuleminus64298 = value;
+    currentModuleminus68364 = value;
     });
   (function (arguments)    {
     var defineplus = "macro - no dynamic value.";
     var defineMacroplus = "macro - no dynamic value.";
-    currentModuleminus64298.map = (function (fun, anArray)      {
+    currentModuleminus68364.map = (function (fun, anArray)      {
       var output = [];
       for (i in (anArray))        {
         output.push(fun(anArray[i]));
         };
       return output;
       });
-    currentModuleminus64298.append = (function ()      {
+    currentModuleminus68364.append = (function ()      {
       return Array.prototype.concat.apply([], Array.prototype.slice.apply(arguments));
       });
-    currentModuleminus64298.filter = (function ()      {
-      var returnValueminus64375 = undefined;
+    currentModuleminus68364.filter = (function ()      {
+      var returnValueminus68441 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigilminus64374",
+          recurSigil:"recurSigilminus68440",
           args:arguments
         };
         });
-      var recurP64378 = (function (valminus64379)        {
-        if ((("undefined")===((typeof valminus64379))))          {
+      var recurP68444 = (function (valminus68445)        {
+        if ((("undefined")===((typeof valminus68445))))          {
           return false;
           };
-        return (valminus64379.recurSigil===("recurSigilminus64374"));
+        return (valminus68445.recurSigil===("recurSigilminus68440"));
         });
-      var actualFunminus64377 = (function ()        {
+      var actualFunminus68443 = (function ()        {
         return (function (arguments)          {
-          var G64381 = undefined;
-          var G64382 = Array.prototype.slice.apply(arguments);
-          G64381 = (function (arguments)            {
-            var matchValminus64383 = G64382;
-            if ((!((("object")===((typeof matchValminus64383))))))              {
+          var G68447 = undefined;
+          var G68448 = Array.prototype.slice.apply(arguments);
+          G68447 = (function (arguments)            {
+            var matchValminus68449 = G68448;
+            if ((!((("object")===((typeof matchValminus68449))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((3===matchValminus64383.length))))              {
+            if ((!((3===matchValminus68449.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchTempminus64384 = matchValminus64383[0];
-            var matchTempminus64385 = matchValminus64383[1];
-            var matchTempminus64386 = matchValminus64383[2];
-            var fun = matchTempminus64384;
-            if ((!((("object")===((typeof matchTempminus64385))))))              {
+            var matchTempminus68450 = matchValminus68449[0];
+            var matchTempminus68451 = matchValminus68449[1];
+            var matchTempminus68452 = matchValminus68449[2];
+            var fun = matchTempminus68450;
+            if ((!((("object")===((typeof matchTempminus68451))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((0===matchTempminus64385.length))))              {
+            if ((!((0===matchTempminus68451.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((("undefined")===((typeof matchTempminus64386))))              {
+            if ((("undefined")===((typeof matchTempminus68452))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var acc = matchTempminus64386;
+            var acc = matchTempminus68452;
             return acc;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G64381))))            {
-            return G64381;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G68447))))            {
+            return G68447;
             };
-          G64381 = (function (arguments)            {
-            var matchValminus64387 = G64382;
-            if ((!((("object")===((typeof matchValminus64387))))))              {
+          G68447 = (function (arguments)            {
+            var matchValminus68453 = G68448;
+            if ((!((("object")===((typeof matchValminus68453))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((3===matchValminus64387.length))))              {
+            if ((!((3===matchValminus68453.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchTempminus64388 = matchValminus64387[0];
-            var matchTempminus64389 = matchValminus64387[1];
-            var matchTempminus64390 = matchValminus64387[2];
-            var fun = matchTempminus64388;
-            if ((!((("object")===((typeof matchTempminus64389))))))              {
+            var matchTempminus68454 = matchValminus68453[0];
+            var matchTempminus68455 = matchValminus68453[1];
+            var matchTempminus68456 = matchValminus68453[2];
+            var fun = matchTempminus68454;
+            if ((!((("object")===((typeof matchTempminus68455))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchTempminus64389.length>=1))))              {
+            if ((!((matchTempminus68455.length>=1))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePartminus64391 = Array.prototype.slice.call(matchTempminus64389, 0, 1);
-            if ((!((("object")===((typeof matchArraySimplePartminus64391))))))              {
+            var matchArraySimplePartminus68457 = Array.prototype.slice.call(matchTempminus68455, 0, 1);
+            if ((!((("object")===((typeof matchArraySimplePartminus68457))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((1===matchArraySimplePartminus64391.length))))              {
+            if ((!((1===matchArraySimplePartminus68457.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var hd = matchArraySimplePartminus64391[0];
-            var matchArrayTailPartminus64392 = Array.prototype.slice.call(matchTempminus64389, 1);
-            var tl = matchArrayTailPartminus64392;
-            if ((("undefined")===((typeof matchTempminus64390))))              {
+            var hd = matchArraySimplePartminus68457[0];
+            var matchArrayTailPartminus68458 = Array.prototype.slice.call(matchTempminus68455, 1);
+            var tl = matchArrayTailPartminus68458;
+            if ((("undefined")===((typeof matchTempminus68456))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var acc = matchTempminus64390;
+            var acc = matchTempminus68456;
             return ((fun(hd))?(recur(fun, tl, acc.concat([hd]))) : (recur(fun, tl, acc)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G64381))))            {
-            return G64381;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G68447))))            {
+            return G68447;
             };
-          G64381 = (function (arguments)            {
-            var matchValminus64393 = G64382;
-            var anythingElseminus64380 = matchValminus64393;
-            throw ((("Match fail in hooves/lisp-idioms-filter against: ")+anythingElseminus64380));
+          G68447 = (function (arguments)            {
+            var matchValminus68459 = G68448;
+            var anythingElseminus68446 = matchValminus68459;
+            throw ((("Match fail in hooves/lisp-idioms-filter against: ")+anythingElseminus68446));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G64381))))            {
-            return G64381;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G68447))))            {
+            return G68447;
             };
-          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ([: fun [:] (defined acc)] acc) ([: fun [: hd (tail tl)] (defined acc)] (if (fun hd) (recur fun tl (\.\. acc (concat [: hd]))) (recur fun tl acc))) (anything-else-64380 (_throw (_+ ''Match fail in hooves/lisp-idioms-filter against: '' anything-else-64380))))) for value ")+(JSON.stringify(G64382))));
+          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ([: fun [:] (defined acc)] acc) ([: fun [: hd (tail tl)] (defined acc)] (if (fun hd) (recur fun tl (\.\. acc (concat [: hd]))) (recur fun tl acc))) (anything-else-68446 (_throw (_+ ''Match fail in hooves/lisp-idioms-filter against: '' anything-else-68446))))) for value ")+(JSON.stringify(G68448))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValueminus64375 = actualFunminus64377.apply(this, arguments);
-      while (recurP64378(returnValueminus64375))        {
-        returnValueminus64375 = actualFunminus64377.apply(this, returnValueminus64375.args);
+      returnValueminus68441 = actualFunminus68443.apply(this, arguments);
+      while (recurP68444(returnValueminus68441))        {
+        returnValueminus68441 = actualFunminus68443.apply(this, returnValueminus68441.args);
         };
-      return returnValueminus64375;
+      return returnValueminus68441;
       });
-    currentModuleminus64298.apply = (function (f, anArray)      {
+    currentModuleminus68364.apply = (function (f, anArray)      {
       return f.apply(undefined, anArray);
       });
-    currentModuleminus64298.funcall = (function ()      {
-      var returnValueminus64439 = undefined;
+    currentModuleminus68364.funcall = (function ()      {
+      var returnValueminus68505 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigilminus64438",
+          recurSigil:"recurSigilminus68504",
           args:arguments
         };
         });
-      var recurP64442 = (function (valminus64443)        {
-        if ((("undefined")===((typeof valminus64443))))          {
+      var recurP68508 = (function (valminus68509)        {
+        if ((("undefined")===((typeof valminus68509))))          {
           return false;
           };
-        return (valminus64443.recurSigil===("recurSigilminus64438"));
+        return (valminus68509.recurSigil===("recurSigilminus68504"));
         });
-      var actualFunminus64441 = (function ()        {
+      var actualFunminus68507 = (function ()        {
         return (function (arguments)          {
-          var G64445 = undefined;
-          var G64446 = Array.prototype.slice.apply(arguments);
-          G64445 = (function (arguments)            {
-            var matchValminus64447 = G64446;
-            if ((!((("object")===((typeof matchValminus64447))))))              {
+          var G68511 = undefined;
+          var G68512 = Array.prototype.slice.apply(arguments);
+          G68511 = (function (arguments)            {
+            var matchValminus68513 = G68512;
+            if ((!((("object")===((typeof matchValminus68513))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchValminus64447.length>=1))))              {
+            if ((!((matchValminus68513.length>=1))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePartminus64448 = Array.prototype.slice.call(matchValminus64447, 0, 1);
-            if ((!((("object")===((typeof matchArraySimplePartminus64448))))))              {
+            var matchArraySimplePartminus68514 = Array.prototype.slice.call(matchValminus68513, 0, 1);
+            if ((!((("object")===((typeof matchArraySimplePartminus68514))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((1===matchArraySimplePartminus64448.length))))              {
+            if ((!((1===matchArraySimplePartminus68514.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var f = matchArraySimplePartminus64448[0];
-            var matchArrayTailPartminus64449 = Array.prototype.slice.call(matchValminus64447, 1);
-            var args = matchArrayTailPartminus64449;
-            return currentModuleminus64298.apply(f, args);
+            var f = matchArraySimplePartminus68514[0];
+            var matchArrayTailPartminus68515 = Array.prototype.slice.call(matchValminus68513, 1);
+            var args = matchArrayTailPartminus68515;
+            return currentModuleminus68364.apply(f, args);
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G64445))))            {
-            return G64445;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G68511))))            {
+            return G68511;
             };
-          G64445 = (function (arguments)            {
-            var matchValminus64450 = G64446;
-            var anythingElseminus64444 = matchValminus64450;
-            throw ((("Match fail in hooves/lisp-idioms-funcall against: ")+anythingElseminus64444));
+          G68511 = (function (arguments)            {
+            var matchValminus68516 = G68512;
+            var anythingElseminus68510 = matchValminus68516;
+            throw ((("Match fail in hooves/lisp-idioms-funcall against: ")+anythingElseminus68510));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G64445))))            {
-            return G64445;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G68511))))            {
+            return G68511;
             };
-          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ([: f (tail args)] (apply f args)) (anything-else-64444 (_throw (_+ ''Match fail in hooves/lisp-idioms-funcall against: '' anything-else-64444))))) for value ")+(JSON.stringify(G64446))));
+          throw ((("match-fail at ((match (\.\. Array prototype slice (apply arguments)) ([: f (tail args)] (apply f args)) (anything-else-68510 (_throw (_+ ''Match fail in hooves/lisp-idioms-funcall against: '' anything-else-68510))))) for value ")+(JSON.stringify(G68512))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValueminus64439 = actualFunminus64441.apply(this, arguments);
-      while (recurP64442(returnValueminus64439))        {
-        returnValueminus64439 = actualFunminus64441.apply(this, returnValueminus64439.args);
+      returnValueminus68505 = actualFunminus68507.apply(this, arguments);
+      while (recurP68508(returnValueminus68505))        {
+        returnValueminus68505 = actualFunminus68507.apply(this, returnValueminus68505.args);
         };
-      return returnValueminus64439;
+      return returnValueminus68505;
       });
     var let = "macro - no dynamic value.";
     }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-  return currentModuleminus64298;
+  return currentModuleminus68364;
   }))
