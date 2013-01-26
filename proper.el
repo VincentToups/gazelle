@@ -128,6 +128,9 @@
 		 ,(proper:to-prim expr)
 		 ,@(proper:map-to-prim tail-of-var)))
 
+(defun-match proper:to-prim ((list (or 'var '_var) (non-kw-symbol id)))
+  `(_var ,(proper:to-prim id) _undefined))
+
 (defun-match proper:to-prim ((list (or '_new 'new) constructor (tail arguments)))
   `(_new ,(proper:to-prim constructor)
 		 ,@(proper:map-to-prim arguments)))
@@ -389,8 +392,8 @@
   (if (not (equal loc proper:current-module)) 
 	  (match (proper:compile-module loc)
 			 ((list manifest macros symbol-macros)
-			  (let* ((macro (proper:pages-lookup id macros)))
-				(if macro (proper:message "Found macro at id: %S in %S" id loc))
+			  (let* ((macro (proper:pages-lookup id-from-head macros)))
+				(if macro (proper:message "Found macro at id: %S in %S" id-from-head loc))
 				(if macro 
 					(recur (apply macro args))
 				  `(_. ((_value require) ,loc) ,id-from-head))))
@@ -440,7 +443,7 @@
 			 (let* ((macro (proper:pages-lookup id-from macros)))
 			   (if macro (proper:message "Found macro at id-from: %S in %S" id-from loc))
 			   (if macro `(_proper:expand-with-this ,macro)
-				 `(_. ((_value require) ,loc) ,id-from))))
+				 `(_value (_. ((_value require) ,loc) ,id-from)))))
 			(anything-else 
 			 (error "Gazelle Module %S didn't compile in from form %S" `(from ,loc ,id-from))))
    id-from))
@@ -1219,6 +1222,7 @@
 		(gzu:read-file filename)))
    `(_newline-sequence ,@s-expressions)))
 
+
 (proper:define-macro
  _proper:macro-context ((tail body))
  (let ((proper:macros 
@@ -1491,6 +1495,9 @@
 			  (new-hash (gzu:file-hash file)))
 		  (setf (gethash file proper:*module-compile-cache*)
 				(cons new-hash new-compilation))
+		  (if proper:*short-term-checked-modules*
+			  (setf (gethash spec proper:*short-term-checked-modules*)
+					:false))
 		  new-compilation)
 	  (match-let 
 	   (((cons old-hash old-compilation)

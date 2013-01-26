@@ -9,19 +9,25 @@ require(["hooves/operator-functions", "hooves/lisp-idioms", "hooves/hooves", "jq
     // ("jquery/jquery" (:as $))
     ;
     (1+1);
+    var d = (new ((require("hooves/hooves").Delay))((function ()      {
+      console.log("In delay d.");
+      return "Hiiii";
+      })));
+    console.log(moduleminus4745e9d952.undelay(d));
     var o = {      
       
     };
-    (function (arguments, defineToObjectminus84231)      {
+    (function (arguments)      {
+      var defineToObjectminus78967 = o;
       var init = (function ()        {
         return moduleminus58c4bce870.plus(1, 2, 3);
         });
-      defineToObjectminus84231.init = init;
-      return defineToObjectminus84231;
-      }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)), o);
+      defineToObjectminus78967.init = init;
+      return defineToObjectminus78967;
+      }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
     var x = 10;
     x = moduleminus58c4bce870.plus(1, x);
-    console.log("require(\"hooves/hooves\").numberPredicate", require("hooves/hooves").numberPredicate);
+    console.log("(require(\"hooves/hooves\").numberPredicate)", (require("hooves/hooves").numberPredicate));
     console.log({      
       x:x
     });

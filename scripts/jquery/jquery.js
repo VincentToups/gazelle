@@ -1,9 +1,9 @@
 define([], (function ()  {
-  var currentModuleminus84182 = {    
+  var currentModuleminus78910 = {    
     
   };
   var setModuleObject = (function (value)    {
-    currentModuleminus84182 = value;
+    currentModuleminus78910 = value;
     });
   (function (arguments)    {
     var defineplus = "macro - no dynamic value.";
@@ -9481,7 +9481,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 
 })( window );
 ;
-    currentModuleminus84182.$ = window.jQuery;
+    currentModuleminus78910.$ = window.jQuery;
     }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-  return currentModuleminus84182;
+  return currentModuleminus78910;
   }))

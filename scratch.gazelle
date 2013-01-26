@@ -1,18 +1,21 @@
-(define-macro define-to (object-expr (tail define-args))
-   (let ((object (gensym "define-to-object-")))
-	 `(_let ((,object ,object-expr))
-			(define ,@define-args)
-			,(match define-args
-					((list (non-kw-symbol id) expr)
-					 `(set! (_. ,object ,id) ,id))
-					((list (list (non-kw-symbol id) (tail expr)) (tail exprs))
-					 `(set! (_. ,object ,id) ,id)))
-			,object)))
+(define (range [
+				((start step stop transform)
+				 (var out [:])
+				 (for ((var i start) 
+					   (_< i stop) 
+					   (set! i (_+ i step)))
+					  (out.push 
+					   (transform i)))
+				 out)
 
-(var o ({}))
+				((start step stop)
+				 (recur start step stop (lambda (v) v)))
+				((start stop)
+				 (recur start 1 stop (lambda (v) v)))
+				((stop)
+				 (recur 0 1 stop (lambda (v) v)))
+				]))
 
-(define-to o x 10)
-(define-to o (f x) (_+ x x))
-
-
-(print (o.f o.x))
+(lambda ()
+  (_newline-sequence 
+   a b c))

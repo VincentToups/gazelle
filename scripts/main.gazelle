@@ -4,6 +4,10 @@
   ("hooves/hooves" :all)
   ("jquery/jquery" (:as $)))
  (_+ 1 1)
+ (var d (delay 
+		 (console.log "In delay d.")
+		 "Hiiii"))
+ (console.log (undelay d))
  (var o ({}))
  (define-to o (init) (+ 1 2 3))
  (var x 10)
@@ -16,5 +20,8 @@
  (console.log (+ "using idioms- " (idioms-apply + [: 1 2])))
  (.. ($ "body") (append "Hello World.")) 
  (+ 1 2))
+
+
+
 
 

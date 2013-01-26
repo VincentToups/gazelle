@@ -394,6 +394,15 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 (defun-match prim:transcode ((list '_return (list (and which (or '_for '_while '_try '_var '_=)) (tail body))))
   (recur `(,which ,@body)))
 
+(defun prim:make-last-return (sequence)
+  (let* ((r (reverse sequence))
+		 (last (car r))
+		 (new-last `(_return ,last)))
+	(reverse (cons new-last (cdr r)))))
+
+(defun-match prim:transcode ((list '_return (list '_newline-sequence (tail body))))
+  (recur `(_newline-sequence ,@(prim:make-last-return body))))
+
 (defun-match prim:transcode ((list '_return (list (and which (or '_throw '_continue '_break)) expression)))
   (recur `(,which ,expression)))
 
@@ -544,7 +553,7 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 (defun-match prim:transcode ((list '_new constructor (tail arguments)))
   (prim:in-parens 
    (prim:insert "new ")
-   (prim:transcode-in-parens-when-needed constructor)
+   (prim:transcode-in-parens constructor)
    (prim:in-parens 
 	(prim:transcode-csvs arguments))))
 
