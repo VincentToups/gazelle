@@ -410,6 +410,10 @@ manglings.  Additionally, dashed ids are replaced by camel case."
   (prim:insert "return ")
   (prim:transcode expression))
 
+(defun-match prim:transcode ((list '_return))
+  (prim:insert "return ")
+  (prim:transcode '_undefined))
+
 (defun-match prim:transcode ((list-rest '_while expression body))
   (prim:insert "while ")
   (prim:in-parens 

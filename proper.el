@@ -180,6 +180,10 @@
 (defun-match proper:to-prim ((list '_return expr))
   `(_return ,(proper:to-prim expr)))
 
+(defun-match proper:to-prim ((list '_return))
+  `(_return))
+
+
 (defun-match proper:to-prim ((list-rest '_while expression body))
   `(_while ,(proper:to-prim expression)
 		   ,@(proper:map-to-prim body)))
