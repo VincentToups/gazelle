@@ -1,13 +1,15 @@
 define([], (function ()  {
-  var currentModuleminus91311 = {    
+  var currentModuleminus93656 = {    
     
   };
   var setModuleObject = (function (value)    {
-    currentModuleminus91311 = value;
+    currentModuleminus93656 = value;
     });
   (function (arguments)    {
     var defineplus = "macro - no dynamic value.";
     var defineMacroplus = "macro - no dynamic value.";
+    console.log("Before actual-jquery.");
+    // inserting contents of actual-jquery.js
     /*!
  * jQuery JavaScript Library v1.8.3
  * http://jquery.com/
@@ -9481,7 +9483,8 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 
 })( window );
 ;
-    currentModuleminus91311.$ = window.jQuery;
+    console.log("In jquery stub module, $ is ", window.jQuery);
+    currentModuleminus93656.$ = window.jQuery;
     }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-  return currentModuleminus91311;
+  return currentModuleminus93656;
   }))

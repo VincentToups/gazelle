@@ -5,14 +5,10 @@
   (append seq (list item)))
 
 (defun gzu:read-file-as-string (filename)
-  (let* ((open-already (find-buffer-visiting (file-truename filename)))
-		 (buffer (if open-already open-already
-				   (find-file-noselect (file-truename filename)))))
-	(prog1 
-		(with-current-buffer buffer 
-		  (buffer-substring-no-properties (point-min) (point-max)))
-	  (when (not open-already)
-		(kill-buffer buffer)))))
+  (with-temp-buffer 
+	(insert-file filename)
+	(buffer-substring (point-min)
+					  (point-max))))
 
 (defun gzu:chomp (str)
   "Perl-like chomp function to return a version of STR with no whitespace."
@@ -165,10 +161,10 @@
 (defun gzu:file-hash (file)
   (if gzu:use-modtime-as-hash
 	  (format "%S" (gzu:file-last-modified file))
-	(gzu:with-file-buffer-maybe-open 
-	 (file :save nil)
-	 (md5 (buffer-substring (point-min)
-							(point-max))))))
+	(with-temp-buffer 
+	  (insert-file file)
+	  (md5 (buffer-substring (point-min)
+							 (point-max))))))
 
 (defun gzu:hash-table-keys (tbl)
   (let ((keys '()))
@@ -203,6 +199,28 @@
 		 ((list zero one two three four modification (tail tl))
 		  modification)))
 
+(defun gzu:pwd ()
+  (replace-regexp-in-string "^Directory " "" (pwd)))
+
+(defmacro* gzu:with-pwd (directory &body body)
+  (let ((pwd (gensym))
+		(err (gensym)))
+	`(let* ((,pwd (gzu:pwd)))
+   	   (condition-case ,err
+		   (progn 
+			 (cd ,directory)
+			 (prog1 (progn ,@body)
+			   (cd ,pwd)))
+		 (error (cd ,pwd) (signal (car ,err) (cdr ,err)))))))
+
+(defun gzu:get-file-directory (file)
+  (let* ((full (file-truename file))
+		 (parts-of (split-string full "/"))
+		 (all-but-name 
+		  (reverse (cdr (reverse parts-of)))))
+	(match all-but-name 
+		   (nil "/")
+		   (otherwise (join otherwise "/")))))
 
 
 (provide 'gazelle-utils)

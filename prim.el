@@ -592,10 +592,12 @@ manglings.  Additionally, dashed ids are replaced by camel case."
    (prim:transcode-in-parens expr)))
 
 (defun-match prim:transcode ((list '_include-js (! (string file))))
-  (let ((contents (gzu:with-file-buffer-maybe-open 
-				   (file)
-				   (buffer-substring (point-min)
-									 (point-max)))))
+  (let ((contents (with-temp-buffer 
+					(insert-file file)
+					(buffer-substring-no-properties (point-min)
+													(point-max)))))
+	(prim:insert (format "// inserting contents of %s" file))
+	(prim:newline)
 	(prim:insert contents)))
 
 (defun-match- prim:commentify (object)

@@ -289,6 +289,10 @@
 (defun-match proper:to-prim ((list (or 'include-js '_include-js) (! (string file))))
   `(_include-js ,file))
 
+;; (defun-match proper:to-prim ((list 'include-js (! (string file))))
+;;   (proper:message "include-js is prefixing directory %S to file name %S" (gzu:pwd) file)
+;;   `(_include-js ,(concat (gzu:pwd) "/" file)))
+
 (defun-match proper:to-prim ((list (or 'comment '_comment) (tail comments)))
   `(_comment ,@comments))
 
@@ -1317,7 +1321,7 @@
   (defun-match- proper:as-forms-p ((list (tail items)))
 	(proper:all-satisfy #'proper:as-form-p items))
   (defpattern proper:as-forms (&optional (pattern (gensym)))
-	(p #'proper:as-forms-p ,pattern)))
+	`(p #'proper:as-forms-p ,pattern)))
 
 (defun proper:module-location->symbol (loc)
   (intern (concat "module-" (substring (md5 (file-truename (concat (proper:fetch-rjs-root) loc)))
@@ -1581,14 +1585,32 @@
 							   `(_proper:require-spec ,@spec))
 					   ,@body))))
 
+
+(defvar proper:*node-rjs-root* nil)
+(defun proper:read-node-rjs-dir (d)
+  (interactive "DPlease enter your node require-js project root.")
+  d)
+(defun proper:set-node-rjs-root ()
+  (interactive)
+  (setq proper:*node-rjs-root* nil)
+  (proper:fetch-node-rjs-root))
+(defun proper:fetch-node-rjs-root ()
+  (if proper:*node-rjs-root*
+	  proper:*node-rjs-root*
+	(let ((d (call-interactively #'proper:read-node-rjs-dir)))
+	  (prog1 d
+		(setq proper:*node-rjs-root* d)))))
+
+
 (proper:define-macro 
  node-require (specs (tail body))
  (proper:message "specs is %S" specs)
  `(((_function () 
 			   (_var rjs ((value require) "requirejs"))
+			   (console.log (_+ "using requirejs in nodejs, rjs is " rjs))
 			   (rjs.config 
 				({} node-require require
-					base-url "./scripts/"))
+					base-url ,(proper:fetch-node-rjs-root)))
 			   (_return rjs)))
    [: ,@(proper:module-specs->locations specs)]
    (designated-lambda require-form (,@(proper:module-specs->crypto-symbols specs))
@@ -1663,6 +1685,7 @@
 (defun proper:really-compile-module (spec)
   (proper:message "Really compiling module %S" spec)
   (let* ((file (proper:module-spec->module-file spec))
+		 (file-directory (gzu:get-file-directory file))
 		 (output-file (proper:module-gazelle-file->js-file file))
 		 (contents (proper:read-module-file file))
 		 (specs (proper:module-module-specs contents))
@@ -1733,10 +1756,13 @@
 								  `(_proper:require-spec ,@spec))
 						  ,@body)
 						 (_return ,current-module)))))
-	  (gzu:with-file-buffer-maybe-open 
-	   (output-file :save t)
-	   (delete-region (point-min) (point-max))
-	   (prim:transcode
-		(proper:to-prim gazelle-code)))
+	  (with-temp-buffer 
+		(gzu:with-pwd file-directory 
+					  (prim:transcode (proper:to-prim gazelle-code)))
+		(write-region (point-min)
+					  (point-max)
+					  output-file))
 	  (list proper:*module-manifest* proper:macros proper:symbol-macros))))
+
+
 
