@@ -1277,11 +1277,13 @@
   (setq proper:*rjs-root* nil)
   (proper:fetch-rjs-root))
 (defun proper:fetch-rjs-root ()
-  (if proper:*rjs-root*
-	  proper:*rjs-root*
-	(let ((d (call-interactively #'proper:read-rjs-dir)))
-	  (prog1 d
-		(setq proper:*rjs-root* d)))))
+  (if proper:using-node-require
+	  (proper:fetch-node-rjs-root)
+	(if proper:*rjs-root*
+		proper:*rjs-root*
+	  (let ((d (call-interactively #'proper:read-rjs-dir)))
+		(prog1 d
+		  (setq proper:*rjs-root* d))))))
 
 (defvar proper:*module-manifest* nil)
 (defun proper:inside-module-p ()
@@ -1601,23 +1603,24 @@
 	  (prog1 d
 		(setq proper:*node-rjs-root* d)))))
 
-
+(defvar proper:using-node-require nil)
 (proper:define-macro 
  node-require (specs (tail body))
  (proper:message "specs is %S" specs)
- `(((_function () 
-			   (_var rjs ((value require) "requirejs"))
-			   (console.log (_+ "using requirejs in nodejs, rjs is " rjs))
-			   (rjs.config 
-				({} node-require require
-					base-url ,(proper:fetch-node-rjs-root)))
-			   (_return rjs)))
-   [: ,@(proper:module-specs->locations specs)]
-   (designated-lambda require-form (,@(proper:module-specs->crypto-symbols specs))
-					  (_proper:macro-context
-					   ,@(loop for spec in specs collect
-							   `(_proper:require-spec ,@spec))
-					   ,@body))))
+ (proper:to-prim 
+  `(((_function () 
+				(_var rjs ((value require) "requirejs"))
+				(console.log (_+ "using requirejs in nodejs, rjs is " rjs))
+				(rjs.config 
+				 ({} node-require require
+					 ))
+				(_return rjs)))
+	[: ,@(proper:module-specs->locations specs)]
+	(designated-lambda require-form (,@(proper:module-specs->crypto-symbols specs))
+					   (_proper:macro-context
+						,@(loop for spec in specs collect
+								`(_proper:require-spec ,@spec))
+						,@body)))))
 
 (defun proper:spec-location->naive-name (location)
   (intern (car (last (split-string location (regexp-quote "/"))))))
