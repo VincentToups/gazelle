@@ -1,0 +1,117 @@
+(module 
+ ()
+ (define+ (defined? x)
+   (_! (_=== (_typeof x) "undefined")))
+ (define+ (undefined? x)
+   (_=== (_typeof x) "undefined"))
+ (define+ (number? o)
+   (_=== (_typeof o) "number"))
+ (define+ (string? o)
+   (_=== (_typeof o) "string"))
+ (define+ (array? o)
+   (_instanceof o Array))
+ (define+ (empty? o)
+   (_=== 0 (.. o length)))
+ (define-macro+ collect{} ((tail ids))
+   `(_{} ,@(loop for id in ids append (list id id))))
+ (define-macro+ @ ((tail ids))
+   `(_. this ,@ids))
+
+ (define+ (===_ partial)
+   (lambda (open)
+	 (_=== open partial)))
+
+ (define-macro+ when (condexpr (tail body))
+   `(if ,condexpr 
+		(progn ,@body)))
+
+ (define-macro+ unless (condexpr (tail body))
+   `(if (_! ,condexpr)
+		(progn ,@body)))
+
+ ;; (define +open+ ({}))
+
+ ;; (define (partial f (tail partial-list))
+ ;;   (lambda ((tail arguments))
+ ;; 	 (var i 0)
+ ;; 	 (var real-args )))
+
+ (define+ (Delay lambda-expr)
+   (set! this.lambda-expr lambda-expr)
+   this)
+
+ (set! Delay.prototype.value 
+	   (lambda ()
+		 (this.lambda-expr)))
+
+ (define-macro+ delay ((tail body))
+   `(new (from "hooves/hooves" Delay)
+		 (lambda () ,@body)))
+
+ (define+ (undelay o)
+   (match o
+ 		  ((instance Delay delay-object)
+		   (delay-object.value))))
+
+ (define-macro+ define-to (object-expr (tail define-args))
+   (let ((object (gensym "define-to-object-")))
+	 `(progn
+		(_var ,object ,object-expr)
+		(define ,@define-args)
+		,(match define-args
+				((list (non-kw-symbol idx) expr)
+				 `(set! (_. ,object ,idx) ,idx))
+				((list (list (non-kw-symbol idy) (tail expr)) (tail exprs))
+				 `(set! (_. ,object ,idy) ,idy)))
+		,object)))
+
+ (define-macro+ for* ((list 
+					   (list (non-kw-symbol index) match-expr) 
+					   (or 'in :in) expr)
+ 					  (tail body))
+   (let ((array-object (gensym "array-object")))
+	 `(_newline-sequence 
+	   (_var ,array-object ,expr)
+	   (for (,index in ,array-object)
+			(var-match ,match-expr [,array-object ,index])
+			,@body))))
+
+ (define+ (range [
+				  ((start step stop transform)
+				   (var out [:])
+				   (for ((var i start) 
+						 (_< i stop) 
+						 (set! i (_+ i step)))
+						(out.push 
+						 (transform i)))
+				   out)
+
+				  ((start step stop)
+				   (recur start step stop (lambda (v) v)))
+				  ((start stop)
+				   (recur start 1 stop (lambda (v) v)))
+				  ((stop)
+				   (recur 0 1 stop (lambda (v) v)))
+				  ]))
+
+ (define-macro+ with-slots ((list (tail slots)) object-expr (tail body))
+   (let ((object (gensym)))
+	 `(_let ()  
+		(_var ,object ,object-expr)
+		(_proper:symbol-macro-let 
+		 ,(loop for slot in slots collect
+				(match slot 
+					   ((non-kw-symbol slot)
+						`(,slot (_. ,object ,slot)))
+					   ((list (non-kw-symbol local-name)
+							  (non-kw-symbol in-object-name))
+						`(,local-name (_. ,object ,in-object-name)))
+					   ((list (non-kw-symbol local-name)
+							  (or (string key)
+								  (number key)))
+						`(,local-name [,object ,key]))))
+		 ,@body)))))
+
+ 
+
+

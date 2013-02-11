@@ -1,0 +1,10 @@
+(module 
+ ()
+ (console.log "Before actual-jquery.")
+
+ (_include-js "actual-jquery.js")
+
+
+ (console.log "In jquery stub module, $ is " window.jQuery)
+ (define+ $ window.jQuery))
+

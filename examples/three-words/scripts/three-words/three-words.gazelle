@@ -1,0 +1,23 @@
+(module 
+ (("hooves/operator-functions" :all)
+  ("hooves/hooves" :all)
+  ("jquery/jquery" :all))
+
+ (define (set-diff set1 set2)
+   (var out [:])
+   (for* ((index element) :in set1)
+		 (var i (set2.index-of element))
+		 (if (=== i -1)
+			 (out.push element)))
+   out)
+
+ (define all-letters "abcdefghijklmnopqrstuvwxyz")
+ (define+ (update-letters)
+   (var letters (Array.prototype.join.call
+				 (.. ($ ".word") 
+					 (map (lambda (index input-element)
+							(.. ($ input-element) (val)))))
+				 ""))
+   (.. ($ "#letters")
+	   (text (.. (set-diff all-letters letters) (join ""))))))
+

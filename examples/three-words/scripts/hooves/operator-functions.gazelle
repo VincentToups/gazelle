@@ -1,0 +1,59 @@
+(module
+ (("hooves/lisp-idioms" (:as apply funcall)))
+
+ (define+ (+ hd (tail tl))
+   (var result hd)
+   (for (i :in tl)
+		(set! result (_+ result [tl i])))
+   result)
+
+ (define+ (- hd (tail tl))
+   (if (_> tl.length 0) 
+	   (_- hd (apply + tl))
+	 (_- hd)))
+
+ (define+ (* hd (tail tl))
+   (var result hd)
+   (for (i :in tl)
+		(set! result (_* result [tl i])))
+   result)
+
+ (define+ (/ hd (tail tl))
+   (_/ hd (apply * tl)))
+
+ (define-macro define-external-binop (op-name)
+   (let ((prim-op (intern (concat "_" (symbol-name op-name))))
+		 (a (gensym))
+		 (b (gensym)))
+	 `(define+ (,op-name ,a ,b)
+		(,prim-op ,a ,b))))
+
+ (define-macro define-external-binops ((tail op-names))
+   `(_newline-sequence 
+	 ,@(loop for op-name in op-names collect
+			 `(define-external-binop ,op-name))))
+
+ (define-external-binops 
+   < <= > >= & | == === % ^ << >> >>>)
+
+ (define-macro+ && 
+   [((a b)
+	 `(_&& ,a ,b))
+	((a (tail rest))
+	 `(_&& ,a (&& ,@rest)))])
+
+ (define-macro+ ||
+   [((a b)
+	 `(_|| ,a ,b))
+	((a (tail rest))
+	 `(_|| ,a (|| ,@rest)))])
+
+ (define+ (! o)
+   (_! o))
+
+ (define-macro+ incr ((non-kw-symbol place))
+   `(set! ,place (+ 1 ,place)))
+
+ (define-macro+ decr ((non-kw-symbol place))
+   `(set! ,place (- ,place 1))))
+

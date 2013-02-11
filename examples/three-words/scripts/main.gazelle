@@ -1,0 +1,8 @@
+(require 
+ (("jquery/jquery" :all)
+  ("hooves/hooves" :all)
+  ("hooves/operator-functions" :all)
+  ("three-words/three-words" :all))
+
+ ($ (lambda ()
+	  (window.set-interval update-letters 250))))
