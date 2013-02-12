@@ -272,7 +272,8 @@
 
 (defun-match proper:to-prim ((list (or '_= 'set!) (and
 												   (or (non-kw-symbol _)
-													   (list-rest '_. _))
+													   (list-rest '_. _)
+													   [_ (tail _)])
 												   set-this)
 								   value-expr))
   `(_= ,(proper:to-prim set-this) ,(proper:to-prim value-expr)))

@@ -565,7 +565,8 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 (defun-match prim:transcode ((list '_= 
 								   (and
 									(or (non-kw-symbol _)
-										(list-rest '_. _))
+										(list-rest '_. _)
+										[_ (tail _)])
 									set-this)
 								   value-expr))
   (prim:transcode set-this)
