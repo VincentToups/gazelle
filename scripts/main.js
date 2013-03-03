@@ -18,12 +18,12 @@ require(["hooves/operator-functions", "hooves/lisp-idioms", "hooves/hooves", "jq
       
     };
     (function (arguments)      {
-      var defineToObjectminus93713 = o;
+      var defineToObjectminus16347 = o;
       var init = (function ()        {
         return moduleminus58c4bce870.plus(1, 2, 3);
         });
-      defineToObjectminus93713.init = init;
-      return defineToObjectminus93713;
+      defineToObjectminus16347.init = init;
+      return defineToObjectminus16347;
       }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
     var x = 10;
     x = moduleminus58c4bce870.plus(1, x);

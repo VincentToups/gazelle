@@ -779,6 +779,13 @@
   (proper:expand-match1-body (prim:transcode->string (proper:to-prim expr))
 							 val body acc))
 
+(defun-match proper:expand-match1-body ((list 'instance of-expr)
+										val body acc)
+  (recur (let ((obj (gensym)))
+		   `(p (lambda (,obj)
+				 (_instanceof ,obj ,of-expr))))
+		 val body acc))
+
 (defun-match proper:expand-match1-body ((list 'instance of-expr pattern)
 										val body acc)
   (recur (let ((obj (gensym)))
