@@ -2,6 +2,7 @@
  (("hooves/operator-functions" :all)
   ("hooves/lisp-idioms" (:with-prefix idioms- :all))
   ("hooves/hooves" :all)
+  ("spotting-gazelle/symbol" :all)
   ("jquery/jquery" (:as $)))
  (_+ 1 1)
  (var d (delay 
@@ -19,7 +20,17 @@
  (console.log (+ "7 > 10" (> 7 10)))
  (console.log (+ "using idioms- " (idioms-apply + [: 1 2])))
  (.. ($ "body") (append "Hello World.")) 
- (+ 1 2))
+ (+ 1 2)
+
+ (define s (symbol "test-press"))
+
+
+ (console.log (+ "symbol :" s))
+
+ (console.log (+ "trying match with symbol pattern."
+				 (match s
+						((symbol n) n)
+						(anything-else :failed-to-match)))))
 
 
 

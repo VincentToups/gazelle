@@ -213,6 +213,14 @@
 			   (cd ,pwd)))
 		 (error (cd ,pwd) (signal (car ,err) (cdr ,err)))))))
 
+;; (defmacro* gzu:with-pwd (directory &body body)
+;;   (let ((pwd (gensym))
+;; 		(err (gensym)))
+;; 	`(let ((,pwd (gzu:pwd)))
+;; 	   (cd ,directory)
+;; 	   (prog1 (progn ,@body)
+;; 		 (cd ,pwd)))))
+
 (defun gzu:get-file-directory (file)
   (let* ((full (file-truename file))
 		 (parts-of (split-string full "/"))

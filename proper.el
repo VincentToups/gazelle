@@ -20,6 +20,10 @@
 										   (concat "proper: " (apply #'format args))))))
   (defvar proper:macros (list (make-hash-table)))
   (setq proper:macros (list (make-hash-table)))
+
+  (defvar proper:patterns (list (make-hash-table)))
+  (setq proper:patterns (list (make-hash-table)))
+
   (defvar proper:symbol-macros (list (make-hash-table)))
   (setq proper:symbol-macros (list (make-hash-table)))
 
@@ -40,6 +44,11 @@
 	(and (symbolp o)
 		 (not (keywordp o))
 		 (proper:pages-lookup o proper:macros)))
+
+  (defun proper:denotes-custom-pattern-p (o)
+	(and (symbolp o)
+		 (not (keywordp o))
+		 (proper:pages-lookup o proper:patterns)))
 
   (defun proper:denotes-symbol-macro-p (o)
 	(and (symbolp o)
@@ -66,6 +75,20 @@
 			`(p #'proper:denotes-macro-p ,pattern))
 		   ((list)
 			`(p #'proper:denotes-macro-p))))
+
+(defpattern proper:custom-pattern (&rest pattern)
+	(match pattern
+		   ((list pattern expander-pattern)
+			`(and ,pattern
+				  (funcall #'proper:denotes-custom-pattern-p 
+						   (and 
+							(p #'proper:not-null)
+							,expander-pattern))))
+		   ((list pattern)
+			`(p #'proper:denotes-custom-pattern-p ,pattern))
+		   ((list)
+			`(p #'proper:denotes-custom-pattern-p))))
+
   (defpattern proper:symbol-macro (&rest pattern)
 	(match pattern
 		   ((list pattern expander-pattern)
@@ -334,6 +357,14 @@
   (let ((context (car proper:macros)))
 	(setf (gethash name context) function)))
 
+(defun proper:add-to-global-pattern-context (name function)
+  (let ((context (car (last proper:patterns))))
+	(setf (gethash name context) function)))
+
+(defun proper:add-to-pattern-context (name function)
+  (let ((context (car proper:patterns)))
+	(setf (gethash name context) function)))
+
 (defun proper:add-to-global-symbol-macro-context (name function)
   (let ((context (car (last proper:symbol-macros))))
 	(setf (gethash name context) function)))
@@ -344,6 +375,8 @@
 
 (eval-when (load compile eval)
   (defun-match proper:fix-macro-expansion-patterns ((list pattern (tail forms)))
+	`(,(cons 'list pattern) ,@forms))
+  (defun-match proper:fix-pattern-expansion-patterns ((list pattern (tail forms)))
 	`(,(cons 'list pattern) ,@forms)))
 
 (defmacro* proper:define-macro-vector-body (name vector-of-bodies)
@@ -400,7 +433,7 @@
 							  (tail args)))
   (if (not (equal loc proper:current-module)) 
 	  (match (proper:compile-module loc)
-			 ((list manifest macros symbol-macros)
+			 ((list manifest macros symbol-macros patterns)
 			  (let* ((macro (proper:pages-lookup id-from-head macros)))
 				(if macro (proper:message "Found macro at id: %S in %S" id-from-head loc))
 				(if macro 
@@ -448,13 +481,13 @@
  ((string loc) (non-kw-symbol id-from))
  (if (not (equal loc proper:current-module)) 
 	 (match (proper:compile-module loc)
-			((list manifest macros symbol-macros)
+			((list manifest macros symbol-macros patterns)
 			 (let* ((macro (proper:pages-lookup id-from macros)))
 			   (if macro (proper:message "Found macro at id-from: %S in %S" id-from loc))
 			   (if macro `(_proper:expand-with-this ,macro)
 				 `(_value (_. ((_value require) ,loc) ,id-from)))))
 			(anything-else 
-			 (error "Gazelle Module %S didn't compile in from form %S" `(from ,loc ,id-from))))
+			 (error "Gazelle Module %S didn't compile in from form %S" loc `(from ,loc ,id-from))))
    id-from))
 
 (proper:define-macro 
@@ -485,8 +518,6 @@
 (proper:define-macro 
  match-fail ()
  "match-fail-e1aa3b7e7ce9731266013c178de842b5")
-
-
 
 (defun-match- proper:make-last-return (nil)
   nil)
@@ -653,6 +684,27 @@
 										 val body acc)
   (let ((acc (append acc
 					 `((_if (_! (_=== "undefined" (_typeof ,val)))
+							(,proper:signal-match-fail))))))
+	(append acc body)))
+
+(defun-match proper:expand-match1-body ('null
+										 val body acc)
+  (let ((acc (append acc
+					 `((_if (_! (_=== null ,val))
+							(,proper:signal-match-fail))))))
+	(append acc body)))
+
+(defun-match proper:expand-match1-body ('true
+										 val body acc)
+  (let ((acc (append acc
+					 `((_if (_! (_=== true ,val))
+							(,proper:signal-match-fail))))))
+	(append acc body)))
+
+(defun-match proper:expand-match1-body ('false
+										 val body acc)
+  (let ((acc (append acc
+					 `((_if (_! (_=== false ,val))
 							(,proper:signal-match-fail))))))
 	(append acc body)))
 
@@ -1004,6 +1056,21 @@
 					   (proper:transform-options{}-segment e)))
 		 val body acc))
 
+(defun-match proper:expand-match1-body ((list (proper:custom-pattern p expander) 
+											  (tail expressions))
+										val body acc)
+  (recur (apply expander expressions) val body acc))
+
+(defun-match proper:expand-match1-body ((list (list 'from (string module-loc) (non-kw-symbol name)) 
+											  (tail expressions))
+										val body acc)
+  (if (not (equal module-loc proper:current-module)) 
+	  (match (proper:compile-module module-loc) 
+			 ((list manifest macros symbol-macros patterns) 
+			  (let ((expander (gethash name patterns))) 
+				(recur (apply expander expressions) val body acc))))
+	(recur (proper:pages-lookup name proper:patterns) val body acc)))
+
 (defun-match proper:expand-match1-body (pattern val-expr body)
   (let ((val (gensym "match-val-"))) 
 	(recur pattern val body 
@@ -1106,7 +1173,7 @@
 						   (,args 
 							(error "Macro %s failed for args %S" ',name ,args)))))))
 	 (proper:add-to-macro-context name transform-lambda)
-	 `(_var ,name "macro - no dynamic value.")))
+	 `(_comment ,name "macro - no dynamic value.")))
   ((name [(tail sub-bodies)])
    (let* ((args (gensym))
 		  (transform-lambda 
@@ -1115,7 +1182,30 @@
 						   ,@(mapcar #'proper:fix-macro-expansion-patterns sub-bodies)
 						   (,args (error "Macro %s failed for args %S" ',name ,args)))))))
 	 (proper:add-to-macro-context name transform-lambda)
-	 `(_var ,name "macro - no dynamic value.")))])
+	 `(_comment ,name "macro - no dynamic value.")))])
+
+(proper:define-macro 
+ define-pattern 
+ [((name (list-rest patterns) (tail body))
+   (let* ((args (gensym))
+		  (transform-lambda 
+		   (eval `(lambda (&rest ,args)
+					(match ,args
+						   ((list ,@patterns)
+							,@body)
+						   (,args 
+							(error "Pattern %s failed for args %S" ',name ,args)))))))
+	 (proper:add-to-pattern-context name transform-lambda)
+	 `(_comment ,name "pattern - no dynamic value.")))
+  ((name [(tail sub-bodies)])
+   (let* ((args (gensym))
+		  (transform-lambda 
+		   (eval `(lambda (&rest ,args)
+					(match ,args
+						   ,@(mapcar #'proper:fix-pattern-expansion-patterns sub-bodies)
+						   (,args (error "Pattern %s failed for args %S" ',name ,args)))))))
+	 (proper:add-to-pattern-context name transform-lambda)
+	 `(_comment ,name "pattern - no dynamic value.")))])
 
 (proper:define-macro  
  define-symbol-macro (name pattern (tail body))
@@ -1337,22 +1427,31 @@
   (intern (concat "module-" (substring (md5 (file-truename (concat (proper:fetch-rjs-root) loc)))
 									   0 10))))
 
-(defun proper:lookup-manifest-type (symbol manifest)
+(defun proper:lookup-manifest-types (symbol manifest)
   (gzu:alist-lookup :type (gethash symbol manifest)))
 
 (defun proper:setup-macro-as (source local 
 									 module-location 
 									 local-module-name
-									 manifest macros symbol-macros)
+									 manifest macros symbol-macros patterns)
   (let ((expander (proper:pages-lookup source macros)))
 	(proper:message "adding as macro, %S referring to %S" local expander)
 	(proper:add-to-macro-context local 
 								 (proper:pages-lookup source macros))))
 
+(defun proper:setup-pattern-as (source local 
+									   module-location 
+									   local-module-name
+									   manifest macros symbol-macros patterns)
+  (let ((expander (proper:pages-lookup source patterns)))
+	(proper:message "adding as pattern, %S referring to %S" local expander)
+	(proper:add-to-pattern-context local 
+								   (proper:pages-lookup source patterns))))
+
 (defun proper:setup-value-as (source local 
 									 module-location 
 									 local-module-name
-									 manifest macros symbol-macros)
+									 manifest macros symbol-macros patterns)
   (proper:message "adding as symbol macro, %S expanding to %S" local 
 				  `(_. ,(proper:module-location->symbol module-location) ,source))
   (proper:add-to-symbol-macro-context 
@@ -1366,23 +1465,31 @@
 							 local-module-name
 							 manifest
 							 macros
-							 symbol-macros)
+							 symbol-macros
+							 patterns)
   (proper:message "Setting up as form %S" as-form)
   (loop for form in (cdr as-form) do
 		(match form
 			   ((proper:as-form source local)
-				(match (proper:lookup-manifest-type source manifest)
-					   (:macro (proper:setup-macro-as 
-								source local 
-								module-location 
-								local-module-name
-								manifest macros symbol-macros))
-					   ((or :value :function)
-						(proper:setup-value-as 
-						 source local
-						 module-location 
-						 local-module-name
-						 manifest macros symbol-macros)))))))
+				(loop for type in (proper:lookup-manifest-types source manifest) 
+					  do
+					  (match type
+							 (:macro (proper:setup-macro-as 
+									  source local 
+									  module-location 
+									  local-module-name
+									  manifest macros symbol-macros patterns))
+							 (:pattern (proper:setup-pattern-as 
+										source local 
+										module-location 
+										local-module-name
+										manifest macros symbol-macros patterns))
+							 ((or :value :function)
+							  (proper:setup-value-as 
+							   source local
+							   module-location 
+							   local-module-name
+							   manifest macros symbol-macros patterns))))))))
 
 (proper:define-macro
  _proper:require-spec
@@ -1392,7 +1499,7 @@
 			  (symbol local-module-name)))
 	(tail parts))
    (match (proper:compile-module module-location)
-		  ((list manifest macros symbol-macros)
+		  ((list manifest macros symbol-macros patterns)
 		   (proper:message "Compiled/loaded module %s" module-location)
 		   (proper:message "* manifest has keys %S" (gzu:hash-table-keys manifest))
 		   (proper:message "* top of macros has keys %S" (gzu:hash-table-keys (car macros)))
@@ -1406,7 +1513,8 @@
 										 local-module-name
 										 manifest
 										 macros
-										 symbol-macros)))
+										 symbol-macros
+										 patterns)))
 		   `(_comment (,module-location ,@parts)))))
   (((list 'js loc name))
    `(_comment ((js ,loc ,name))))])
@@ -1691,7 +1799,19 @@
 				  (lambda (form)
 					(proper:reduce-require-form manifest form))))
 
-
+(defun proper:manifest-add-type (manifest name type)
+  (let* ((entry (gethash name manifest))
+		 (type-info (cdr (assoc :type entry)))
+		 (new-type-info (cons type type-info))
+		 (new-entry 
+		  (if type-info
+			  (loop for sub in entry collect
+					(if (equal (car sub) :type)
+						`(:type . ,new-type-info)
+					  sub))
+			(cons `(:type . ,new-type-info) entry))))
+	(setf (gethash name manifest) new-entry)
+	manifest))
 
 (defun proper:really-compile-module (spec)
   (proper:message "Really compiling module %S" spec)
@@ -1705,6 +1825,7 @@
 		   (proper:symbol-macros (cons (make-hash-table)
 									   (last proper:symbol-macros)))
 		   (proper:macros (cons (make-hash-table) (last proper:macros)))
+		   (proper:patterns (cons (make-hash-table) (last proper:patterns)))
 		   ;; Only use the global macro space for compiling modules.
 		   (current-module (gensym "current-module-"))
 		   (gazelle-code 
@@ -1718,8 +1839,7 @@
 						  (define-macro define+ ((tail parts))
 							(match parts
 								   ((list (non-kw-symbol name) value-expr)
-									(setf (gethash name proper:*module-manifest*)
-										  '((:type . :value)))
+									(proper:manifest-add-type proper:*module-manifest* name :value)
 									(proper:add-to-symbol-macro-context 
 									 name
 									 (lexical-let  
@@ -1729,8 +1849,7 @@
 									`(_= (_. ,current-module ,name) ,value-expr))
 								   ((list (list (non-kw-symbol name) (tail args)) 
 										  (tail (p #'proper:not-null body)))
-									(setf (gethash name proper:*module-manifest*)
-										  '((:type . :function)))
+									(proper:manifest-add-type proper:*module-manifest* name :value)
 									(proper:add-to-symbol-macro-context 
 									 name
 									 (lexical-let
@@ -1742,8 +1861,7 @@
 																	   (concat spec "-" (symbol-name name))) 
 																	 ,args ,@body)))
 								   ((list (list (non-kw-symbol name) (tail function-terms)))
-									(setf (gethash name proper:*module-manifest*)
-										  '((:type . :function)))
+									(proper:manifest-add-type proper:*module-manifest* name :value)
 									(proper:add-to-symbol-macro-context 
 									 name
 									 (lexical-let
@@ -1760,9 +1878,11 @@
 												   " (name arg-pattern ...) body0 ...)," 
 												   " got %S") `(define+ ,@parts)))))
 						  (define-macro define-macro+ (name (tail rest))
-							(setf (gethash name proper:*module-manifest*)
-								  '((:type . :macro)))
+							(proper:manifest-add-type proper:*module-manifest* name :macro)
 							`(define-macro ,name ,@rest))
+						  (define-macro define-pattern+ (name (tail rest))
+							(proper:manifest-add-type proper:*module-manifest* name :pattern)
+							`(define-pattern ,name ,@rest))
 						  ,@(loop for spec in specs collect
 								  `(_proper:require-spec ,@spec))
 						  ,@body)
@@ -1773,7 +1893,7 @@
 		(write-region (point-min)
 					  (point-max)
 					  output-file))
-	  (list proper:*module-manifest* proper:macros proper:symbol-macros))))
+	  (list proper:*module-manifest* proper:macros proper:symbol-macros proper:patterns))))
 
 
 

@@ -1,1 +1,56 @@
-(include-js "test.js")
+(console.log "Hello World")
+
+(gazelle:essentials)
+
+(define (Cons car cdr)
+  (set! this.car car)
+  (set! this.cdr cdr)
+  this)
+
+(define (cons car cdr)
+  (new Cons car cdr))
+
+(define (last-char s)
+  [s (- s.length 1)])
+
+(last-char "super")
+
+
+
+(define (appropriate-spacer cons-str-acc)
+  (if (=== (last-char cons-str-acc) "(")
+	  ""
+	" "))
+
+(define (inner-cons-string
+		 [((cons acc)
+		   (var acc (+ acc (appropriate-spacer acc) cons.car))
+		   (match cons.cdr 
+				  (null acc)
+				  ((instance Cons next-cons)
+				   (recur next-cons acc))
+				  (other-value 
+				   (+ acc " . " other-value))))
+		  ((cons)
+		   (recur cons ""))]))
+
+(set! Cons.prototype.to-string 
+	  (lambda ()
+		(+ (inner-cons-string this "(") ")")))
+
+;; (define-pattern cons (car cdr)
+;;   `(instanceof Cons ({} car ,car cdr ,cdr)))
+
+(console.log (+ "last of super is: "(last-char "super")))
+(console.log (+ "improper list: " (cons "a" "b")))
+(console.log (+ "proper list: " (cons "a" (cons "b" (cons "c" null)))))
+
+(define-pattern cons (carptrn cdrptrn)
+  `(instance Cons (_{} car ,carptrn cdr ,cdrptrn)))
+
+(console.log (+ "match test, with custom pattern: " (match (cons "a" "b")
+	   ((cons x y)
+		[: x y]))))
+
+
+

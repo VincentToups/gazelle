@@ -1,0 +1,21 @@
+(module 
+ (("hooves/hooves" :all)
+  ("hooves/operator-functions" :all))
+
+ (define+ (Symbol name)
+   (set! this.name name)
+   this)
+
+ (set! Symbol.prototype.to-string 
+	   (lambda () (+ "" this.name)))
+
+ (define+ (intern name)
+   (new Symbol name))
+
+ (define+ (symbol name)
+   (new Symbol name))
+
+ (define-pattern+ symbol (name-pattern)
+   `(instance (from "spotting-gazelle/symbol" Symbol) 
+			  (_{} name ,name-pattern))))
+
