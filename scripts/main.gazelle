@@ -1,36 +1,43 @@
 (require 
- (("hooves/operator-functions" :all)
-  ("hooves/lisp-idioms" (:with-prefix idioms- :all))
-  ("hooves/hooves" :all)
-  ("spotting-gazelle/symbol" :all)
+ (("hooves/hooves" :all)
+  ("hooves/class-utils" :all)
   ("jquery/jquery" (:as $)))
- (_+ 1 1)
- (var d (delay 
-		 (console.log "In delay d.")
-		 "Hiiii"))
- (console.log (undelay d))
- (var o ({}))
- (define-to o (init) (+ 1 2 3))
- (var x 10)
- (incr x)
- (console.log '(from "hooves/hooves" number?) (from "hooves/hooves" number?))
- (console.log ((from "hooves/hooves" collect{}) x))
- (console.log (_+ "X minus one is " (- x 1)))
- (console.log (+ "7 < 10" (< 7 10)))
- (console.log (+ "7 > 10" (> 7 10)))
- (console.log (+ "using idioms- " (idioms-apply + [: 1 2])))
- (.. ($ "body") (append "Hello World.")) 
- (+ 1 2)
 
- (define s (symbol "test-press"))
+ (console.log "Testing class system.")
+
+ (define-class Person Object (first-name last-name)
+   (set! this.first-name first-name)
+   (set! this.last-name last-name)
+   this)
+
+ (define-method Person to-string 
+   ()
+   (+ "Don't shoot, I'm " this.first-name " " this.last-name "!"))
+
+ (define-class Employee Person (first-name last-name company)
+   (this.super-constructor first-name last-name)
+   (set! this.company company)
+   this)
+
+ (define-method Employee to-string
+   ()
+   (+ (super-method) "  Plus, I work for " this.company "."))
+
+ (define (newline)
+   (.. ($ "body") (append ($ "<br>"))))
+
+ (.. ($ "body") (append "Hello World."))
+ (newline)
+ (.. ($ "body") (append (+ "" (new Person "James" "Cooper"))))
+ (newline)
+ (var card (new Employee "Orson" "Card" "IBM"))
+ (.. ($ "body") (append (+ "" card)))
+ (newline)
+ (.. ($ "body") (append (+ "instanceof card Person is " (instanceof card Person))))
+ (newline)
+ (.. ($ "body") (append (+ "instanceof card Employee is " (instanceof card Employee)))))
 
 
- (console.log (+ "symbol :" s))
-
- (console.log (+ "trying match with symbol pattern."
-				 (match s
-						((symbol n) n)
-						(anything-else :failed-to-match)))))
 
 
 

@@ -1,0 +1,65 @@
+(module 
+ (("hooves/hooves" :all))
+
+ (comment 
+  "A simple class system based on Kevin Lindsey's code:"
+  "http://www.kevlindev.com/tutorials/javascript/inheritance/")
+
+ (define+ (extend sub-class base-class)
+   (comment "extend sub-class base-class: "
+			"Where both sub-class and base-class are constructors, extend"
+			"contrives that sub-class will be a sub class of base-class, "
+			"able to access its methods and values.")
+   (var inheritance (lambda () undefined))
+   (set! inheritance.prototype base-class.prototype)
+   (set! sub-class.prototype (new inheritance))
+   (set! sub-class.prototype.constructor sub-class)
+   (set! sub-class.super-constructor base-class)
+   (set! sub-class.super-class base-class.prototype))
+
+
+
+ (define-macro+ define-class ((! (non-kw-symbol class-name)) super-class (tail constructor-lambda-forms))
+   (let ((impl-name (gensym (symbol-name class-name)))
+		 (cons-args (gensym "cons-args"))
+		 (temp-args (gensym "temp-args"))
+		 (self-holder (gensym "self"))
+		 (super-class-val (gensym "super-class")))
+	 `(_newline-sequence
+	   (var ,impl-name (lambda ,@constructor-lambda-forms))
+	   (var ,super-class-val ,super-class)
+	   (define ,class-name (lambda ((tail ,cons-args))
+							 (var ,self-holder this)
+							 (set! this.super-constructor 
+								   (lambda ((tail ,temp-args))
+									 (.. ,super-class-val (apply ,self-holder ,temp-args))))
+							 (set! this.super (.. ,super-class-val prototype))
+							 (.. ,impl-name (apply this ,cons-args))
+							 this))
+	   (.. (from "hooves/class-utils" extend) (call null ,class-name ,super-class-val)))))
+
+
+
+ (define-macro+ define-method (class method-name (tail lambda-part))
+   (let ((class-value (gensym "class-value"))
+		 (super-method (gensym "super-method"))
+		 (args (gensym "args"))
+		 (explicit-this (gensym "explicit-this")))
+	 `(_newline-sequence
+	   (var ,class-value ,class)
+	   (var ,super-method 
+			(if (&& (defined? (.. ,class-value super-class))
+					(defined? (.. ,class-value super-class ,method-name)))
+				(lambda ((tail ,args)) 
+				  (.. (.. ,class-value super-class ,method-name)
+					  (apply this ,args)))
+			  (lambda ((tail ,args))
+				(_throw (+ "No superclass method " ',method-name " in class " ,class-value)))))
+	   (set! (.. ,class-value prototype ,method-name)
+			 (lambda ((tail ,args))
+			   (var ,explicit-this this)
+			   (var super-method (lambda ((tail ,args))
+							(.. ,super-method (apply ,explicit-this ,args))))
+			   (..
+				(lambda ,@lambda-part) (apply this ,args))))))))
+

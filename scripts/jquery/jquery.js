@@ -1,9 +1,9 @@
 define([], (function ()  {
-  var currentModuleminus14411 = {    
+  var currentModuleminus90471 = {    
     
   };
   var setModuleObject = (function (value)    {
-    currentModuleminus14411 = value;
+    currentModuleminus90471 = value;
     });
   (function (arguments)    {
     // define+
@@ -9491,7 +9491,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 })( window );
 ;
     console.log("In jquery stub module, $ is ", window.jQuery);
-    currentModuleminus14411.$ = window.jQuery;
+    currentModuleminus90471.$ = window.jQuery;
     }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-  return currentModuleminus14411;
+  return currentModuleminus90471;
   }))
