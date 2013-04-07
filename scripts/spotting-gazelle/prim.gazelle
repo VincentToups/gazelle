@@ -1,0 +1,67 @@
+(module 
+ (("hooves/hooves" :all)
+  ("spotting-gazelle/symbol" :all)
+  ("spotting-gazelle/el" :all))
+
+ (define (string-or-symbol-name 
+		  [(((string s))
+			s)
+		   (((symbol s))
+			(symbol-name s))]))
+
+ (define+ (to-camelcase s)
+   (replace-regexp-in-string (rx "-([a-zA-Z])")
+							 (lambda (s)
+							   (.. s (substr 1) (to-upper-case)))
+							 s))
+
+
+
+
+ (define (really-mangle s)
+   (var s (string-or-symbol-name s))
+   (var q regexp-quote)
+   (var s 
+		(replace-regexps-in-string 
+		 s
+		 (q "->") "-to-"
+		 (q "===") "-triple-equal-"
+		 (q "{}") "-braces-"))
+   (var s 
+		(to-camelcase s))
+   (var s 
+		(replace-regexp-in-string "%" "modsign" s))
+   (for* ((index [: p r]) :in 
+		  [: [: "|" "pipe"]
+			 [: "+" "plus"]
+			 [: "-" "minus"]
+			 [: "*" "times"]
+			 [: "<" "lessThan"]
+			 [: ">" "greaterThan"]
+			 [: "$" "$"]
+			 [: "=" "equal"]
+			 [: "%" "modsign"]
+			 [: "!" "bang"]
+			 [: "?" "Predicate"]
+			 [: ":" "colon"]
+			 [: "&" "ampersand"]
+			 [: "^" "caret"]
+			 [: "/" "divide"]
+			 [: "\\" "mdivide"]
+			 [: "#" "hash"]
+			 [: "~" "tilda"]
+			 [: "@" "at"]
+			 [: "{" "openBrace"]
+			 [: "}" "closeBrace"]])
+		 (set! s 
+			   (replace-regexp-in-string p r s)))
+   s)
+
+ (define mangle-cache ({}))
+ (define+ (mangle s)
+   (var m [mangle-cache s])
+   (if m m
+	 (let ((m (really-mangle s)))
+	   (set! [: mangle-cache s] m)
+	   m))))
+

@@ -1,21 +1,55 @@
 (module 
  (("hooves/hooves" :all)
-  ("hooves/operator-functions" :all))
+  ("hooves/class-utils" :all))
 
- (define+ (Symbol name)
+ (define interned-symbols ({}))
+ (define-class+ Symbol Object (name)
    (set! this.name name)
    this)
 
- (set! Symbol.prototype.to-string 
-	   (lambda () (+ "" this.name)))
+ (define-method Symbol to-string 
+   () (+ "" this.name))
 
  (define+ (intern name)
-   (new Symbol name))
+   (var maybe-symbol [interned-symbols name])
+   (var the-symbol (if (defined? maybe-symbol) maybe-symbol
+				 (new Symbol name)))
+   (set! [interned-symbols name] the-symbol)
+   the-symbol)
 
  (define+ (symbol name)
    (new Symbol name))
 
  (define-pattern+ symbol (name-pattern)
    `(instance (from "spotting-gazelle/symbol" Symbol) 
-			  (_{} name ,name-pattern))))
+			  (_{} name ,name-pattern)))
 
+ (define+ (symbol-name s)
+   (if (instanceof s Symbol)
+	   s.name
+	 (throw (+ "Tried to take the symbol-name of " s))))
+
+ (define+ (symbolp s)
+   (instanceof s Symbol))
+
+ (define-pattern+ symbol (sub-ptrn)
+   `(instance (from "spotting-gazelle/symbol" Symbol) ,sub-ptrn))
+
+ (define+ (keywordp o)
+   (instanceof o Keyword))
+
+ (define+ (non-kw-symbolp s)
+   (&& (symbolp s)
+	   (not (keywordp s))))
+
+ (define-pattern+ keyword (sub-ptrn)
+   `(instance (from "spotting-gazelle/symbol" Keyword) ,sub-ptrn))
+
+ (define-pattern+ non-kw-symbol (sub-ptrn)
+   `(p (from "spotting-gazelle/symbol" non-kw-symbolp) ,sub-ptrn))
+
+ (define-class+ Keyword Symbol (name)
+   (Symbol.call this name))
+
+ (define-method Keyword to-string ()
+   (+ ":" (Keyword.super-class.to-string.call this))))

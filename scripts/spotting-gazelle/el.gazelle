@@ -1,0 +1,88 @@
+(module 
+ (("hooves/hooves" :all))
+
+ (define buffers [:])
+
+ (define+ (Buffer name initial-contents)
+   (set! this.name name)
+   (set! this.contents contents)
+   (set! this.point 0)
+   (set! this.mark undefined)
+   (buffers.push this)
+   this)
+
+ (define+ (kill-buffer buffer-or-name)
+   (match buffer-or-name
+		  ((string name)
+		   (set! buffers 
+				 (filter 
+				  (lambda (({} name the-buffer-name))
+					(not (=== name the-buffer-name)))
+				  buffers)))))
+
+ (define+ (new-buffer :- (opt contents ""))
+   (new Buffer contents))
+
+ (define-pattern+ buffer (contents point mark)
+   `(instance (from "spotting-gazelle/el" Buffer) 
+			  (_{} name ,name contents ,contents point ,point)))
+
+ (define current-buffer undefined)
+ (define+ (get-buffer object)
+   (match object
+		  ((instance Buffer object)
+		   object)
+		  ((string string)
+		   ())))
+
+ (define+ (coerce object type)
+   (match type 
+		  ("string" 
+		   (if (instanceof object Array)
+			   (.. object (join ""))
+			 (.. object (to-string))))
+		  ("list"
+		   (match object
+				  ((instance Array a)
+				   a)
+				  ((string object)
+				   (mapcar (lambda (x) x) object))
+				  ((instance Object o)
+				   (collect-for ((index element) :in o)
+								[: index element]))))))
+
+ (define+ (mapcar f lst)
+   (var o [:])
+   (for* ((index element) :in lst)
+		 (.. o (push (f element))))
+   o)
+
+ (define+ (regexp-quote 
+		   [((instance RegExp s)
+			 (.. s source))
+			(((string s))
+			 s)]))
+
+ (define+ (replace-regexp-in-string the-rx rep s)
+   (.. s (replace the-rx rep)))
+
+ (define+ (regular-expression-or (tail args))
+   (var source "")
+   (for* ((index sub) :in args)
+		 (console.log source)
+		 (match sub 
+				((string sub)
+				 (set! source (+ source "|" sub)))
+				((instance RegExp ({} source sub-source))
+				 (set! source (+ source "|" sub-source)))))
+   (new RegExp (.. source (substr 1)) "g"))
+
+ (define+ (replace-regexps-in-string 
+		   [(((string s) the-rx rep)
+			 (replace-regexp-in-string the-rx rep s))
+			(((string s) the-rx rep (tail rest))
+			 (replace-regexps-in-string.apply 
+			  null 
+			  (prefix 
+			   (replace-regexp-in-string the-rx rep s)
+			   rest)))])))

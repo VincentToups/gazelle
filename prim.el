@@ -2,7 +2,9 @@
   (require 'shadchen)
   (provide 'prim))
 
-(defun prim:mangle (s)
+(defvar prim:*mangle-cache* (make-hash-table :test 'equal))
+
+(defun prim:really-mangle (s)
   "Take a symbol S and return the mangled version of the symbol
 for transcoding.  See `match-lambda` below for a list of
 manglings.  Additionally, dashed ids are replaced by camel case."
@@ -13,7 +15,7 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 			  (regexp-quote "===") "-triple-equal-" s1))
 		 (s1 (replace-regexp-in-string
 			  (regexp-quote "{}") "-braces-" s1))
-		 (s1 (replace-regexp-in-string "-\\([a-z]\\)" 
+		 (s1 (replace-regexp-in-string "-\\([a-zA-Z0-9]\\)" 
 									   (lambda (x)
 										 (upcase (substring x 1))) 
 									   s1))
@@ -47,6 +49,13 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 	  ("{" "openBrace")
 	  ("}" "closeBrace"))
 	 s1)))
+
+(defun prim:mangle (s)
+  (let ((m (gethash s prim:*mangle-cache*)))
+	(if m m 
+	  (let ((m (prim:really-mangle s)))
+		(setf (gethash s prim:*mangle-cache*) m)
+		m))))
 
 (defmacro* prim:in-parens (&body body)
   (let ((val (gensym)))
@@ -188,10 +197,10 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 "))
 			   (?\t (insert "\\t"))
 			   (?\" (insert "\\\""))
-			   (?\\ (insert "\\"))
+			   (?\\ (insert "\\\\"))
 			   (else (insert else))))
   (prim:insert "\""))
-"cats and dogs"
+
 (defun-match prim:transcode ((string s))
   (prim:transcode-string  s))
 

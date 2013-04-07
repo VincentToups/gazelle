@@ -1,0 +1,22 @@
+(module 
+ (("hooves/hooves" :all))
+
+ (define+ (cons item lst)
+   (.. [: item] (concat lst)))
+
+ (define+ (car lst)
+   (if (> lst.length 0)
+	   [lst 0]
+	 [:]))
+
+ (define+ (cdr lst)
+   (.. lst (slice 1)))
+
+ (define+ (cadr lst)
+   (car (cdr lst)))
+
+ (define+ (cddr lst)
+   (cdr (cdr lst)))
+
+ (define+ (list (tail a))
+   a))

@@ -76,6 +76,28 @@
 			(var-match ,match-expr [,array-object ,index])
 			,@body))))
 
+ (define-macro+ collecting (with (tail body))
+   (let ((collection (gensym "collection"))
+		 (temp (gensym "temp")))
+	 `(let ((,collection [:])
+			(,with (lambda (,temp) (.. ,collection (push ,temp)))))
+		,@body ,collection)))
+
+ (define-macro+ collect-for 
+   ((list 
+	 (list (non-kw-symbol index) match-expr) 
+	 (or 'in :in) expr)
+	(tail body))
+   (let ((o (gensym "collecter"))
+		 (v (gensym "collect-for-value"))
+		 (f (gensym "collect-for-body-lambda")))
+	 `(let ((,o [:])
+			(,f (lambda (,index ,match-expr) ,@body)))
+		(for* ((,index ,v) :in ,expr)
+			  (.. ,o (push 
+					  (.. ,f (call this ,index ,v)))))
+		,o)))
+
  (define+ (range [
 				  ((start step stop transform)
 				   (var out [:])
@@ -97,20 +119,20 @@
  (define-macro+ with-slots ((list (tail slots)) object-expr (tail body))
    (let ((object (gensym)))
 	 `(_let ()  
-		(_var ,object ,object-expr)
-		(_proper:symbol-macro-let 
-		 ,(loop for slot in slots collect
-				(match slot 
-					   ((non-kw-symbol slot)
-						`(,slot (_. ,object ,slot)))
-					   ((list (non-kw-symbol local-name)
-							  (non-kw-symbol in-object-name))
-						`(,local-name (_. ,object ,in-object-name)))
-					   ((list (non-kw-symbol local-name)
-							  (or (string key)
-								  (number key)))
-						`(,local-name [,object ,key]))))
-		 ,@body))))
+			(_var ,object ,object-expr)
+			(_proper:symbol-macro-let 
+			 ,(loop for slot in slots collect
+					(match slot 
+						   ((non-kw-symbol slot)
+							`(,slot (_. ,object ,slot)))
+						   ((list (non-kw-symbol local-name)
+								  (non-kw-symbol in-object-name))
+							`(,local-name (_. ,object ,in-object-name)))
+						   ((list (non-kw-symbol local-name)
+								  (or (string key)
+									  (number key)))
+							`(,local-name [,object ,key]))))
+			 ,@body))))
 
  (define+ (+ hd (tail tl))
    (var result hd)
@@ -166,7 +188,30 @@
    `(set! ,place (+ 1 ,place)))
 
  (define-macro+ decr ((non-kw-symbol place))
-   `(set! ,place (- ,place 1))))
+   `(set! ,place (- ,place 1)))
+
+ (define-pattern+ string (sub-pattern)
+   `(type "string" ,sub-pattern))
+
+ (define+ (rx s :- (opt args "g"))
+   (new RegExp s args))
+
+ (define+ (prefix i ra)
+   (.. [: i] (concat ra)))
+
+ (define (push/return item array)
+   (.. array (push item))
+   array)
+
+ (define+ (filter 
+		   [((fun [:] acc)
+			 acc)
+			((fun [: hd (tail tl)] acc)
+			 (var r (fun hd))
+			 (if r (recur fun tl (push/return hd acc))
+			   (recur fun tl acc)))
+			((fun ra)
+			 (recur fun ra [:]))])))
 
  
 
