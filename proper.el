@@ -192,13 +192,13 @@
 (defun-match proper:to-prim ((list (or '_function 'function) 
 								   (prim:argument-list args) (tail body)))
   `(_function ,(mapcar #'proper:to-prim args)
-			  ,@(mapcar #'proper:to-prim body)))
+			  ,@(proper:newline-seq-body->prim body)))
 
 (defun-match proper:to-prim ((list (or '_function 'function) 
 								   (non-kw-symbol name)
 								   (prim:argument-list args) (tail body)))
   `(_function ,name ,(mapcar #'proper:to-prim args)
-			  ,@(mapcar #'proper:to-prim body)))
+			  ,@(proper:newline-seq-body->prim body)))
 
 (defun-match proper:to-prim ((list '_return expr))
   `(_return ,(proper:to-prim expr)))
@@ -209,18 +209,18 @@
 
 (defun-match proper:to-prim ((list-rest '_while expression body))
   `(_while ,(proper:to-prim expression)
-		   ,@(proper:map-to-prim body)))
+		   ,@(proper:newline-seq-body->prim body)))
 
 (defun-match proper:to-prim ((list-rest (or 'for '_for) 
 										(list (non-kw-symbol name) 
 											  (or 'in :in '_in) expression) 
 										body))
   `(_for (,(proper:to-prim name) _in ,(proper:to-prim expression))
-		 ,@(proper:map-to-prim body)))
+		 ,@(proper:newline-seq-body->prim body)))
 
 (defun-match proper:to-prim ((list-rest (or 'for '_for) (and control 
 															 (list init cond update)) body))
-  `(_for ,(proper:map-to-prim control) ,@(proper:map-to-prim body)))
+  `(_for ,(proper:map-to-prim control) ,@(proper:newline-seq-body->prim body)))
 
 (defun-match proper:to-prim ((list '_throw expr))
   `(_throw ,(proper:to-prim expr)))
@@ -337,8 +337,27 @@
 (defun-match proper:to-prim ((list '_comma-sequence (tail exprs)))
   `(_comma-sequence ,@(proper:map-to-prim exprs)))
 
+(defun-match- proper:newline-seq-body->prim ((list) acc)
+  (reverse acc))
+
+(defun-match proper:newline-seq-body->prim ((list (list (or 'var '_var) (proper:symbol-macro s1) v1 (tail var-body))
+												  (tail rest))
+											acc)
+  (let ((proper:symbol-macros (cons (make-hash-table) proper:symbol-macros))
+		(alias (intern (concat (symbol-name s1) (symbol-name (gensym))))))
+	(proper:add-to-symbol-macro-context s1 `(lambda (s) ',alias))
+	(proper:to-prim 
+	 `((_var ,alias ,v1) ,@(if var-body `((_var ,@var-body)) nil) ,@rest))))
+
+(defun-match proper:newline-seq-body->prim ((list anything-else (tail rest))
+											acc)
+  (recur rest (cons (proper:to-prim anything-else) acc)))
+
+(defun-match proper:newline-seq-body->prim (v)
+  (recur v nil))
+
 (defun-match proper:to-prim ((list '_newline-sequence (tail exprs)))
-  `(_newline-sequence ,@(proper:map-to-prim exprs)))
+  `(_newline-sequence ,@(proper:newline-seq-body->prim exprs)))
 
 (defun-match proper:to-prim ([(or '_: ':) (tail elements)])
   (coerce `(_: ,@(proper:map-to-prim elements)) 'vector))
@@ -1255,7 +1274,7 @@
 					  (match body
 							 ((list patternette (tail real-body))
 							  `([: ,@patternette]
-								,@real-body))))
+								(_newline-sequence ,@real-body)))))
 					bodies)
 				 (,anything-else 
 				  (_throw (_+ ,(format "Match fail in %S against: " 
@@ -1701,7 +1720,7 @@
 					  (_proper:macro-context
 					   ,@(loop for spec in specs collect
 							   `(_proper:require-spec ,@spec))
-					   ,@body))))
+					   (_newline-sequence ,@body)))))
 
 
 (defvar proper:*node-rjs-root* nil)
