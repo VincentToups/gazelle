@@ -1,7 +1,8 @@
 (require 
  (("hooves/hooves" :all))
 
- (var range 10)
- range)
+ (var f (lambda (range) (+ range 1)))
+ (f 11))
+
 
 
