@@ -194,6 +194,13 @@
 (defun gzu:odd-indexes (lst)
   (loop for item in lst and i from 0 when (not (= 0 (mod i 2))) collect item))
 
+(eval-when (compile load eval) 
+  (defpattern gzu:evens&odds (&optional (evens (gensym))
+											(odds (gensym)))
+	`(p #'listp
+		(and (funcall #'gzu:even-indexes ,evens)
+			 (funcall #'gzu:odd-indexes ,odds)))))
+
 (defun gzu:file-last-modified (f)
   (match (file-attributes (file-truename f))
 		 ((list zero one two three four modification (tail tl))
@@ -229,6 +236,9 @@
 	(match all-but-name 
 		   (nil "/")
 		   (otherwise (join otherwise "/")))))
+
+(defun gzu:gensym (&rest arguments)
+  (gensym (apply #'format arguments)))
 
 
 (provide 'gazelle-utils)

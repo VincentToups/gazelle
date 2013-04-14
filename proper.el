@@ -76,7 +76,7 @@
 		   ((list)
 			`(p #'proper:denotes-macro-p))))
 
-(defpattern proper:custom-pattern (&rest pattern)
+  (defpattern proper:custom-pattern (&rest pattern)
 	(match pattern
 		   ((list pattern expander-pattern)
 			`(and ,pattern
@@ -181,25 +181,66 @@
 	   ,(proper:to-prim texpr)
 	   _undefined))
 
+(defun-match- proper:var-terms->actual-terms&symbol-macros (terms)
+  (recur terms nil nil))
+(defun-match proper:var-terms->actual-terms&symbol-macros ((list) actual-terms symbol-macros)
+  (list actual-terms (reverse symbol-macros)))
+(defun-match proper:var-terms->actual-terms&symbol-macros ((list (proper:symbol-macro binding) ,value-expr (tail rest))
+														   actual-terms symbol-macros)
+  (let ((alias (intern (concat (symbol-name binding) "-" (gensym)))))
+	(recur rest (append actual-terms `(,alias ,value-expr)) 
+		   (cons (list binding `(lambda (_) ',alias)) symbol-macros))))
+(defun-match proper:var-terms->actual-terms&symbol-macros ((list binding value-expr (tail rest)) actual-terms symbol-macros)
+  (recur rest (append actual-terms `(,binding ,value-expr)) symbol-macros))
+
+
 
 (defun-match proper:to-prim ((list (or '_switch 'switch) v-expr (tail body)))
   `(_switch ,(proper:to-prim v-expr)
-			,@(loop for el in body collect
-					(match el 
-						   ((or 'case '_case) '_case)
-						   ((or 'default '_default) '_default)
-						   (anything-else (proper:to-prim anything-else))))))
+			,@(proper:newline-sequence->prim-switch-body body)))
+
+(defun proper:_function-args->symbol-macro-context-entries/arglist (args)
+  (let ((actual-arg-list (list))
+		(entries (list))) 
+	(loop for arg in args do
+		  (match arg
+				 ((proper:symbol-macro _ _)
+				  (let* ((name (symbol-name arg))
+						 (alias (intern (concat name "-" (symbol-name (gensym))))))
+					(push alias actual-arg-list)
+					(push (list arg `(lambda (s) ',alias)) entries)))
+				 (otherwise
+				  (push arg actual-arg-list))))
+	(list (reverse actual-arg-list) (reverse entries))))
 
 (defun-match proper:to-prim ((list (or '_function 'function) 
 								   (prim:argument-list args) (tail body)))
-  `(_function ,(mapcar #'proper:to-prim args)
-			  ,@(mapcar #'proper:to-prim body)))
+  (match (proper:_function-args->symbol-macro-context-entries/arglist args)
+		 ((list arglist (list))
+		  `(_function ,(mapcar #'proper:to-prim args)
+					  ,@(proper:newline-sequence->prim body)))
+		 ((list actual-arglist extensions)
+		  (let ((proper:symbol-macros (cons (make-hash-table) proper:symbol-macros)))
+			(loop for (symbol expander) in extensions do
+				  (proper:add-to-symbol-macro-context symbol expander))
+			(proper:to-prim
+			 `(_function ,(mapcar #'proper:to-prim actual-arglist)
+						 ,@(proper:newline-sequence->prim body)))))))
 
 (defun-match proper:to-prim ((list (or '_function 'function) 
 								   (non-kw-symbol name)
 								   (prim:argument-list args) (tail body)))
-  `(_function ,name ,(mapcar #'proper:to-prim args)
-			  ,@(mapcar #'proper:to-prim body)))
+  (match (proper:_function-args->symbol-macro-context-entries/arglist args)
+		 ((list arglist (list))
+		  `(_function ,name ,(mapcar #'proper:to-prim args)
+					  ,@(proper:newline-sequence->prim body)))
+		 ((list actual-arglist extensions)
+		  (let ((proper:symbol-macros (cons (make-hash-table) proper:symbol-macros)))
+			(loop for (symbol expander) in extensions do
+				  (proper:add-to-symbol-macro-context symbol expander))
+			(proper:to-prim
+			 `(_function ,name ,(mapcar #'proper:to-prim actual-arglist)
+						 ,@(proper:newline-sequence->prim body)))))))
 
 (defun-match proper:to-prim ((list '_return expr))
   `(_return ,(proper:to-prim expr)))
@@ -210,18 +251,50 @@
 
 (defun-match proper:to-prim ((list-rest '_while expression body))
   `(_while ,(proper:to-prim expression)
-		   ,@(proper:map-to-prim body)))
+		   ,@(proper:newline-sequence->prim body)))
 
 (defun-match proper:to-prim ((list-rest (or 'for '_for) 
 										(list (non-kw-symbol name) 
 											  (or 'in :in '_in) expression) 
 										body))
-  `(_for (,(proper:to-prim name) _in ,(proper:to-prim expression))
-		 ,@(proper:map-to-prim body)))
+  (match name 
+		 ((proper:symbol-macro _ _)
+		  (let* ((symname (symbol-name name))
+				 (alias (intern (concat symname "" (symbol-name (gensym)))))
+				 (expression (proper:to-prim expression))
+				 (proper:symbol-macros (cons (make-hash-table) proper:symbol-macros)))
+			(proper:add-to-symbol-macro-context name 
+												`(lambda (s) ',alias))
+			(proper:to-prim 
+			 `(_for (,(proper:to-prim alias) _in ,expression)
+					,@(proper:newline-sequence->prim body)))))
+		 (non-symbol-macro 
+		  `(_for (,(proper:to-prim name) _in ,(proper:to-prim expression))
+				 ,@(proper:newline-sequence->prim body)))))
+
+(defun-match proper:to-prim ((list-rest (or 'for '_for) 
+										(list (list (or 'var '_var) 
+														 (tail var-bindings)) 
+											  cond update) body))
+  (let* ((proper:symbol-macros (cons (make-hash-table)
+									 proper:symbol-macros))
+		 (actuals 
+		  (loop for (s e . r) on var-bindings by #'cddr 
+				append 
+				(if (proper:denotes-symbol-macro-p s)
+					(let ((alias (gzu:gensym "%S" s))
+						  (ee (proper:to-prim e)))
+					  (proper:add-to-symbol-macro-context s 
+														  `(lambda (_) ',alias))
+					  (list alias ee))
+				  (list s e)))))
+	`(_for ,(proper:map-to-prim 
+			 (list `(_var ,@actuals) cond update)) 
+		   ,@(proper:newline-sequence->prim body))))
 
 (defun-match proper:to-prim ((list-rest (or 'for '_for) (and control 
 															 (list init cond update)) body))
-  `(_for ,(proper:map-to-prim control) ,@(proper:map-to-prim body)))
+  `(_for ,(proper:map-to-prim control) ,@(proper:newline-sequence->prim body)))
 
 (defun-match proper:to-prim ((list '_throw expr))
   `(_throw ,(proper:to-prim expr)))
@@ -339,7 +412,7 @@
   `(_comma-sequence ,@(proper:map-to-prim exprs)))
 
 (defun-match proper:to-prim ((list '_newline-sequence (tail exprs)))
-  `(_newline-sequence ,@(proper:map-to-prim exprs)))
+  `(_newline-sequence ,@(proper:newline-sequence->prim exprs)))
 
 (defun-match- proper:newline-sequence->prim ((list) acc)
   (reverse acc))
@@ -367,64 +440,71 @@
 											 (tail body))
 											acc)
   (let* ((alias (gzu:gensym "%S" s))
-		 (proper:symbol-macros (cons (make-hash-table) proper:symbol-macros)))
-	(proper:add-to-symbol-macro-context name
+		 (proper:symbol-macros (cons (make-hash-table) proper:symbol-macros))
+		 (var-expr 
+		  `(_var ,alias ,(proper:to-prim v-expr))))
+	(proper:add-to-symbol-macro-context s
 										`(lambda (_) ',alias))
-	`((_var ,alias ,v-expr)
-	  ,@(proper:newline-sequence->prim 
-		 (if rest-of-vars 
-			 (cons `(_var ,@rest-of-vars) body)
-		   body)
-		 acc))))
+	(proper:newline-sequence->prim 
+	 (if rest-of-vars 
+		 (cons `(_var ,@rest-of-vars) body)
+	   body)
+	 (cons var-expr acc))))
 
 (defun-match proper:newline-sequence->prim ((list expr (tail rest)) acc)
-  (recur rest (cons expr acc)))
+  (recur rest (cons (proper:to-prim expr) acc)))
+
+(defun-match proper:newline-sequence->prim (seq)
+  (recur seq nil))
 
 
 (defun-match- proper:newline-sequence->prim-switch-body ((list) acc)
   (reverse acc))
 (defun-match proper:newline-sequence->prim-switch-body ((list 
-											 (and form 
-												  (list (proper:macro hd ex) (tail args)))
-											 (tail rest))
-											acc)
+														 (and form 
+															  (list (proper:macro hd ex) (tail args)))
+														 (tail rest))
+														acc)
   (recur (cons (proper:macro-expand-top form)
 			   rest)
 		 acc))
 (defun-match proper:newline-sequence->prim-switch-body ((list 
-											 (list (or '_newline-sequence 'newline-sequence)
-												   (tail body-of-interior))
-											 (tail body))
-											acc)
+														 (list (or '_newline-sequence 'newline-sequence)
+															   (tail body-of-interior))
+														 (tail body))
+														acc)
   (recur (append body-of-interior body)
 		 acc))
 
 (defun-match proper:newline-sequence->prim-switch-body ((list 
-											 (list (or 'var '_var)
-												   (proper:symbol-macro s e)
-												   v-expr
-												   (tail rest-of-vars))
-											 (tail body))
-											acc)
+														 (list (or 'var '_var)
+															   (proper:symbol-macro s e)
+															   v-expr
+															   (tail rest-of-vars))
+														 (tail body))
+														acc)
   (let* ((alias (gzu:gensym "%S" s))
-		 (proper:symbol-macros (cons (make-hash-table) proper:symbol-macros)))
-	(proper:add-to-symbol-macro-context name
+		 (proper:symbol-macros (cons (make-hash-table) proper:symbol-macros))
+		 (var-expr `(_var ,alias ,(proper:to-prim v-expr))))
+	(proper:add-to-symbol-macro-context s
 										`(lambda (_) ',alias))
-	`((_var ,alias ,v-expr)
-	  ,@(proper:newline-sequence->prim-switch-body 
-		 (if rest-of-vars 
-			 (cons `(_var ,@rest-of-vars) body)
-		   body)
-		 acc))))
+	(proper:newline-sequence->prim-switch-body 
+	 (if rest-of-vars 
+		 (cons `(_var ,@rest-of-vars) body)
+	   body)
+	 (cons var-expr acc))))
 
-(defun-match proper:newline-sequence->prim-switch-body ((list (and expr (or 'case '_case)) (tail rest)) acc)
+(defun-match proper:newline-sequence->prim-switch-body ((list (or 'case '_case) (tail rest)) acc)
   (recur rest (cons '_case acc)))
 
-(defun-match proper:newline-sequence->prim-switch-body ((list (and expr (or 'default '_default)) (tail rest)) acc)
+(defun-match proper:newline-sequence->prim-switch-body ((list (or 'default '_default) (tail rest)) acc)
   (recur rest (cons '_default acc)))
 
 (defun-match proper:newline-sequence->prim-switch-body ((list expr (tail rest)) acc)
-  (recur rest (cons expr acc)))
+  (recur rest (cons (proper:to-prim expr) acc)))
+
+(defun-match proper:newline-sequence->prim-switch-body (expr)
+  (recur expr nil))
 
 (defun-match proper:to-prim ([(or '_: ':) (tail elements)])
   (coerce `(_: ,@(proper:map-to-prim elements)) 'vector))
@@ -781,21 +861,21 @@
 	(append acc body)))
 
 (defun-match proper:expand-match1-body ('null
-										 val body acc)
+										val body acc)
   (let ((acc (append acc
 					 `((_if (_! (_=== null ,val))
 							(,proper:signal-match-fail))))))
 	(append acc body)))
 
 (defun-match proper:expand-match1-body ('true
-										 val body acc)
+										val body acc)
   (let ((acc (append acc
 					 `((_if (_! (_=== true ,val))
 							(,proper:signal-match-fail))))))
 	(append acc body)))
 
 (defun-match proper:expand-match1-body ('false
-										 val body acc)
+										val body acc)
   (let ((acc (append acc
 					 `((_if (_! (_=== false ,val))
 							(,proper:signal-match-fail))))))
@@ -1348,7 +1428,7 @@
 					  (match body
 							 ((list patternette (tail real-body))
 							  `([: ,@patternette]
-								,@real-body))))
+								(_newline-sequence ,@real-body)))))
 					bodies)
 				 (,anything-else 
 				  (_throw (_+ ,(format "Match fail in %S against: " 
@@ -1794,7 +1874,7 @@
 					  (_proper:macro-context
 					   ,@(loop for spec in specs collect
 							   `(_proper:require-spec ,@spec))
-					   ,@body))))
+					   (_newline-sequence ,@body)))))
 
 
 (defvar proper:*node-rjs-root* nil)
