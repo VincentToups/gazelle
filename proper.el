@@ -464,6 +464,13 @@
 									  (tail arguments)))
   (apply expander arguments))
 
+(defun-match- proper:macro-expand-top ((list 
+										(proper:macro _ expander)
+										(tail arguments)))
+  (recur (apply expander arguments)))
+(defun-match proper:macro-expand-top (anything-else)
+  anything-else)
+
 
 (defun-match proper:to-prim ((list hd (tail rest)))
   `(,(proper:to-prim hd)
