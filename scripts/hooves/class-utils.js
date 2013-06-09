@@ -1,9 +1,9 @@
-define(["hooves/hooves"], (function (moduleminus4745e9d952)  {
-  var currentModuleminus89273 = {    
+define(["hooves/hooves"], (function (module4745e9d952)  {
+  var currentModule6374 = {    
     
   };
   var setModuleObject = (function (value)    {
-    currentModuleminus89273 = value;
+    currentModule6374 = value;
     });
   (function (arguments)    {
     // define+
@@ -20,7 +20,7 @@ define(["hooves/hooves"], (function (moduleminus4745e9d952)  {
     // A simple class system based on Kevin Lindsey's code:
     // http://www.kevlindev.com/tutorials/javascript/inheritance/
     ;
-    currentModuleminus89273.extend = (function (subClass, baseClass)      {
+    currentModule6374.extend = (function (subClass, baseClass)      {
       // extend sub-class base-class: 
       // Where both sub-class and base-class are constructors, extend
       // contrives that sub-class will be a sub class of base-class, 
@@ -45,5 +45,5 @@ define(["hooves/hooves"], (function (moduleminus4745e9d952)  {
     // macro - no dynamic value.
     ;
     }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-  return currentModuleminus89273;
+  return currentModule6374;
   }))

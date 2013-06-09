@@ -62,6 +62,6 @@
    (var m [mangle-cache s])
    (if m m
 	 (let ((m (really-mangle s)))
-	   (set! [: mangle-cache s] m)
+	   (set! [mangle-cache s] m)
 	   m))))
 

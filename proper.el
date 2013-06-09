@@ -597,6 +597,10 @@
 (defun-match proper:to-prim ((list 
 							  (list 'from (string loc) (non-kw-symbol id-from-head))
 							  (tail args)))
+  (proper:message 
+   (concat "Encountered a \"from\" expr in head position"
+		   " while in %S requesting value or macro from %S.")
+   proper:current-module loc)
   (if (not (equal loc proper:current-module)) 
 	  (match (proper:compile-module loc)
 			 ((list manifest macros symbol-macros patterns)
@@ -670,11 +674,6 @@
    `(_. (_lambda ,names ,@body)
 		(call this (_? (_=== (_typeof arguments) "undefined") undefined arguments) ,@expressions))))
 
-
-
-(proper:define-macro 
- if (condexpr trueexpr falseexpr)
- `(_? ,condexpr ,trueexpr ,falseexpr))
 
 (proper:define-macro
  progn ((tail body))
@@ -974,11 +973,25 @@
 			  ,@body))))
 
 (defun proper:patterns-with-tail? (patterns)
-  (and (> (length patterns) 0)
-	   (let ((final-pattern (car (last patterns))))
-		 (and (listp final-pattern)
-			  (= 2 (length final-pattern))
-			  (eq (car final-pattern) 'tail)))))
+  (or (and (> (length patterns) 0)
+		   (let ((final-pattern (car (last patterns))))
+			 (and (listp final-pattern)
+				  (= 2 (length final-pattern))
+				  (eq (car final-pattern) 'tail))))
+	  (and (> (length patterns) 1)
+		   (let ((last-two (last patterns 2)))
+			 (and (eq (car last-two) :*))))))
+
+(defun proper:second-to-last (lst)
+  (car (last lst 2)))
+
+(defun proper:patterns-with-tail->parts (patterns)
+  (if (eq (proper:second-to-last patterns) :*)
+	  (list (subseq patterns 0 (- (length patterns) 2))
+			(car (last patterns)))
+	(list 
+	 (subseq patterns 0 (- (length patterns) 1))
+	 (cadr (car (last patterns))))))
 
 (defun proper:all-but-last (lst)
   (reverse (cdr (reverse lst))))
@@ -1031,6 +1044,7 @@
 (defun proper:patterns-with-optional-syntax? (patterns)
   (member :- patterns))
 
+
 (defun-match- proper:get-mandatory-and-optional-parts (nil acc)
   (list (reverse acc) nil))
 (defun-match proper:get-mandatory-and-optional-parts ((list :- (tail optional-parts)) acc)
@@ -1039,6 +1053,21 @@
   (recur rest (cons other acc)))
 (defun-match proper:get-mandatory-and-optional-parts (patterns)
   (recur patterns nil))
+
+(defun proper:patterns-with-tail-syntax? (patterns)
+  (member :* patterns))
+
+(defun-match- proper:get-mandatory-and-tail-part (nil acc)
+  (list (reverse acc) nil))
+(defun-match proper:get-mandatory-and-tail-part ((list :* tail-part0 tail-part1 (tail rest)) acc)
+  (error "Malformed :* pattern: :* must be followed by exactly one pattern.  Got %S" (list* tail-part0 tail-part1 rest)))
+(defun-match proper:get-mandatory-and-tail-part ((list :* tail-part) acc)
+  (list (reverse acc) tail-part))
+(defun-match proper:get-mandatory-and-tail-part ((list other (tail rest)) acc)
+  (recur rest (cons other acc)))
+(defun-match proper:get-mandatory-and-tail-part (patterns)
+  (recur patterns nil))
+
 
 (defun-match proper:expand-match1-body ((or [(or : '_:) (tail patterns)]
 											(list 'array (tail patterns)))
@@ -1070,9 +1099,10 @@
 	  (append acc body)))
    ((proper:patterns-with-tail? patterns)
 	(let*
-		((normal-patterns (proper:all-but-last patterns))
+		((parts (proper:patterns-with-tail->parts patterns)) 
+		 (normal-patterns (car parts))
 		 (n-normal (length normal-patterns))
-		 (tail-pattern (cadr (car (last patterns))))
+		 (tail-pattern (cadr parts))
 		 (simple-part-name (gensym "match-array-simple-part-"))
 		 (acc (append acc 
 					  `((_if (_! (_=== "object" (_typeof ,val)))
@@ -1228,6 +1258,19 @@
   (recur `({}- ,@(loop for e in expressions append 
 					   (proper:transform-options{}-segment e)))
 		 val body acc))
+
+(defun-match proper:expand-match1-body ((list 'as-options{} (tail expressions))
+										val body acc)
+  (let ((a-expr (gensym "array-expression"))
+		(out (gensym "out"))
+		(i (gensym "i"))) 
+	(recur `(call (lambda (,a-expr)
+					(_var ,out (_{}))
+					(for ((_var ,i 0) (_< ,i (.. ,a-expr length)) (_= ,i (_+ ,i 2)))
+						 (_= [,out [,a-expr ,i]] [,a-expr (_+ ,i 1)]))
+					,out)
+				  (options{} ,@expressions))
+		   val body acc)))
 
 (defun-match proper:expand-match1-body ((list (proper:custom-pattern p expander) 
 											  (tail expressions))
@@ -1441,6 +1484,7 @@
 	   (_return ,return-value))))
   (((p #'vectorp bodies))
    `(complex-lambda nil ,bodies))])
+
 
 (proper:define-macro 
  complex-function 

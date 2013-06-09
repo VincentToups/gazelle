@@ -1,0 +1,11 @@
+(module 
+ (("hooves/hooves" :all))
+
+ (define+ (-> f (tail fixed-args))
+   (lambda ((tail unfixed))
+	 (f.apply this (.. fixed-args (concat unfixed)))))
+
+ (define+ (<- f (tail fixed-args))
+   (lambda ((tail unfixed))
+	 (f.apply this (.. unfixed (concat fixed-args))))))
+

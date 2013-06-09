@@ -17,6 +17,9 @@
  (define-macro+ @ ((tail ids))
    `(_. this ,@ids))
 
+ (define (apply f lst)
+   (.. f (apply f lst)))
+
  (define+ (===_ partial)
    (lambda (open)
 	 (_=== open partial)))
@@ -116,6 +119,14 @@
 				   (recur 0 1 stop (lambda (v) v)))
 				  ]))
 
+ (define+ (pure-sort array :- (opt sort-fun 
+								  (lambda (a b)
+									(if (< a b) -1 1))))
+   (var copy (.. array (concat [:])))
+   (.. copy
+	   (sort sort-fun))
+   copy)
+
  (define-macro+ with-slots ((list (tail slots)) object-expr (tail body))
    (let ((object (gensym)))
 	 `(_let ()  
@@ -193,6 +204,21 @@
  (define-pattern+ string (sub-pattern)
    `(type "string" ,sub-pattern))
 
+ (define+ (plist (tail parts))
+   (var out ({}))
+   (for ((var i) (< i parts.length) (set! i (+ i 2)))
+		(set! [out [parts i]] [parts (+ i 1)]))
+   out)
+
+ (define-pattern+ as-options{} ((tail options-exprs))
+   `(call 
+	 (lambda (parts)
+	   (var out ({}))
+	   (for ((var i) (< i parts.length) (set! i (+ i 2)))
+			(set! [out [parts i]] [parts (+ i 1)]))
+	   out)
+	 ,options-exprs))
+
  (define+ (rx s :- (opt args "g"))
    (new RegExp s args))
 
@@ -202,6 +228,17 @@
  (define (push/return item array)
    (.. array (push item))
    array)
+
+ (define (plist->object-helper 
+		  [((object-acc [:])
+			object-acc)
+		   ((object-acc [: (string key) value (tail rest)])
+			(set! [object-acc key] value)
+			(recur 
+			 object-acc rest))]))
+
+ (define+ (plist->object (tail kv-pairs))
+   (plist->object-helper ({}) kv-pairs))
 
  (define+ (filter 
 		   [((fun [:] acc)

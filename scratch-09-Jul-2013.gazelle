@@ -1,0 +1,23 @@
+(require 
+ (("hooves/hooves" :all)
+  ("hooves/class-utils" :all))
+
+ (define (f a b c)
+   (+ a b c))
+
+ (var f (lambda (range) (+ range 1)))
+ (f 11)
+
+ (for (range :in range)
+	  (+ range 1))
+
+ (for ((var range 0) (< range 10) (set! range (+ range 1)))
+	  (console.log range))
+
+ (var range 10)
+ range)
+
+
+
+
+

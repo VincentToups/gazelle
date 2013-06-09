@@ -1,19 +1,7 @@
-(require 
- (("hooves/hooves" :all))
-
- (var f (lambda (range) (+ range 1)))
- (f 11)
-
- (for (range :in range)
-	  (+ range 1))
-
- (for ((var range 0) (< range 10) (set! range (+ range 1)))
-	  (console.log range))
-
- (var range 10)
- range)
-
-
-
+(define (test a b :* (as-options{} 
+					  (r 10)
+					  (s 13)))
+  [: a b r s])
+(console.log (test 1 2 :r 100))
 
 

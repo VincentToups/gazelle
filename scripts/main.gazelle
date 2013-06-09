@@ -15,22 +15,22 @@
  (pr "Test collect-for "
 	 (collect-for ((index element) :in [: 'x 'y 'z])
 				  (+ element "!")))
-(console.log "Testing class system.")
+ (console.log "Testing class system.")
 
-		  (console.log "match string"
-					   (match "x"
-							  ((string s) s)))
+ (console.log "match string"
+			  (match "x"
+					 ((string s) s)))
 
 
 
-		  (pr "Testing replace-regexp-in-string")
-		  (var s "How bold!")
-		  (var s* (replace-regexp-in-string "bold" "jejune" s))
-		  (pr "s: " s ", s*: " s*)
-		  (var s** (replace-regexp-in-string (regexp-quote "bold") "stupid" s))
-		  (pr "s: " s ", s**: " s**)
+ (pr "Testing replace-regexp-in-string")
+ (var s "How bold!")
+ (var s* (replace-regexp-in-string "bold" "jejune" s))
+ (pr "s: " s ", s*: " s*)
+ (var s** (replace-regexp-in-string (regexp-quote "bold") "stupid" s))
+ (pr "s: " s ", s**: " s**)
 
-		  (pr "rx-or test: " (replace-regexp-in-string (regular-expression-or "x" "y") "___" "xyzy"))
+ (pr "rx-or test: " (replace-regexp-in-string (regular-expression-or "x" "y") "___" "xyzy"))
 
-		  (pr "mangle test: " (mangle (intern 'dogs-and-cats*))))
+ (pr "mangle test: " (mangle (intern 'dogs-and-cats*))))
 

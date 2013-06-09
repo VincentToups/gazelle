@@ -14,6 +14,8 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 		 (s1 (replace-regexp-in-string
 			  (regexp-quote "===") "-triple-equal-" s1))
 		 (s1 (replace-regexp-in-string
+			  (regexp-quote "::") "-of-type-" s1))
+		 (s1 (replace-regexp-in-string
 			  (regexp-quote "{}") "-braces-" s1))
 		 (s1 (replace-regexp-in-string "-\\([a-zA-Z0-9]\\)" 
 									   (lambda (x)
@@ -400,7 +402,7 @@ manglings.  Additionally, dashed ids are replaced by camel case."
    (prim:transcode-csvs args))
   (prim:transcode-block body))
 
-(defun-match prim:transcode ((list '_return (list (and which (or '_for '_while '_try '_var '_=)) (tail body))))
+(defun-match prim:transcode ((list '_return (list (and which (or '_if '_for '_while '_try '_var '_=)) (tail body))))
   (recur `(,which ,@body)))
 
 (defun prim:make-last-return (sequence)
