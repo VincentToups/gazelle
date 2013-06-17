@@ -1,7 +1,9 @@
-(define (test a b :* (as-options{} 
-					  (r 10)
-					  (s 13)))
-  [: a b r s])
-(console.log (test 1 2 :r 100))
+(define (test :* (as-options{} (x (defined x) undefined) (y 11) (z 13)))
+  [: x y z])
+
+(console.log (test :y 200 :z "Hello"))
+
+
+
 
 

@@ -367,13 +367,9 @@
 
 
 
-(defun-match proper:to-prim ((list (or '_= 'set!) (and
-												   (or (non-kw-symbol _)
-													   (list-rest '_. _)
-													   [_ (tail _)])
-												   set-this)
-								   value-expr))
-  `(_= ,(proper:to-prim set-this) ,(proper:to-prim value-expr)))
+(defun-match proper:to-prim ((list (or '_= 'set!) 
+								   (tail parts)))
+  `(_= ,@(loop for part in parts collect (proper:to-prim part))))
 
 (defun-match proper:to-prim ((list (or '! '_!) expr))
   `(_! ,(proper:to-prim expr)))
@@ -907,6 +903,13 @@
 							 (,proper:signal-match-fail))))))
 	(recur pattern val body acc)))
 
+(defun-match proper:expand-match1-body ((list 'number) val body acc)
+  (recur `(type "number")
+		 val body acc))
+
+(defun-match proper:expand-match1-body ((list 'number pattern) val body acc)
+  (recur `(type "number" ,pattern)
+		 val body acc))
 
 
 (defun-match proper:expand-match1-body ((list 'or (tail sub-patterns)) val body acc)
@@ -1030,6 +1033,13 @@
 		   `(p (lambda (,obj)
 				 (_instanceof ,obj ,of-expr))
 			   ,pattern))
+		 val body acc))
+
+(defun-match proper:expand-match1-body ((list 'type of-expr)
+										val body acc)
+  (recur (let ((obj (gensym)))
+		   `(p (lambda (,obj)
+					  (_=== (_typeof ,obj) ,of-expr))))
 		 val body acc))
 
 (defun-match proper:expand-match1-body ((list 'type of-expr pattern)
@@ -1249,9 +1259,11 @@
 
 
 (defun proper:transform-options{}-segment (segment)
-  `(,(proper:options{}-ext-name segment)
-	(defined-or ,(proper:options{}-int-pat segment)
-	  ,(proper:options{}-default segment))))
+  (if (symbolp segment)
+	  (list segment segment)
+	`(,(proper:options{}-ext-name segment)
+	  (defined-or ,(proper:options{}-int-pat segment)
+		,(proper:options{}-default segment)))))
 
 (defun-match proper:expand-match1-body ((list 'options{} (tail expressions))
 										val body acc)

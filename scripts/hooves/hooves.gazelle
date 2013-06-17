@@ -222,6 +222,14 @@
  (define+ (rx s :- (opt args "g"))
    (new RegExp s args))
 
+ (define-macro+ set-to! (expr (tail kv-pairs))
+   (let ((o (gensym "target")))
+	 `(progn 
+		(var ,o ,expr)
+		(set! ,@(loop for (k v . rest) on kv-pairs
+					  append `((.. ,o ,k) ,v)))
+		,o)))
+
  (define+ (prefix i ra)
    (.. [: i] (concat ra)))
 

@@ -584,6 +584,20 @@ manglings.  Additionally, dashed ids are replaced by camel case."
   (prim:insert " = ")
   (prim:transcode value-expr))
 
+(defun-match prim:transcode ((list '_= 
+								   (and
+									(or (non-kw-symbol _)
+										(list-rest '_. _)
+										[_ (tail _)])
+									set-this)
+								   value-expr
+								   (tail others)))
+  (prim:transcode set-this)
+  (prim:insert " = ")
+  (prim:transcode value-expr)
+  (prim:insert ", ")
+  (recur `(_= ,@others)))
+
 (defun-match prim:transcode ((list '_value value-expr))
   (prim:in-parens 
    (prim:transcode value-expr)))

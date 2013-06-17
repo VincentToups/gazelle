@@ -51,10 +51,22 @@
 ; (gz:transcode-file "/home/toups/src/elisp/gazelle/scripts/main.gazelle")
 
 (eval-when (load compile eval) 
+  (defconst gazelle-font-lock-keywords
+	`(( ,(regexp-opt '("define" "define+" "set" "this" 
+					   "module" "var" ":" "match" "tail" "options{}" 
+					   "{}" ":-" ":*"
+					   "{}-" "_:" "_{}" ".." "for" "for*" "while" "in" 
+					   ":in" "_if" "_else" "try" "catch" "finally"
+					   "_try" "_catch" "_finally" "define-macro"
+					   "define-macro+" "require" "define-method" 
+					   "define-class" "define-class+"					   ) 
+					 'words) . font-lock-keyword-face))
+	"Highlighting expressions for gazelle mode.")
   (define-derived-mode gazelle-mode
 	emacs-lisp-mode "Gazelle"
 	"Major mode for Gazelle."
-	(setq case-fold-search nil))
+	(setq case-fold-search nil)
+	(set (make-local-variable 'font-lock-defaults) '(gazelle-font-lock-keywords nil t)))
 
   
 

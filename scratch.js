@@ -1,133 +1,165 @@
 var test = (function ()  {
-  var returnValue15864 = undefined;
+  var returnValue23938 = undefined;
   var recur = (function ()    {
     return {      
-      recurSigil:"recurSigil15863",
+      recurSigil:"recurSigil23937",
       args:arguments
     };
     });
-  var recurP15867 = (function (val15868)    {
-    if ((("undefined")===((typeof val15868))))      {
+  var recurP23941 = (function (val23942)    {
+    if ((("undefined")===((typeof val23942))))      {
       return false;
       };
-    return (val15868.recurSigil===("recurSigil15863"));
+    return (val23942.recurSigil===("recurSigil23937"));
     });
-  var actualFun15866 = (function ()    {
+  var actualFun23940 = (function ()    {
     return (function (arguments)      {
-      var G15870 = undefined;
-      var G15871 = Array.prototype.slice.apply(arguments);
-      G15870 = (function (arguments)        {
-        var matchVal15872 = G15871;
-        if ((!((("object")===((typeof matchVal15872))))))          {
+      var G23944 = undefined;
+      var G23945 = Array.prototype.slice.apply(arguments);
+      G23944 = (function (arguments)        {
+        var matchVal23946 = G23945;
+        if ((!((("object")===((typeof matchVal23946))))))          {
           return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
           };
-        if ((!((matchVal15872.length>=2))))          {
+        if ((!((matchVal23946.length>=0))))          {
           return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
           };
-        var matchArraySimplePart15873 = Array.prototype.slice.call(matchVal15872, 0, 2);
-        if ((!((("object")===((typeof matchArraySimplePart15873))))))          {
+        var matchArraySimplePart23947 = Array.prototype.slice.call(matchVal23946, 0, 0);
+        if ((!((("object")===((typeof matchArraySimplePart23947))))))          {
           return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
           };
-        if ((!((2===matchArraySimplePart15873.length))))          {
+        if ((!((0===matchArraySimplePart23947.length))))          {
           return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
           };
-        var a = matchArraySimplePart15873[0];
-        var b = matchArraySimplePart15873[1];
-        var matchArrayTailPart15874 = Array.prototype.slice.call(matchVal15872, 2);
-        var fResult15878 = ((function (arrayExpression15875)          {
-          var out15876 = {            
+        var matchArrayTailPart23948 = Array.prototype.slice.call(matchVal23946, 0);
+        var fResult23952 = ((function (arrayExpression23949)          {
+          var out23950 = {            
             
           };
-          for (var i15877 = 0;(i15877<arrayExpression15875.length);i15877 = (i15877+2))            {
-            out15876[arrayExpression15875[i15877]] = arrayExpression15875[(i15877+1)];
+          for (var i23951 = 0;(i23951<arrayExpression23949.length);i23951 = (i23951+2))            {
+            out23950[arrayExpression23949[i23951]] = arrayExpression23949[(i23951+1)];
             };
-          return out15876;
-          }))(matchArrayTailPart15874);
-        if ((fResult15878===("match-fail-e1aa3b7e7ce9731266013c178de842b5")))          {
+          return out23950;
+          }))(matchArrayTailPart23948);
+        if ((fResult23952===("match-fail-e1aa3b7e7ce9731266013c178de842b5")))          {
           return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
           };
-        if ((("undefined")===((typeof fResult15878))))          {
-          fResult15878 = {            
+        if ((("undefined")===((typeof fResult23952))))          {
+          fResult23952 = {            
             
           };
           };
-        var matchObjectTemp15879 = fResult15878.r;
-        var previousMatchSucceeded15881 = true;
+        var matchObjectTemp23953 = fResult23952.x;
+        var previousMatchSucceeded23956 = true;
         switch (1){
                   case 1:
-          if ((("undefined")===((typeof matchObjectTemp15879))))            {
-            previousMatchSucceeded15881 = false;
+          if ((("undefined")===((typeof matchObjectTemp23953))))            {
+            previousMatchSucceeded23956 = false;
             };
-          var r = matchObjectTemp15879;
-          if (previousMatchSucceeded15881)            {
+          if ((("undefined")===((typeof matchObjectTemp23953))))            {
+            previousMatchSucceeded23956 = false;
+            };
+          var x = matchObjectTemp23953;
+          if (previousMatchSucceeded23956)            {
             break;
             };
-          previousMatchSucceeded15881 = true;
+          previousMatchSucceeded23956 = true;
           case 1:
-          var fResult15882 = ((function (x)            {
-            return 10;
-            }))(matchObjectTemp15879);
-          if ((fResult15882===("match-fail-e1aa3b7e7ce9731266013c178de842b5")))            {
-            previousMatchSucceeded15881 = false;
+          var fResult23957 = ((function (x)            {
+            return undefined;
+            }))(matchObjectTemp23953);
+          if ((fResult23957===("match-fail-e1aa3b7e7ce9731266013c178de842b5")))            {
+            previousMatchSucceeded23956 = false;
             };
-          var r = fResult15882;
-          if (previousMatchSucceeded15881)            {
+          if ((("undefined")===((typeof fResult23957))))            {
+            previousMatchSucceeded23956 = false;
+            };
+          var x = fResult23957;
+          if (previousMatchSucceeded23956)            {
             break;
             };
-          previousMatchSucceeded15881 = true;
+          previousMatchSucceeded23956 = true;
           default :
           return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
           
         };
-        var matchObjectTemp15880 = fResult15878.s;
-        var previousMatchSucceeded15883 = true;
+        var matchObjectTemp23954 = fResult23952.y;
+        var previousMatchSucceeded23958 = true;
         switch (1){
                   case 1:
-          if ((("undefined")===((typeof matchObjectTemp15880))))            {
-            previousMatchSucceeded15883 = false;
+          if ((("undefined")===((typeof matchObjectTemp23954))))            {
+            previousMatchSucceeded23958 = false;
             };
-          var s = matchObjectTemp15880;
-          if (previousMatchSucceeded15883)            {
+          var y = matchObjectTemp23954;
+          if (previousMatchSucceeded23958)            {
             break;
             };
-          previousMatchSucceeded15883 = true;
+          previousMatchSucceeded23958 = true;
           case 1:
-          var fResult15884 = ((function (x)            {
+          var fResult23959 = ((function (x)            {
+            return 11;
+            }))(matchObjectTemp23954);
+          if ((fResult23959===("match-fail-e1aa3b7e7ce9731266013c178de842b5")))            {
+            previousMatchSucceeded23958 = false;
+            };
+          var y = fResult23959;
+          if (previousMatchSucceeded23958)            {
+            break;
+            };
+          previousMatchSucceeded23958 = true;
+          default :
+          return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
+          
+        };
+        var matchObjectTemp23955 = fResult23952.z;
+        var previousMatchSucceeded23960 = true;
+        switch (1){
+                  case 1:
+          if ((("undefined")===((typeof matchObjectTemp23955))))            {
+            previousMatchSucceeded23960 = false;
+            };
+          var z = matchObjectTemp23955;
+          if (previousMatchSucceeded23960)            {
+            break;
+            };
+          previousMatchSucceeded23960 = true;
+          case 1:
+          var fResult23961 = ((function (x)            {
             return 13;
-            }))(matchObjectTemp15880);
-          if ((fResult15884===("match-fail-e1aa3b7e7ce9731266013c178de842b5")))            {
-            previousMatchSucceeded15883 = false;
+            }))(matchObjectTemp23955);
+          if ((fResult23961===("match-fail-e1aa3b7e7ce9731266013c178de842b5")))            {
+            previousMatchSucceeded23960 = false;
             };
-          var s = fResult15884;
-          if (previousMatchSucceeded15883)            {
+          var z = fResult23961;
+          if (previousMatchSucceeded23960)            {
             break;
             };
-          previousMatchSucceeded15883 = true;
+          previousMatchSucceeded23960 = true;
           default :
           return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
           
         };
-        return [a, b, r, s];
+        return [x, y, z];
         ;
         }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-      if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G15870))))        {
-        return G15870;
+      if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G23944))))        {
+        return G23944;
         };
-      G15870 = (function (arguments)        {
-        var matchVal15885 = G15871;
-        var anythingElse15869 = matchVal15885;
-        throw ((("Match fail in test against: ")+anythingElse15869));
+      G23944 = (function (arguments)        {
+        var matchVal23962 = G23945;
+        var anythingElse23943 = matchVal23962;
+        throw ((("Match fail in test against: ")+anythingElse23943));
         }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-      if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G15870))))        {
-        return G15870;
+      if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G23944))))        {
+        return G23944;
         };
-      throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: a b :* (as-options{} (r 10) (s 13))] (_newline-sequence [: a b r s])) (anything-else-15869 (_throw (_+ ''Match fail in test against: '' anything-else-15869))))) for value ")+(JSON.stringify(G15871))));
+      throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: :* (as-options{} (x (defined x) undefined) (y 11) (z 13))] (_newline-sequence [: x y z])) (anything-else-23943 (_throw (_+ ''Match fail in test against: '' anything-else-23943))))) for value ")+(JSON.stringify(G23945))));
       }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
     });
-  returnValue15864 = actualFun15866.apply(this, arguments);
-  while (recurP15867(returnValue15864))    {
-    returnValue15864 = actualFun15866.apply(this, returnValue15864.args);
+  returnValue23938 = actualFun23940.apply(this, arguments);
+  while (recurP23941(returnValue23938))    {
+    returnValue23938 = actualFun23940.apply(this, returnValue23938.args);
     };
-  return returnValue15864;
+  return returnValue23938;
   });
-console.log(test(1, 2, "r", 100));
+console.log(test("y", 200, "z", "Hello"));
