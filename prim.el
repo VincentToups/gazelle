@@ -360,7 +360,7 @@ manglings.  Additionally, dashed ids are replaced by camel case."
   (prim:transcode-newline-sequence body))
 
 (defun-match prim:transcode-case-statement ((list '_default
-												   (tail body)))
+												  (tail body)))
   (prim:insert "default ")
   (prim:insert ":")
   (prim:newline)
@@ -651,6 +651,14 @@ manglings.  Additionally, dashed ids are replaced by camel case."
   (prim:in-parens
    (prim:insert "~")
    (prim:transcode-in-parens expr)))
+
+(defun-match prim:transcode ((list '_in key value))
+  (prim:in-parens 
+   (prim:in-parens 
+	(prim:transcode key))
+   (prim:insert " in ")
+   (prim:in-parens 
+	(prim:transcode value))))
 
 (defun-match prim:transcode ((list '_include-js (! (string file))))
   (let ((contents (with-temp-buffer 

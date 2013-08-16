@@ -179,7 +179,7 @@
 	  (kill-region (- hd 1) hd)
 	  (insert "({} "))
 	(goto-char (+ tl (- (length "({} ") (length "{"))))
-	(recur rest (search-forward-regexp (rx (or "{" "}" "\"")))))))
+	(recur rest (search-forward-regexp (rx (or "{" "}" "\"")) nil t)))))
 
 (defun gzu:preprocess-buffer ()
   (interactive)

@@ -277,7 +277,7 @@
 
 (defun-match proper:to-prim ((list-rest (or 'for '_for) 
 										(list (list (or 'var '_var) 
-														 (tail var-bindings)) 
+													(tail var-bindings)) 
 											  cond update) body))
   (let* ((proper:symbol-macros (cons (make-hash-table)
 									 proper:symbol-macros))
@@ -385,6 +385,9 @@
 
 (defun-match proper:to-prim ((list '_~ expr))
   `(_~ ,(proper:to-prim expr)))
+
+(defun-match proper:to-prim ((list (or '_in 'in) key value))
+  `(_in ,(proper:to-prim key) ,(proper:to-prim value)))
 
 (defun-match proper:to-prim ((list (or 'include-js '_include-js) (! (string file))))
   `(_include-js ,file))
