@@ -63,4 +63,8 @@
  (define-test "in operator proper"
    (in :x { x 10 y 11 }))
 
+ (define-test "pattern-matching with {} syntax"
+   (=== 10 
+		(.. (lambda ({ x (number a)}) a) (call undefined { x 10 }))))
+
  (run-tests))

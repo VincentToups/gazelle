@@ -1,9 +1,9 @@
 define([], (function ()  {
-  var currentModule29611 = {    
+  var currentModule48662 = {    
     
   };
   var setModuleObject = (function (value)    {
-    currentModule29611 = value;
+    currentModule48662 = value;
     });
   (function (arguments)    {
     // _current-module
@@ -18,26 +18,26 @@ define([], (function ()  {
     // define-pattern+
     // macro - no dynamic value.
     ;
-    currentModule29611.definedPredicate = (function (x)      {
+    currentModule48662.definedPredicate = (function (x)      {
       return (!((((typeof x))===("undefined"))));
       });
-    currentModule29611.undefinedPredicate = (function (x)      {
+    currentModule48662.undefinedPredicate = (function (x)      {
       return (((typeof x))===("undefined"));
       });
-    currentModule29611.numberPredicate = (function (o)      {
+    currentModule48662.numberPredicate = (function (o)      {
       return (((typeof o))===("number"));
       });
-    currentModule29611.stringPredicate = (function (o)      {
+    currentModule48662.stringPredicate = (function (o)      {
       return (((typeof o))===("string"));
       });
-    currentModule29611.arrayPredicate = (function (o)      {
+    currentModule48662.arrayPredicate = (function (o)      {
       return (o instanceof Array);
       });
-    currentModule29611.emptyPredicate = (function (o)      {
+    currentModule48662.emptyPredicate = (function (o)      {
       return (0===o.length);
       });
-    currentModule29611.nullPredicate = (function (x)      {
-      return currentModule29611.TripleEqualminus(null, x);
+    currentModule48662.nullPredicate = (function (x)      {
+      return currentModule48662.TripleEqualminus(null, x);
       });
     // collect{}
     // macro - no dynamic value.
@@ -51,7 +51,7 @@ define([], (function ()  {
     var apply = (function (f, lst)      {
       return f.apply(f, lst);
       });
-    currentModule29611.TripleEqualminus_ = (function (partial)      {
+    currentModule48662.TripleEqualminus_ = (function (partial)      {
       return (function (open)        {
         return (open===partial);
         });
@@ -62,35 +62,35 @@ define([], (function ()  {
     // unless
     // macro - no dynamic value.
     ;
-    currentModule29611.Delay = (function (lambdaExpr)      {
+    currentModule48662.Delay = (function (lambdaExpr)      {
       this.lambdaExpr = lambdaExpr;
       return this;
       });
-    currentModule29611.Delay.prototype.value = (function ()      {
+    currentModule48662.Delay.prototype.value = (function ()      {
       return this.lambdaExpr();
       });
     // delay
     // macro - no dynamic value.
     ;
-    currentModule29611.undelay = (function (o)      {
+    currentModule48662.undelay = (function (o)      {
       return (function (arguments)        {
-        var G29877 = undefined;
-        var G29878 = o;
-        G29877 = (function (arguments)          {
-          var matchVal29879 = G29878;
-          var matchFunExpr29881 = (function (G29880)            {
-            return (G29880 instanceof currentModule29611.Delay);
+        var G48928 = undefined;
+        var G48929 = o;
+        G48928 = (function (arguments)          {
+          var matchVal48930 = G48929;
+          var matchFunExpr48932 = (function (G48931)            {
+            return (G48931 instanceof currentModule48662.Delay);
             });
-          if ((!(matchFunExpr29881(matchVal29879))))            {
+          if ((!(matchFunExpr48932(matchVal48930))))            {
             return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
             };
-          var delayObject = matchVal29879;
+          var delayObject = matchVal48930;
           return delayObject.value();
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G29877))))          {
-          return G29877;
+        if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G48928))))          {
+          return G48928;
           };
-        throw ((("match-fail at ((match o ((instance Delay delay-object) (delay-object\\.value)))) for value ")+(JSON.stringify(G29878))));
+        throw ((("match-fail at ((match o ((instance Delay delay-object) (delay-object\\.value)))) for value ")+(JSON.stringify(G48929))));
         }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
       });
     // define-to
@@ -105,36 +105,36 @@ define([], (function ()  {
     // collect-for
     // macro - no dynamic value.
     ;
-    currentModule29611.range = (function ()      {
-      var returnValue29936 = undefined;
+    currentModule48662.range = (function ()      {
+      var returnValue48987 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigil29935",
+          recurSigil:"recurSigil48986",
           args:arguments
         };
         });
-      var recurP29939 = (function (val29940)        {
-        if ((("undefined")===((typeof val29940))))          {
+      var recurP48990 = (function (val48991)        {
+        if ((("undefined")===((typeof val48991))))          {
           return false;
           };
-        return (val29940.recurSigil===("recurSigil29935"));
+        return (val48991.recurSigil===("recurSigil48986"));
         });
-      var actualFun29938 = (function ()        {
+      var actualFun48989 = (function ()        {
         return (function (arguments)          {
-          var G29942 = undefined;
-          var G29943 = Array.prototype.slice.apply(arguments);
-          G29942 = (function (arguments)            {
-            var matchVal29944 = G29943;
-            if ((!((("object")===((typeof matchVal29944))))))              {
+          var G48993 = undefined;
+          var G48994 = Array.prototype.slice.apply(arguments);
+          G48993 = (function (arguments)            {
+            var matchVal48995 = G48994;
+            if ((!((("object")===((typeof matchVal48995))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((4===matchVal29944.length))))              {
+            if ((!((4===matchVal48995.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var start = matchVal29944[0];
-            var step = matchVal29944[1];
-            var stop = matchVal29944[2];
-            var transform = matchVal29944[3];
+            var start = matchVal48995[0];
+            var step = matchVal48995[1];
+            var stop = matchVal48995[2];
+            var transform = matchVal48995[3];
             var out = [];
             for (var i = start;(i<stop);i = ((i)+(step)))              {
               out.push(transform(i));
@@ -142,141 +142,141 @@ define([], (function ()  {
             return out;
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G29942))))            {
-            return G29942;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G48993))))            {
+            return G48993;
             };
-          G29942 = (function (arguments)            {
-            var matchVal29945 = G29943;
-            if ((!((("object")===((typeof matchVal29945))))))              {
+          G48993 = (function (arguments)            {
+            var matchVal48996 = G48994;
+            if ((!((("object")===((typeof matchVal48996))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((3===matchVal29945.length))))              {
+            if ((!((3===matchVal48996.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var start = matchVal29945[0];
-            var step = matchVal29945[1];
-            var stop = matchVal29945[2];
+            var start = matchVal48996[0];
+            var step = matchVal48996[1];
+            var stop = matchVal48996[2];
             return recur(start, step, stop, (function (v)              {
               return v;
               }));
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G29942))))            {
-            return G29942;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G48993))))            {
+            return G48993;
             };
-          G29942 = (function (arguments)            {
-            var matchVal29946 = G29943;
-            if ((!((("object")===((typeof matchVal29946))))))              {
+          G48993 = (function (arguments)            {
+            var matchVal48997 = G48994;
+            if ((!((("object")===((typeof matchVal48997))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((2===matchVal29946.length))))              {
+            if ((!((2===matchVal48997.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var start = matchVal29946[0];
-            var stop = matchVal29946[1];
+            var start = matchVal48997[0];
+            var stop = matchVal48997[1];
             return recur(start, 1, stop, (function (v)              {
               return v;
               }));
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G29942))))            {
-            return G29942;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G48993))))            {
+            return G48993;
             };
-          G29942 = (function (arguments)            {
-            var matchVal29947 = G29943;
-            if ((!((("object")===((typeof matchVal29947))))))              {
+          G48993 = (function (arguments)            {
+            var matchVal48998 = G48994;
+            if ((!((("object")===((typeof matchVal48998))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((1===matchVal29947.length))))              {
+            if ((!((1===matchVal48998.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var stop = matchVal29947[0];
+            var stop = matchVal48998[0];
             return recur(0, 1, stop, (function (v)              {
               return v;
               }));
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G29942))))            {
-            return G29942;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G48993))))            {
+            return G48993;
             };
-          G29942 = (function (arguments)            {
-            var matchVal29948 = G29943;
-            var anythingElse29941 = matchVal29948;
-            throw ((("Match fail in hooves/hooves-range against: ")+(anythingElse29941)));
+          G48993 = (function (arguments)            {
+            var matchVal48999 = G48994;
+            var anythingElse48992 = matchVal48999;
+            throw ((("Match fail in hooves/hooves-range against: ")+(anythingElse48992)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G29942))))            {
-            return G29942;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G48993))))            {
+            return G48993;
             };
-          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: start step stop transform] (_newline-sequence (var out [:]) (for ((var i start) (_< i stop) (set! i (_+ i step))) (out\\.push (transform i))) out)) ([: start step stop] (_newline-sequence (recur start step stop (lambda (v) v)))) ([: start stop] (_newline-sequence (recur start 1 stop (lambda (v) v)))) ([: stop] (_newline-sequence (recur 0 1 stop (lambda (v) v)))) (anything-else-29941 (_throw (_+ ''Match fail in hooves/hooves-range against: '' anything-else-29941))))) for value ")+(JSON.stringify(G29943))));
+          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: start step stop transform] (_newline-sequence (var out [:]) (for ((var i start) (_< i stop) (set! i (_+ i step))) (out\\.push (transform i))) out)) ([: start step stop] (_newline-sequence (recur start step stop (lambda (v) v)))) ([: start stop] (_newline-sequence (recur start 1 stop (lambda (v) v)))) ([: stop] (_newline-sequence (recur 0 1 stop (lambda (v) v)))) (anything-else-48992 (_throw (_+ ''Match fail in hooves/hooves-range against: '' anything-else-48992))))) for value ")+(JSON.stringify(G48994))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValue29936 = actualFun29938.apply(this, arguments);
-      while (recurP29939(returnValue29936))        {
-        returnValue29936 = actualFun29938.apply(this, returnValue29936.args);
+      returnValue48987 = actualFun48989.apply(this, arguments);
+      while (recurP48990(returnValue48987))        {
+        returnValue48987 = actualFun48989.apply(this, returnValue48987.args);
         };
-      return returnValue29936;
+      return returnValue48987;
       });
-    currentModule29611.pureSort = (function ()      {
-      var returnValue29972 = undefined;
+    currentModule48662.pureSort = (function ()      {
+      var returnValue49023 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigil29971",
+          recurSigil:"recurSigil49022",
           args:arguments
         };
         });
-      var recurP29975 = (function (val29976)        {
-        if ((("undefined")===((typeof val29976))))          {
+      var recurP49026 = (function (val49027)        {
+        if ((("undefined")===((typeof val49027))))          {
           return false;
           };
-        return (val29976.recurSigil===("recurSigil29971"));
+        return (val49027.recurSigil===("recurSigil49022"));
         });
-      var actualFun29974 = (function ()        {
+      var actualFun49025 = (function ()        {
         return (function (arguments)          {
-          var G29978 = undefined;
-          var G29979 = Array.prototype.slice.apply(arguments);
-          G29978 = (function (arguments)            {
-            var matchVal29980 = G29979;
-            if ((!((("object")===((typeof matchVal29980))))))              {
+          var G49029 = undefined;
+          var G49030 = Array.prototype.slice.apply(arguments);
+          G49029 = (function (arguments)            {
+            var matchVal49031 = G49030;
+            if ((!((("object")===((typeof matchVal49031))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchVal29980.length>=1))))              {
+            if ((!((matchVal49031.length>=1))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePart29981 = Array.prototype.slice.call(matchVal29980, 0, 1);
-            if ((!((("object")===((typeof matchArraySimplePart29981))))))              {
+            var matchArraySimplePart49032 = Array.prototype.slice.call(matchVal49031, 0, 1);
+            if ((!((("object")===((typeof matchArraySimplePart49032))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((1===matchArraySimplePart29981.length))))              {
+            if ((!((1===matchArraySimplePart49032.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var array = matchArraySimplePart29981[0];
-            var matchArrayTailPart29982 = Array.prototype.slice.call(matchVal29980, 1);
-            var matchTemp29983 = matchArrayTailPart29982[0];
-            var previousMatchSucceeded29984 = true;
+            var array = matchArraySimplePart49032[0];
+            var matchArrayTailPart49033 = Array.prototype.slice.call(matchVal49031, 1);
+            var matchTemp49034 = matchArrayTailPart49033[0];
+            var previousMatchSucceeded49035 = true;
             switch (1){
                           case 1:
-              if ((("undefined")===((typeof matchTemp29983))))                {
-                previousMatchSucceeded29984 = false;
+              if ((("undefined")===((typeof matchTemp49034))))                {
+                previousMatchSucceeded49035 = false;
                 };
-              var sortFun = matchTemp29983;
-              if (previousMatchSucceeded29984)                {
+              var sortFun = matchTemp49034;
+              if (previousMatchSucceeded49035)                {
                 break;
                 };
-              previousMatchSucceeded29984 = true;
+              previousMatchSucceeded49035 = true;
               case 1:
-              var fResult29985 = ((function (x)                {
+              var fResult49036 = ((function (x)                {
                 return (function (a, b)                  {
-                  return ((currentModule29611.lessThan(a, b))?(-1) : (1));
+                  return ((currentModule48662.lessThan(a, b))?(-1) : (1));
                   });
-                }))(matchTemp29983);
-              if ((fResult29985===("match-fail-e1aa3b7e7ce9731266013c178de842b5")))                {
-                previousMatchSucceeded29984 = false;
+                }))(matchTemp49034);
+              if ((fResult49036===("match-fail-e1aa3b7e7ce9731266013c178de842b5")))                {
+                previousMatchSucceeded49035 = false;
                 };
-              var sortFun = fResult29985;
-              if (previousMatchSucceeded29984)                {
+              var sortFun = fResult49036;
+              if (previousMatchSucceeded49035)                {
                 break;
                 };
-              previousMatchSucceeded29984 = true;
+              previousMatchSucceeded49035 = true;
               default :
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               
@@ -286,65 +286,65 @@ define([], (function ()  {
             return copy;
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G29978))))            {
-            return G29978;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49029))))            {
+            return G49029;
             };
-          G29978 = (function (arguments)            {
-            var matchVal29986 = G29979;
-            var anythingElse29977 = matchVal29986;
-            throw ((("Match fail in hooves/hooves-pure-sort against: ")+(anythingElse29977)));
+          G49029 = (function (arguments)            {
+            var matchVal49037 = G49030;
+            var anythingElse49028 = matchVal49037;
+            throw ((("Match fail in hooves/hooves-pure-sort against: ")+(anythingElse49028)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G29978))))            {
-            return G29978;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49029))))            {
+            return G49029;
             };
-          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: array :- (opt sort-fun (lambda (a b) (if (< a b) -1 1)))] (_newline-sequence (var copy (\\.\\. array (concat [:]))) (\\.\\. copy (sort sort-fun)) copy)) (anything-else-29977 (_throw (_+ ''Match fail in hooves/hooves-pure-sort against: '' anything-else-29977))))) for value ")+(JSON.stringify(G29979))));
+          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: array :- (opt sort-fun (lambda (a b) (if (< a b) -1 1)))] (_newline-sequence (var copy (\\.\\. array (concat [:]))) (\\.\\. copy (sort sort-fun)) copy)) (anything-else-49028 (_throw (_+ ''Match fail in hooves/hooves-pure-sort against: '' anything-else-49028))))) for value ")+(JSON.stringify(G49030))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValue29972 = actualFun29974.apply(this, arguments);
-      while (recurP29975(returnValue29972))        {
-        returnValue29972 = actualFun29974.apply(this, returnValue29972.args);
+      returnValue49023 = actualFun49025.apply(this, arguments);
+      while (recurP49026(returnValue49023))        {
+        returnValue49023 = actualFun49025.apply(this, returnValue49023.args);
         };
-      return returnValue29972;
+      return returnValue49023;
       });
     // with-slots
     // macro - no dynamic value.
     ;
-    currentModule29611.plus = (function ()      {
-      var returnValue30016 = undefined;
+    currentModule48662.plus = (function ()      {
+      var returnValue49067 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigil30015",
+          recurSigil:"recurSigil49066",
           args:arguments
         };
         });
-      var recurP30019 = (function (val30020)        {
-        if ((("undefined")===((typeof val30020))))          {
+      var recurP49070 = (function (val49071)        {
+        if ((("undefined")===((typeof val49071))))          {
           return false;
           };
-        return (val30020.recurSigil===("recurSigil30015"));
+        return (val49071.recurSigil===("recurSigil49066"));
         });
-      var actualFun30018 = (function ()        {
+      var actualFun49069 = (function ()        {
         return (function (arguments)          {
-          var G30022 = undefined;
-          var G30023 = Array.prototype.slice.apply(arguments);
-          G30022 = (function (arguments)            {
-            var matchVal30024 = G30023;
-            if ((!((("object")===((typeof matchVal30024))))))              {
+          var G49073 = undefined;
+          var G49074 = Array.prototype.slice.apply(arguments);
+          G49073 = (function (arguments)            {
+            var matchVal49075 = G49074;
+            if ((!((("object")===((typeof matchVal49075))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchVal30024.length>=1))))              {
+            if ((!((matchVal49075.length>=1))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePart30025 = Array.prototype.slice.call(matchVal30024, 0, 1);
-            if ((!((("object")===((typeof matchArraySimplePart30025))))))              {
+            var matchArraySimplePart49076 = Array.prototype.slice.call(matchVal49075, 0, 1);
+            if ((!((("object")===((typeof matchArraySimplePart49076))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((1===matchArraySimplePart30025.length))))              {
+            if ((!((1===matchArraySimplePart49076.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var hd = matchArraySimplePart30025[0];
-            var matchArrayTailPart30026 = Array.prototype.slice.call(matchVal30024, 1);
-            var tl = matchArrayTailPart30026;
+            var hd = matchArraySimplePart49076[0];
+            var matchArrayTailPart49077 = Array.prototype.slice.call(matchVal49075, 1);
+            var tl = matchArrayTailPart49077;
             var result = hd;
             for (i in (tl))              {
               result = ((result)+(tl[i]));
@@ -352,121 +352,121 @@ define([], (function ()  {
             return result;
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30022))))            {
-            return G30022;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49073))))            {
+            return G49073;
             };
-          G30022 = (function (arguments)            {
-            var matchVal30027 = G30023;
-            var anythingElse30021 = matchVal30027;
-            throw ((("Match fail in hooves/hooves-+ against: ")+(anythingElse30021)));
+          G49073 = (function (arguments)            {
+            var matchVal49078 = G49074;
+            var anythingElse49072 = matchVal49078;
+            throw ((("Match fail in hooves/hooves-+ against: ")+(anythingElse49072)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30022))))            {
-            return G30022;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49073))))            {
+            return G49073;
             };
-          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: hd (tail tl)] (_newline-sequence (var result hd) (for (i :in tl) (set! result (_+ result [tl i]))) result)) (anything-else-30021 (_throw (_+ ''Match fail in hooves/hooves-+ against: '' anything-else-30021))))) for value ")+(JSON.stringify(G30023))));
+          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: hd (tail tl)] (_newline-sequence (var result hd) (for (i :in tl) (set! result (_+ result [tl i]))) result)) (anything-else-49072 (_throw (_+ ''Match fail in hooves/hooves-+ against: '' anything-else-49072))))) for value ")+(JSON.stringify(G49074))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValue30016 = actualFun30018.apply(this, arguments);
-      while (recurP30019(returnValue30016))        {
-        returnValue30016 = actualFun30018.apply(this, returnValue30016.args);
+      returnValue49067 = actualFun49069.apply(this, arguments);
+      while (recurP49070(returnValue49067))        {
+        returnValue49067 = actualFun49069.apply(this, returnValue49067.args);
         };
-      return returnValue30016;
+      return returnValue49067;
       });
-    currentModule29611.minus = (function ()      {
-      var returnValue30051 = undefined;
+    currentModule48662.minus = (function ()      {
+      var returnValue49102 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigil30050",
+          recurSigil:"recurSigil49101",
           args:arguments
         };
         });
-      var recurP30054 = (function (val30055)        {
-        if ((("undefined")===((typeof val30055))))          {
+      var recurP49105 = (function (val49106)        {
+        if ((("undefined")===((typeof val49106))))          {
           return false;
           };
-        return (val30055.recurSigil===("recurSigil30050"));
+        return (val49106.recurSigil===("recurSigil49101"));
         });
-      var actualFun30053 = (function ()        {
+      var actualFun49104 = (function ()        {
         return (function (arguments)          {
-          var G30057 = undefined;
-          var G30058 = Array.prototype.slice.apply(arguments);
-          G30057 = (function (arguments)            {
-            var matchVal30059 = G30058;
-            if ((!((("object")===((typeof matchVal30059))))))              {
+          var G49108 = undefined;
+          var G49109 = Array.prototype.slice.apply(arguments);
+          G49108 = (function (arguments)            {
+            var matchVal49110 = G49109;
+            if ((!((("object")===((typeof matchVal49110))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchVal30059.length>=1))))              {
+            if ((!((matchVal49110.length>=1))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePart30060 = Array.prototype.slice.call(matchVal30059, 0, 1);
-            if ((!((("object")===((typeof matchArraySimplePart30060))))))              {
+            var matchArraySimplePart49111 = Array.prototype.slice.call(matchVal49110, 0, 1);
+            if ((!((("object")===((typeof matchArraySimplePart49111))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((1===matchArraySimplePart30060.length))))              {
+            if ((!((1===matchArraySimplePart49111.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var hd = matchArraySimplePart30060[0];
-            var matchArrayTailPart30061 = Array.prototype.slice.call(matchVal30059, 1);
-            var tl = matchArrayTailPart30061;
-            return (((tl.length>0))?(((hd)-(apply(currentModule29611.plus, tl)))) : ((-(hd))));
+            var hd = matchArraySimplePart49111[0];
+            var matchArrayTailPart49112 = Array.prototype.slice.call(matchVal49110, 1);
+            var tl = matchArrayTailPart49112;
+            return (((tl.length>0))?(((hd)-(apply(currentModule48662.plus, tl)))) : ((-(hd))));
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30057))))            {
-            return G30057;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49108))))            {
+            return G49108;
             };
-          G30057 = (function (arguments)            {
-            var matchVal30062 = G30058;
-            var anythingElse30056 = matchVal30062;
-            throw ((("Match fail in hooves/hooves-- against: ")+(anythingElse30056)));
+          G49108 = (function (arguments)            {
+            var matchVal49113 = G49109;
+            var anythingElse49107 = matchVal49113;
+            throw ((("Match fail in hooves/hooves-- against: ")+(anythingElse49107)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30057))))            {
-            return G30057;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49108))))            {
+            return G49108;
             };
-          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: hd (tail tl)] (_newline-sequence (if (_> tl\\.length 0) (_- hd (apply + tl)) (_- hd)))) (anything-else-30056 (_throw (_+ ''Match fail in hooves/hooves-- against: '' anything-else-30056))))) for value ")+(JSON.stringify(G30058))));
+          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: hd (tail tl)] (_newline-sequence (if (_> tl\\.length 0) (_- hd (apply + tl)) (_- hd)))) (anything-else-49107 (_throw (_+ ''Match fail in hooves/hooves-- against: '' anything-else-49107))))) for value ")+(JSON.stringify(G49109))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValue30051 = actualFun30053.apply(this, arguments);
-      while (recurP30054(returnValue30051))        {
-        returnValue30051 = actualFun30053.apply(this, returnValue30051.args);
+      returnValue49102 = actualFun49104.apply(this, arguments);
+      while (recurP49105(returnValue49102))        {
+        returnValue49102 = actualFun49104.apply(this, returnValue49102.args);
         };
-      return returnValue30051;
+      return returnValue49102;
       });
-    currentModule29611.times = (function ()      {
-      var returnValue30086 = undefined;
+    currentModule48662.times = (function ()      {
+      var returnValue49137 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigil30085",
+          recurSigil:"recurSigil49136",
           args:arguments
         };
         });
-      var recurP30089 = (function (val30090)        {
-        if ((("undefined")===((typeof val30090))))          {
+      var recurP49140 = (function (val49141)        {
+        if ((("undefined")===((typeof val49141))))          {
           return false;
           };
-        return (val30090.recurSigil===("recurSigil30085"));
+        return (val49141.recurSigil===("recurSigil49136"));
         });
-      var actualFun30088 = (function ()        {
+      var actualFun49139 = (function ()        {
         return (function (arguments)          {
-          var G30092 = undefined;
-          var G30093 = Array.prototype.slice.apply(arguments);
-          G30092 = (function (arguments)            {
-            var matchVal30094 = G30093;
-            if ((!((("object")===((typeof matchVal30094))))))              {
+          var G49143 = undefined;
+          var G49144 = Array.prototype.slice.apply(arguments);
+          G49143 = (function (arguments)            {
+            var matchVal49145 = G49144;
+            if ((!((("object")===((typeof matchVal49145))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchVal30094.length>=1))))              {
+            if ((!((matchVal49145.length>=1))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePart30095 = Array.prototype.slice.call(matchVal30094, 0, 1);
-            if ((!((("object")===((typeof matchArraySimplePart30095))))))              {
+            var matchArraySimplePart49146 = Array.prototype.slice.call(matchVal49145, 0, 1);
+            if ((!((("object")===((typeof matchArraySimplePart49146))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((1===matchArraySimplePart30095.length))))              {
+            if ((!((1===matchArraySimplePart49146.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var hd = matchArraySimplePart30095[0];
-            var matchArrayTailPart30096 = Array.prototype.slice.call(matchVal30094, 1);
-            var tl = matchArrayTailPart30096;
+            var hd = matchArraySimplePart49146[0];
+            var matchArrayTailPart49147 = Array.prototype.slice.call(matchVal49145, 1);
+            var tl = matchArrayTailPart49147;
             var result = hd;
             for (i in (tl))              {
               result = ((result)*(tl[i]));
@@ -474,469 +474,469 @@ define([], (function ()  {
             return result;
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30092))))            {
-            return G30092;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49143))))            {
+            return G49143;
             };
-          G30092 = (function (arguments)            {
-            var matchVal30097 = G30093;
-            var anythingElse30091 = matchVal30097;
-            throw ((("Match fail in hooves/hooves-* against: ")+(anythingElse30091)));
+          G49143 = (function (arguments)            {
+            var matchVal49148 = G49144;
+            var anythingElse49142 = matchVal49148;
+            throw ((("Match fail in hooves/hooves-* against: ")+(anythingElse49142)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30092))))            {
-            return G30092;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49143))))            {
+            return G49143;
             };
-          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: hd (tail tl)] (_newline-sequence (var result hd) (for (i :in tl) (set! result (_* result [tl i]))) result)) (anything-else-30091 (_throw (_+ ''Match fail in hooves/hooves-* against: '' anything-else-30091))))) for value ")+(JSON.stringify(G30093))));
+          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: hd (tail tl)] (_newline-sequence (var result hd) (for (i :in tl) (set! result (_* result [tl i]))) result)) (anything-else-49142 (_throw (_+ ''Match fail in hooves/hooves-* against: '' anything-else-49142))))) for value ")+(JSON.stringify(G49144))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValue30086 = actualFun30088.apply(this, arguments);
-      while (recurP30089(returnValue30086))        {
-        returnValue30086 = actualFun30088.apply(this, returnValue30086.args);
+      returnValue49137 = actualFun49139.apply(this, arguments);
+      while (recurP49140(returnValue49137))        {
+        returnValue49137 = actualFun49139.apply(this, returnValue49137.args);
         };
-      return returnValue30086;
+      return returnValue49137;
       });
-    currentModule29611.divide = (function ()      {
-      var returnValue30121 = undefined;
+    currentModule48662.divide = (function ()      {
+      var returnValue49172 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigil30120",
+          recurSigil:"recurSigil49171",
           args:arguments
         };
         });
-      var recurP30124 = (function (val30125)        {
-        if ((("undefined")===((typeof val30125))))          {
+      var recurP49175 = (function (val49176)        {
+        if ((("undefined")===((typeof val49176))))          {
           return false;
           };
-        return (val30125.recurSigil===("recurSigil30120"));
+        return (val49176.recurSigil===("recurSigil49171"));
         });
-      var actualFun30123 = (function ()        {
+      var actualFun49174 = (function ()        {
         return (function (arguments)          {
-          var G30127 = undefined;
-          var G30128 = Array.prototype.slice.apply(arguments);
-          G30127 = (function (arguments)            {
-            var matchVal30129 = G30128;
-            if ((!((("object")===((typeof matchVal30129))))))              {
+          var G49178 = undefined;
+          var G49179 = Array.prototype.slice.apply(arguments);
+          G49178 = (function (arguments)            {
+            var matchVal49180 = G49179;
+            if ((!((("object")===((typeof matchVal49180))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchVal30129.length>=1))))              {
+            if ((!((matchVal49180.length>=1))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePart30130 = Array.prototype.slice.call(matchVal30129, 0, 1);
-            if ((!((("object")===((typeof matchArraySimplePart30130))))))              {
+            var matchArraySimplePart49181 = Array.prototype.slice.call(matchVal49180, 0, 1);
+            if ((!((("object")===((typeof matchArraySimplePart49181))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((1===matchArraySimplePart30130.length))))              {
+            if ((!((1===matchArraySimplePart49181.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var hd = matchArraySimplePart30130[0];
-            var matchArrayTailPart30131 = Array.prototype.slice.call(matchVal30129, 1);
-            var tl = matchArrayTailPart30131;
-            return ((hd)/((apply(currentModule29611.times, tl))));
+            var hd = matchArraySimplePart49181[0];
+            var matchArrayTailPart49182 = Array.prototype.slice.call(matchVal49180, 1);
+            var tl = matchArrayTailPart49182;
+            return ((hd)/((apply(currentModule48662.times, tl))));
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30127))))            {
-            return G30127;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49178))))            {
+            return G49178;
             };
-          G30127 = (function (arguments)            {
-            var matchVal30132 = G30128;
-            var anythingElse30126 = matchVal30132;
-            throw ((("Match fail in hooves/hooves-/ against: ")+(anythingElse30126)));
+          G49178 = (function (arguments)            {
+            var matchVal49183 = G49179;
+            var anythingElse49177 = matchVal49183;
+            throw ((("Match fail in hooves/hooves-/ against: ")+(anythingElse49177)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30127))))            {
-            return G30127;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49178))))            {
+            return G49178;
             };
-          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: hd (tail tl)] (_newline-sequence (_/ hd (apply * tl)))) (anything-else-30126 (_throw (_+ ''Match fail in hooves/hooves-/ against: '' anything-else-30126))))) for value ")+(JSON.stringify(G30128))));
+          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: hd (tail tl)] (_newline-sequence (_/ hd (apply * tl)))) (anything-else-49177 (_throw (_+ ''Match fail in hooves/hooves-/ against: '' anything-else-49177))))) for value ")+(JSON.stringify(G49179))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValue30121 = actualFun30123.apply(this, arguments);
-      while (recurP30124(returnValue30121))        {
-        returnValue30121 = actualFun30123.apply(this, returnValue30121.args);
+      returnValue49172 = actualFun49174.apply(this, arguments);
+      while (recurP49175(returnValue49172))        {
+        returnValue49172 = actualFun49174.apply(this, returnValue49172.args);
         };
-      return returnValue30121;
+      return returnValue49172;
       });
-    currentModule29611.map1 = (function (f, a)      {
+    currentModule48662.map1 = (function (f, a)      {
       var o = [];
-      for (var i = 0;currentModule29611.lessThan(i, a.length);i = currentModule29611.plus(i, 1))        {
+      for (var i = 0;currentModule48662.lessThan(i, a.length);i = currentModule48662.plus(i, 1))        {
         o[i] = f(a[i]);
         };
       return o;
       });
-    currentModule29611.min2 = (function (a, b)      {
-      return ((currentModule29611.lessThan(a, b))?(a) : (b));
+    currentModule48662.min2 = (function (a, b)      {
+      return ((currentModule48662.lessThan(a, b))?(a) : (b));
       });
-    currentModule29611.max2 = (function (a, b)      {
-      return ((currentModule29611.greaterThan(a, b))?(a) : (b));
+    currentModule48662.max2 = (function (a, b)      {
+      return ((currentModule48662.greaterThan(a, b))?(a) : (b));
       });
     var foldl = (function (fItAc, init, sequence)      {
-      for (var i = 0;currentModule29611.lessThan(i, sequence.length);i = currentModule29611.plus(i, 1))        {
+      for (var i = 0;currentModule48662.lessThan(i, sequence.length);i = currentModule48662.plus(i, 1))        {
         init = fItAc(init, sequence[i]);
         };
       return init;
       });
-    currentModule29611.min = (function ()      {
-      var returnValue30222 = undefined;
+    currentModule48662.min = (function ()      {
+      var returnValue49273 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigil30221",
+          recurSigil:"recurSigil49272",
           args:arguments
         };
         });
-      var recurP30225 = (function (val30226)        {
-        if ((("undefined")===((typeof val30226))))          {
+      var recurP49276 = (function (val49277)        {
+        if ((("undefined")===((typeof val49277))))          {
           return false;
           };
-        return (val30226.recurSigil===("recurSigil30221"));
+        return (val49277.recurSigil===("recurSigil49272"));
         });
-      var actualFun30224 = (function ()        {
+      var actualFun49275 = (function ()        {
         return (function (arguments)          {
-          var G30228 = undefined;
-          var G30229 = Array.prototype.slice.apply(arguments);
-          G30228 = (function (arguments)            {
-            var matchVal30230 = G30229;
-            if ((!((("object")===((typeof matchVal30230))))))              {
+          var G49279 = undefined;
+          var G49280 = Array.prototype.slice.apply(arguments);
+          G49279 = (function (arguments)            {
+            var matchVal49281 = G49280;
+            if ((!((("object")===((typeof matchVal49281))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchVal30230.length>=0))))              {
+            if ((!((matchVal49281.length>=0))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePart30231 = Array.prototype.slice.call(matchVal30230, 0, 0);
-            if ((!((("object")===((typeof matchArraySimplePart30231))))))              {
+            var matchArraySimplePart49282 = Array.prototype.slice.call(matchVal49281, 0, 0);
+            if ((!((("object")===((typeof matchArraySimplePart49282))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((0===matchArraySimplePart30231.length))))              {
+            if ((!((0===matchArraySimplePart49282.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArrayTailPart30232 = Array.prototype.slice.call(matchVal30230, 0);
-            var values = matchArrayTailPart30232;
-            return foldl(currentModule29611.min2, Infinity, values);
+            var matchArrayTailPart49283 = Array.prototype.slice.call(matchVal49281, 0);
+            var values = matchArrayTailPart49283;
+            return foldl(currentModule48662.min2, Infinity, values);
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30228))))            {
-            return G30228;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49279))))            {
+            return G49279;
             };
-          G30228 = (function (arguments)            {
-            var matchVal30233 = G30229;
-            var anythingElse30227 = matchVal30233;
-            throw ((("Match fail in hooves/hooves-min against: ")+(anythingElse30227)));
+          G49279 = (function (arguments)            {
+            var matchVal49284 = G49280;
+            var anythingElse49278 = matchVal49284;
+            throw ((("Match fail in hooves/hooves-min against: ")+(anythingElse49278)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30228))))            {
-            return G30228;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49279))))            {
+            return G49279;
             };
-          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: (tail values)] (_newline-sequence (foldl min2 Infinity values))) (anything-else-30227 (_throw (_+ ''Match fail in hooves/hooves-min against: '' anything-else-30227))))) for value ")+(JSON.stringify(G30229))));
+          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: (tail values)] (_newline-sequence (foldl min2 Infinity values))) (anything-else-49278 (_throw (_+ ''Match fail in hooves/hooves-min against: '' anything-else-49278))))) for value ")+(JSON.stringify(G49280))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValue30222 = actualFun30224.apply(this, arguments);
-      while (recurP30225(returnValue30222))        {
-        returnValue30222 = actualFun30224.apply(this, returnValue30222.args);
+      returnValue49273 = actualFun49275.apply(this, arguments);
+      while (recurP49276(returnValue49273))        {
+        returnValue49273 = actualFun49275.apply(this, returnValue49273.args);
         };
-      return returnValue30222;
+      return returnValue49273;
       });
-    currentModule29611.max = (function ()      {
-      var returnValue30257 = undefined;
+    currentModule48662.max = (function ()      {
+      var returnValue49308 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigil30256",
+          recurSigil:"recurSigil49307",
           args:arguments
         };
         });
-      var recurP30260 = (function (val30261)        {
-        if ((("undefined")===((typeof val30261))))          {
+      var recurP49311 = (function (val49312)        {
+        if ((("undefined")===((typeof val49312))))          {
           return false;
           };
-        return (val30261.recurSigil===("recurSigil30256"));
+        return (val49312.recurSigil===("recurSigil49307"));
         });
-      var actualFun30259 = (function ()        {
+      var actualFun49310 = (function ()        {
         return (function (arguments)          {
-          var G30263 = undefined;
-          var G30264 = Array.prototype.slice.apply(arguments);
-          G30263 = (function (arguments)            {
-            var matchVal30265 = G30264;
-            if ((!((("object")===((typeof matchVal30265))))))              {
+          var G49314 = undefined;
+          var G49315 = Array.prototype.slice.apply(arguments);
+          G49314 = (function (arguments)            {
+            var matchVal49316 = G49315;
+            if ((!((("object")===((typeof matchVal49316))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchVal30265.length>=0))))              {
+            if ((!((matchVal49316.length>=0))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePart30266 = Array.prototype.slice.call(matchVal30265, 0, 0);
-            if ((!((("object")===((typeof matchArraySimplePart30266))))))              {
+            var matchArraySimplePart49317 = Array.prototype.slice.call(matchVal49316, 0, 0);
+            if ((!((("object")===((typeof matchArraySimplePart49317))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((0===matchArraySimplePart30266.length))))              {
+            if ((!((0===matchArraySimplePart49317.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArrayTailPart30267 = Array.prototype.slice.call(matchVal30265, 0);
-            var values = matchArrayTailPart30267;
-            return foldl(currentModule29611.max2, currentModule29611.minus(Infinity), values);
+            var matchArrayTailPart49318 = Array.prototype.slice.call(matchVal49316, 0);
+            var values = matchArrayTailPart49318;
+            return foldl(currentModule48662.max2, currentModule48662.minus(Infinity), values);
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30263))))            {
-            return G30263;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49314))))            {
+            return G49314;
             };
-          G30263 = (function (arguments)            {
-            var matchVal30268 = G30264;
-            var anythingElse30262 = matchVal30268;
-            throw ((("Match fail in hooves/hooves-max against: ")+(anythingElse30262)));
+          G49314 = (function (arguments)            {
+            var matchVal49319 = G49315;
+            var anythingElse49313 = matchVal49319;
+            throw ((("Match fail in hooves/hooves-max against: ")+(anythingElse49313)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30263))))            {
-            return G30263;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49314))))            {
+            return G49314;
             };
-          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: (tail values)] (_newline-sequence (foldl max2 (- Infinity) values))) (anything-else-30262 (_throw (_+ ''Match fail in hooves/hooves-max against: '' anything-else-30262))))) for value ")+(JSON.stringify(G30264))));
+          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: (tail values)] (_newline-sequence (foldl max2 (- Infinity) values))) (anything-else-49313 (_throw (_+ ''Match fail in hooves/hooves-max against: '' anything-else-49313))))) for value ")+(JSON.stringify(G49315))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValue30257 = actualFun30259.apply(this, arguments);
-      while (recurP30260(returnValue30257))        {
-        returnValue30257 = actualFun30259.apply(this, returnValue30257.args);
+      returnValue49308 = actualFun49310.apply(this, arguments);
+      while (recurP49311(returnValue49308))        {
+        returnValue49308 = actualFun49310.apply(this, returnValue49308.args);
         };
-      return returnValue30257;
+      return returnValue49308;
       });
-    currentModule29611.map = (function ()      {
-      var returnValue30292 = undefined;
+    currentModule48662.map = (function ()      {
+      var returnValue49343 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigil30291",
+          recurSigil:"recurSigil49342",
           args:arguments
         };
         });
-      var recurP30295 = (function (val30296)        {
-        if ((("undefined")===((typeof val30296))))          {
+      var recurP49346 = (function (val49347)        {
+        if ((("undefined")===((typeof val49347))))          {
           return false;
           };
-        return (val30296.recurSigil===("recurSigil30291"));
+        return (val49347.recurSigil===("recurSigil49342"));
         });
-      var actualFun30294 = (function ()        {
+      var actualFun49345 = (function ()        {
         return (function (arguments)          {
-          var G30298 = undefined;
-          var G30299 = Array.prototype.slice.apply(arguments);
-          G30298 = (function (arguments)            {
-            var matchVal30300 = G30299;
-            if ((!((("object")===((typeof matchVal30300))))))              {
+          var G49349 = undefined;
+          var G49350 = Array.prototype.slice.apply(arguments);
+          G49349 = (function (arguments)            {
+            var matchVal49351 = G49350;
+            if ((!((("object")===((typeof matchVal49351))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchVal30300.length>=1))))              {
+            if ((!((matchVal49351.length>=1))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePart30301 = Array.prototype.slice.call(matchVal30300, 0, 1);
-            if ((!((("object")===((typeof matchArraySimplePart30301))))))              {
+            var matchArraySimplePart49352 = Array.prototype.slice.call(matchVal49351, 0, 1);
+            if ((!((("object")===((typeof matchArraySimplePart49352))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((1===matchArraySimplePart30301.length))))              {
+            if ((!((1===matchArraySimplePart49352.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var f = matchArraySimplePart30301[0];
-            var matchArrayTailPart30302 = Array.prototype.slice.call(matchVal30300, 1);
-            var arrays = matchArrayTailPart30302;
-            var minLen = currentModule29611.min.apply(undefined, currentModule29611.map1((function (a)              {
+            var f = matchArraySimplePart49352[0];
+            var matchArrayTailPart49353 = Array.prototype.slice.call(matchVal49351, 1);
+            var arrays = matchArrayTailPart49353;
+            var minLen = currentModule48662.min.apply(undefined, currentModule48662.map1((function (a)              {
               return a.length;
               }), arrays));
             var out = [];
-            for (var i = 0;currentModule29611.lessThan(i, minLen);i = currentModule29611.plus(i, 1))              {
-              out[i] = f.apply(this, currentModule29611.map1((function (a)                {
+            for (var i = 0;currentModule48662.lessThan(i, minLen);i = currentModule48662.plus(i, 1))              {
+              out[i] = f.apply(this, currentModule48662.map1((function (a)                {
                 return a[i];
                 }), arrays));
               };
             return out;
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30298))))            {
-            return G30298;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49349))))            {
+            return G49349;
             };
-          G30298 = (function (arguments)            {
-            var matchVal30303 = G30299;
-            var anythingElse30297 = matchVal30303;
-            throw ((("Match fail in hooves/hooves-map against: ")+(anythingElse30297)));
+          G49349 = (function (arguments)            {
+            var matchVal49354 = G49350;
+            var anythingElse49348 = matchVal49354;
+            throw ((("Match fail in hooves/hooves-map against: ")+(anythingElse49348)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30298))))            {
-            return G30298;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49349))))            {
+            return G49349;
             };
-          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: f (tail arrays)] (_newline-sequence (var min-len (min\\.apply undefined (map1 (lambda (a) a\\.length) arrays))) (var out [:]) (for ((var i 0) (< i min-len) (set! i (+ i 1))) (set! [out i] (f\\.apply this (map1 (lambda (a) [a i]) arrays)))) out)) (anything-else-30297 (_throw (_+ ''Match fail in hooves/hooves-map against: '' anything-else-30297))))) for value ")+(JSON.stringify(G30299))));
+          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: f (tail arrays)] (_newline-sequence (var min-len (min\\.apply undefined (map1 (lambda (a) a\\.length) arrays))) (var out [:]) (for ((var i 0) (< i min-len) (set! i (+ i 1))) (set! [out i] (f\\.apply this (map1 (lambda (a) [a i]) arrays)))) out)) (anything-else-49348 (_throw (_+ ''Match fail in hooves/hooves-map against: '' anything-else-49348))))) for value ")+(JSON.stringify(G49350))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValue30292 = actualFun30294.apply(this, arguments);
-      while (recurP30295(returnValue30292))        {
-        returnValue30292 = actualFun30294.apply(this, returnValue30292.args);
+      returnValue49343 = actualFun49345.apply(this, arguments);
+      while (recurP49346(returnValue49343))        {
+        returnValue49343 = actualFun49345.apply(this, returnValue49343.args);
         };
-      return returnValue30292;
+      return returnValue49343;
       });
-    currentModule29611.each = (function ()      {
-      var returnValue30327 = undefined;
+    currentModule48662.each = (function ()      {
+      var returnValue49378 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigil30326",
+          recurSigil:"recurSigil49377",
           args:arguments
         };
         });
-      var recurP30330 = (function (val30331)        {
-        if ((("undefined")===((typeof val30331))))          {
+      var recurP49381 = (function (val49382)        {
+        if ((("undefined")===((typeof val49382))))          {
           return false;
           };
-        return (val30331.recurSigil===("recurSigil30326"));
+        return (val49382.recurSigil===("recurSigil49377"));
         });
-      var actualFun30329 = (function ()        {
+      var actualFun49380 = (function ()        {
         return (function (arguments)          {
-          var G30333 = undefined;
-          var G30334 = Array.prototype.slice.apply(arguments);
-          G30333 = (function (arguments)            {
-            var matchVal30335 = G30334;
-            if ((!((("object")===((typeof matchVal30335))))))              {
+          var G49384 = undefined;
+          var G49385 = Array.prototype.slice.apply(arguments);
+          G49384 = (function (arguments)            {
+            var matchVal49386 = G49385;
+            if ((!((("object")===((typeof matchVal49386))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchVal30335.length>=1))))              {
+            if ((!((matchVal49386.length>=1))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePart30336 = Array.prototype.slice.call(matchVal30335, 0, 1);
-            if ((!((("object")===((typeof matchArraySimplePart30336))))))              {
+            var matchArraySimplePart49387 = Array.prototype.slice.call(matchVal49386, 0, 1);
+            if ((!((("object")===((typeof matchArraySimplePart49387))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((1===matchArraySimplePart30336.length))))              {
+            if ((!((1===matchArraySimplePart49387.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var f = matchArraySimplePart30336[0];
-            var matchArrayTailPart30337 = Array.prototype.slice.call(matchVal30335, 1);
-            var arrays = matchArrayTailPart30337;
-            var minLen = currentModule29611.min.apply(undefined, currentModule29611.map1((function (a)              {
+            var f = matchArraySimplePart49387[0];
+            var matchArrayTailPart49388 = Array.prototype.slice.call(matchVal49386, 1);
+            var arrays = matchArrayTailPart49388;
+            var minLen = currentModule48662.min.apply(undefined, currentModule48662.map1((function (a)              {
               return a.length;
               }), arrays));
-            for (var i = 0;currentModule29611.lessThan(i, minLen);i = currentModule29611.plus(i, 1))              {
-              f.apply(this, currentModule29611.map1((function (a)                {
+            for (var i = 0;currentModule48662.lessThan(i, minLen);i = currentModule48662.plus(i, 1))              {
+              f.apply(this, currentModule48662.map1((function (a)                {
                 return a[i];
                 }), arrays));
               };
             return undefined;
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30333))))            {
-            return G30333;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49384))))            {
+            return G49384;
             };
-          G30333 = (function (arguments)            {
-            var matchVal30338 = G30334;
-            var anythingElse30332 = matchVal30338;
-            throw ((("Match fail in hooves/hooves-each against: ")+(anythingElse30332)));
+          G49384 = (function (arguments)            {
+            var matchVal49389 = G49385;
+            var anythingElse49383 = matchVal49389;
+            throw ((("Match fail in hooves/hooves-each against: ")+(anythingElse49383)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30333))))            {
-            return G30333;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49384))))            {
+            return G49384;
             };
-          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: f (tail arrays)] (_newline-sequence (var min-len (min\\.apply undefined (map1 (lambda (a) a\\.length) arrays))) (for ((var i 0) (< i min-len) (set! i (+ i 1))) (f\\.apply this (map1 (lambda (a) [a i]) arrays))) undefined)) (anything-else-30332 (_throw (_+ ''Match fail in hooves/hooves-each against: '' anything-else-30332))))) for value ")+(JSON.stringify(G30334))));
+          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: f (tail arrays)] (_newline-sequence (var min-len (min\\.apply undefined (map1 (lambda (a) a\\.length) arrays))) (for ((var i 0) (< i min-len) (set! i (+ i 1))) (f\\.apply this (map1 (lambda (a) [a i]) arrays))) undefined)) (anything-else-49383 (_throw (_+ ''Match fail in hooves/hooves-each against: '' anything-else-49383))))) for value ")+(JSON.stringify(G49385))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValue30327 = actualFun30329.apply(this, arguments);
-      while (recurP30330(returnValue30327))        {
-        returnValue30327 = actualFun30329.apply(this, returnValue30327.args);
+      returnValue49378 = actualFun49380.apply(this, arguments);
+      while (recurP49381(returnValue49378))        {
+        returnValue49378 = actualFun49380.apply(this, returnValue49378.args);
         };
-      return returnValue30327;
+      return returnValue49378;
       });
-    currentModule29611.zip = (function ()      {
-      var returnValue30362 = undefined;
+    currentModule48662.zip = (function ()      {
+      var returnValue49413 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigil30361",
+          recurSigil:"recurSigil49412",
           args:arguments
         };
         });
-      var recurP30365 = (function (val30366)        {
-        if ((("undefined")===((typeof val30366))))          {
+      var recurP49416 = (function (val49417)        {
+        if ((("undefined")===((typeof val49417))))          {
           return false;
           };
-        return (val30366.recurSigil===("recurSigil30361"));
+        return (val49417.recurSigil===("recurSigil49412"));
         });
-      var actualFun30364 = (function ()        {
+      var actualFun49415 = (function ()        {
         return (function (arguments)          {
-          var G30368 = undefined;
-          var G30369 = Array.prototype.slice.apply(arguments);
-          G30368 = (function (arguments)            {
-            var matchVal30370 = G30369;
-            if ((!((("object")===((typeof matchVal30370))))))              {
+          var G49419 = undefined;
+          var G49420 = Array.prototype.slice.apply(arguments);
+          G49419 = (function (arguments)            {
+            var matchVal49421 = G49420;
+            if ((!((("object")===((typeof matchVal49421))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchVal30370.length>=0))))              {
+            if ((!((matchVal49421.length>=0))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePart30371 = Array.prototype.slice.call(matchVal30370, 0, 0);
-            if ((!((("object")===((typeof matchArraySimplePart30371))))))              {
+            var matchArraySimplePart49422 = Array.prototype.slice.call(matchVal49421, 0, 0);
+            if ((!((("object")===((typeof matchArraySimplePart49422))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((0===matchArraySimplePart30371.length))))              {
+            if ((!((0===matchArraySimplePart49422.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArrayTailPart30372 = Array.prototype.slice.call(matchVal30370, 0);
-            var arrays = matchArrayTailPart30372;
-            return currentModule29611.map.apply(this, [(function ()              {
-              var returnValue30374 = undefined;
+            var matchArrayTailPart49423 = Array.prototype.slice.call(matchVal49421, 0);
+            var arrays = matchArrayTailPart49423;
+            return currentModule48662.map.apply(this, [(function ()              {
+              var returnValue49425 = undefined;
               var recur = (function ()                {
                 return {                  
-                  recurSigil:"recurSigil30373",
+                  recurSigil:"recurSigil49424",
                   args:arguments
                 };
                 });
-              var recurP30377 = (function (val30378)                {
-                if ((("undefined")===((typeof val30378))))                  {
+              var recurP49428 = (function (val49429)                {
+                if ((("undefined")===((typeof val49429))))                  {
                   return false;
                   };
-                return (val30378.recurSigil===("recurSigil30373"));
+                return (val49429.recurSigil===("recurSigil49424"));
                 });
-              var actualFun30376 = (function ()                {
+              var actualFun49427 = (function ()                {
                 return (function (arguments)                  {
-                  var G30380 = undefined;
-                  var G30381 = Array.prototype.slice.apply(arguments);
-                  G30380 = (function (arguments)                    {
-                    var matchVal30382 = G30381;
-                    if ((!((("object")===((typeof matchVal30382))))))                      {
+                  var G49431 = undefined;
+                  var G49432 = Array.prototype.slice.apply(arguments);
+                  G49431 = (function (arguments)                    {
+                    var matchVal49433 = G49432;
+                    if ((!((("object")===((typeof matchVal49433))))))                      {
                       return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
                       };
-                    if ((!((matchVal30382.length>=0))))                      {
+                    if ((!((matchVal49433.length>=0))))                      {
                       return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
                       };
-                    var matchArraySimplePart30383 = Array.prototype.slice.call(matchVal30382, 0, 0);
-                    if ((!((("object")===((typeof matchArraySimplePart30383))))))                      {
+                    var matchArraySimplePart49434 = Array.prototype.slice.call(matchVal49433, 0, 0);
+                    if ((!((("object")===((typeof matchArraySimplePart49434))))))                      {
                       return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
                       };
-                    if ((!((0===matchArraySimplePart30383.length))))                      {
+                    if ((!((0===matchArraySimplePart49434.length))))                      {
                       return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
                       };
-                    var matchArrayTailPart30384 = Array.prototype.slice.call(matchVal30382, 0);
-                    var elements = matchArrayTailPart30384;
+                    var matchArrayTailPart49435 = Array.prototype.slice.call(matchVal49433, 0);
+                    var elements = matchArrayTailPart49435;
                     return elements;
                     ;
                     }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-                  if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30380))))                    {
-                    return G30380;
+                  if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49431))))                    {
+                    return G49431;
                     };
-                  G30380 = (function (arguments)                    {
-                    var matchVal30385 = G30381;
-                    var anythingElse30379 = matchVal30385;
-                    throw ((("Match fail in anonymous against: ")+(anythingElse30379)));
+                  G49431 = (function (arguments)                    {
+                    var matchVal49436 = G49432;
+                    var anythingElse49430 = matchVal49436;
+                    throw ((("Match fail in anonymous against: ")+(anythingElse49430)));
                     }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-                  if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30380))))                    {
-                    return G30380;
+                  if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49431))))                    {
+                    return G49431;
                     };
-                  throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: (tail elements)] (_newline-sequence elements)) (anything-else-30379 (_throw (_+ ''Match fail in anonymous against: '' anything-else-30379))))) for value ")+(JSON.stringify(G30381))));
+                  throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: (tail elements)] (_newline-sequence elements)) (anything-else-49430 (_throw (_+ ''Match fail in anonymous against: '' anything-else-49430))))) for value ")+(JSON.stringify(G49432))));
                   }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
                 });
-              returnValue30374 = actualFun30376.apply(this, arguments);
-              while (recurP30377(returnValue30374))                {
-                returnValue30374 = actualFun30376.apply(this, returnValue30374.args);
+              returnValue49425 = actualFun49427.apply(this, arguments);
+              while (recurP49428(returnValue49425))                {
+                returnValue49425 = actualFun49427.apply(this, returnValue49425.args);
                 };
-              return returnValue30374;
+              return returnValue49425;
               })].concat(arrays));
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30368))))            {
-            return G30368;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49419))))            {
+            return G49419;
             };
-          G30368 = (function (arguments)            {
-            var matchVal30386 = G30369;
-            var anythingElse30367 = matchVal30386;
-            throw ((("Match fail in hooves/hooves-zip against: ")+(anythingElse30367)));
+          G49419 = (function (arguments)            {
+            var matchVal49437 = G49420;
+            var anythingElse49418 = matchVal49437;
+            throw ((("Match fail in hooves/hooves-zip against: ")+(anythingElse49418)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30368))))            {
-            return G30368;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49419))))            {
+            return G49419;
             };
-          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: (tail arrays)] (_newline-sequence (map\\.apply this (\\.\\. [: (lambda ((tail elements)) elements)] (concat arrays))))) (anything-else-30367 (_throw (_+ ''Match fail in hooves/hooves-zip against: '' anything-else-30367))))) for value ")+(JSON.stringify(G30369))));
+          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: (tail arrays)] (_newline-sequence (map\\.apply this (\\.\\. [: (lambda ((tail elements)) elements)] (concat arrays))))) (anything-else-49418 (_throw (_+ ''Match fail in hooves/hooves-zip against: '' anything-else-49418))))) for value ")+(JSON.stringify(G49420))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValue30362 = actualFun30364.apply(this, arguments);
-      while (recurP30365(returnValue30362))        {
-        returnValue30362 = actualFun30364.apply(this, returnValue30362.args);
+      returnValue49413 = actualFun49415.apply(this, arguments);
+      while (recurP49416(returnValue49413))        {
+        returnValue49413 = actualFun49415.apply(this, returnValue49413.args);
         };
-      return returnValue30362;
+      return returnValue49413;
       });
     // |
     // macro - no dynamic value.
@@ -947,44 +947,44 @@ define([], (function ()  {
     // define-external-binops
     // macro - no dynamic value.
     ;
-    currentModule29611.lessThan = (function (G30402, G30403)      {
-      return (G30402<G30403);
+    currentModule48662.lessThan = (function (G49453, G49454)      {
+      return (G49453<G49454);
       });
-    currentModule29611.lessThanequal = (function (G30429, G30430)      {
-      return (G30429<=G30430);
+    currentModule48662.lessThanequal = (function (G49480, G49481)      {
+      return (G49480<=G49481);
       });
-    currentModule29611.greaterThan = (function (G30456, G30457)      {
-      return (G30456>G30457);
+    currentModule48662.greaterThan = (function (G49507, G49508)      {
+      return (G49507>G49508);
       });
-    currentModule29611.greaterThanequal = (function (G30483, G30484)      {
-      return (G30483>=G30484);
+    currentModule48662.greaterThanequal = (function (G49534, G49535)      {
+      return (G49534>=G49535);
       });
-    currentModule29611.ampersand = (function (G30510, G30511)      {
-      return (G30510&G30511);
+    currentModule48662.ampersand = (function (G49561, G49562)      {
+      return (G49561&G49562);
       });
-    currentModule29611.pipe = (function (G30537, G30538)      {
-      return (G30537|G30538);
+    currentModule48662.pipe = (function (G49588, G49589)      {
+      return (G49588|G49589);
       });
-    currentModule29611.equalequal = (function (G30564, G30565)      {
-      return (G30564==G30565);
+    currentModule48662.equalequal = (function (G49615, G49616)      {
+      return (G49615==G49616);
       });
-    currentModule29611.TripleEqualminus = (function (G30591, G30592)      {
-      return (G30591===G30592);
+    currentModule48662.TripleEqualminus = (function (G49642, G49643)      {
+      return (G49642===G49643);
       });
-    currentModule29611.modsign = (function (G30618, G30619)      {
-      return (G30618%G30619);
+    currentModule48662.modsign = (function (G49669, G49670)      {
+      return (G49669%G49670);
       });
-    currentModule29611.caret = (function (G30645, G30646)      {
-      return (G30645^G30646);
+    currentModule48662.caret = (function (G49696, G49697)      {
+      return (G49696^G49697);
       });
-    currentModule29611.lessThanlessThan = (function (G30672, G30673)      {
-      return (G30672<<G30673);
+    currentModule48662.lessThanlessThan = (function (G49723, G49724)      {
+      return (G49723<<G49724);
       });
-    currentModule29611.greaterThangreaterThan = (function (G30699, G30700)      {
-      return (G30699>>G30700);
+    currentModule48662.greaterThangreaterThan = (function (G49750, G49751)      {
+      return (G49750>>G49751);
       });
-    currentModule29611.greaterThangreaterThangreaterThan = (function (G30726, G30727)      {
-      return (G30726>>>G30727);
+    currentModule48662.greaterThangreaterThangreaterThan = (function (G49777, G49778)      {
+      return (G49777>>>G49778);
       });
     // &&
     // macro - no dynamic value.
@@ -992,7 +992,7 @@ define([], (function ()  {
     // ||
     // macro - no dynamic value.
     ;
-    currentModule29611.bang = (function (o)      {
+    currentModule48662.bang = (function (o)      {
       return (!(o));
       });
     // incr
@@ -1004,132 +1004,132 @@ define([], (function ()  {
     // string
     // pattern - no dynamic value.
     ;
-    currentModule29611.plist = (function ()      {
-      var returnValue30825 = undefined;
+    currentModule48662.plist = (function ()      {
+      var returnValue49876 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigil30824",
+          recurSigil:"recurSigil49875",
           args:arguments
         };
         });
-      var recurP30828 = (function (val30829)        {
-        if ((("undefined")===((typeof val30829))))          {
+      var recurP49879 = (function (val49880)        {
+        if ((("undefined")===((typeof val49880))))          {
           return false;
           };
-        return (val30829.recurSigil===("recurSigil30824"));
+        return (val49880.recurSigil===("recurSigil49875"));
         });
-      var actualFun30827 = (function ()        {
+      var actualFun49878 = (function ()        {
         return (function (arguments)          {
-          var G30831 = undefined;
-          var G30832 = Array.prototype.slice.apply(arguments);
-          G30831 = (function (arguments)            {
-            var matchVal30833 = G30832;
-            if ((!((("object")===((typeof matchVal30833))))))              {
+          var G49882 = undefined;
+          var G49883 = Array.prototype.slice.apply(arguments);
+          G49882 = (function (arguments)            {
+            var matchVal49884 = G49883;
+            if ((!((("object")===((typeof matchVal49884))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchVal30833.length>=0))))              {
+            if ((!((matchVal49884.length>=0))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePart30834 = Array.prototype.slice.call(matchVal30833, 0, 0);
-            if ((!((("object")===((typeof matchArraySimplePart30834))))))              {
+            var matchArraySimplePart49885 = Array.prototype.slice.call(matchVal49884, 0, 0);
+            if ((!((("object")===((typeof matchArraySimplePart49885))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((0===matchArraySimplePart30834.length))))              {
+            if ((!((0===matchArraySimplePart49885.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArrayTailPart30835 = Array.prototype.slice.call(matchVal30833, 0);
-            var parts = matchArrayTailPart30835;
+            var matchArrayTailPart49886 = Array.prototype.slice.call(matchVal49884, 0);
+            var parts = matchArrayTailPart49886;
             var out = {              
               
             };
-            for (var i = 0;currentModule29611.lessThan(i, parts.length);i = currentModule29611.plus(i, 2))              {
-              out[parts[i]] = parts[currentModule29611.plus(i, 1)];
+            for (var i = 0;currentModule48662.lessThan(i, parts.length);i = currentModule48662.plus(i, 2))              {
+              out[parts[i]] = parts[currentModule48662.plus(i, 1)];
               };
             return out;
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30831))))            {
-            return G30831;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49882))))            {
+            return G49882;
             };
-          G30831 = (function (arguments)            {
-            var matchVal30836 = G30832;
-            var anythingElse30830 = matchVal30836;
-            throw ((("Match fail in hooves/hooves-plist against: ")+(anythingElse30830)));
+          G49882 = (function (arguments)            {
+            var matchVal49887 = G49883;
+            var anythingElse49881 = matchVal49887;
+            throw ((("Match fail in hooves/hooves-plist against: ")+(anythingElse49881)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30831))))            {
-            return G30831;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49882))))            {
+            return G49882;
             };
-          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: (tail parts)] (_newline-sequence (var out ({})) (for ((var i 0) (< i parts\\.length) (set! i (+ i 2))) (set! [out [parts i]] [parts (+ i 1)])) out)) (anything-else-30830 (_throw (_+ ''Match fail in hooves/hooves-plist against: '' anything-else-30830))))) for value ")+(JSON.stringify(G30832))));
+          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: (tail parts)] (_newline-sequence (var out ({})) (for ((var i 0) (< i parts\\.length) (set! i (+ i 2))) (set! [out [parts i]] [parts (+ i 1)])) out)) (anything-else-49881 (_throw (_+ ''Match fail in hooves/hooves-plist against: '' anything-else-49881))))) for value ")+(JSON.stringify(G49883))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValue30825 = actualFun30827.apply(this, arguments);
-      while (recurP30828(returnValue30825))        {
-        returnValue30825 = actualFun30827.apply(this, returnValue30825.args);
+      returnValue49876 = actualFun49878.apply(this, arguments);
+      while (recurP49879(returnValue49876))        {
+        returnValue49876 = actualFun49878.apply(this, returnValue49876.args);
         };
-      return returnValue30825;
+      return returnValue49876;
       });
     // as-options{}
     // pattern - no dynamic value.
     ;
-    currentModule29611.rx = (function ()      {
-      var returnValue30866 = undefined;
+    currentModule48662.rx = (function ()      {
+      var returnValue49917 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigil30865",
+          recurSigil:"recurSigil49916",
           args:arguments
         };
         });
-      var recurP30869 = (function (val30870)        {
-        if ((("undefined")===((typeof val30870))))          {
+      var recurP49920 = (function (val49921)        {
+        if ((("undefined")===((typeof val49921))))          {
           return false;
           };
-        return (val30870.recurSigil===("recurSigil30865"));
+        return (val49921.recurSigil===("recurSigil49916"));
         });
-      var actualFun30868 = (function ()        {
+      var actualFun49919 = (function ()        {
         return (function (arguments)          {
-          var G30872 = undefined;
-          var G30873 = Array.prototype.slice.apply(arguments);
-          G30872 = (function (arguments)            {
-            var matchVal30874 = G30873;
-            if ((!((("object")===((typeof matchVal30874))))))              {
+          var G49923 = undefined;
+          var G49924 = Array.prototype.slice.apply(arguments);
+          G49923 = (function (arguments)            {
+            var matchVal49925 = G49924;
+            if ((!((("object")===((typeof matchVal49925))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchVal30874.length>=1))))              {
+            if ((!((matchVal49925.length>=1))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePart30875 = Array.prototype.slice.call(matchVal30874, 0, 1);
-            if ((!((("object")===((typeof matchArraySimplePart30875))))))              {
+            var matchArraySimplePart49926 = Array.prototype.slice.call(matchVal49925, 0, 1);
+            if ((!((("object")===((typeof matchArraySimplePart49926))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((1===matchArraySimplePart30875.length))))              {
+            if ((!((1===matchArraySimplePart49926.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var s = matchArraySimplePart30875[0];
-            var matchArrayTailPart30876 = Array.prototype.slice.call(matchVal30874, 1);
-            var matchTemp30877 = matchArrayTailPart30876[0];
-            var previousMatchSucceeded30878 = true;
+            var s = matchArraySimplePart49926[0];
+            var matchArrayTailPart49927 = Array.prototype.slice.call(matchVal49925, 1);
+            var matchTemp49928 = matchArrayTailPart49927[0];
+            var previousMatchSucceeded49929 = true;
             switch (1){
                           case 1:
-              if ((("undefined")===((typeof matchTemp30877))))                {
-                previousMatchSucceeded30878 = false;
+              if ((("undefined")===((typeof matchTemp49928))))                {
+                previousMatchSucceeded49929 = false;
                 };
-              var args = matchTemp30877;
-              if (previousMatchSucceeded30878)                {
+              var args = matchTemp49928;
+              if (previousMatchSucceeded49929)                {
                 break;
                 };
-              previousMatchSucceeded30878 = true;
+              previousMatchSucceeded49929 = true;
               case 1:
-              var fResult30879 = ((function (x)                {
+              var fResult49930 = ((function (x)                {
                 return "g";
-                }))(matchTemp30877);
-              if ((fResult30879===("match-fail-e1aa3b7e7ce9731266013c178de842b5")))                {
-                previousMatchSucceeded30878 = false;
+                }))(matchTemp49928);
+              if ((fResult49930===("match-fail-e1aa3b7e7ce9731266013c178de842b5")))                {
+                previousMatchSucceeded49929 = false;
                 };
-              var args = fResult30879;
-              if (previousMatchSucceeded30878)                {
+              var args = fResult49930;
+              if (previousMatchSucceeded49929)                {
                 break;
                 };
-              previousMatchSucceeded30878 = true;
+              previousMatchSucceeded49929 = true;
               default :
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               
@@ -1137,36 +1137,36 @@ define([], (function ()  {
             return (new (RegExp)(s, args));
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30872))))            {
-            return G30872;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49923))))            {
+            return G49923;
             };
-          G30872 = (function (arguments)            {
-            var matchVal30880 = G30873;
-            var anythingElse30871 = matchVal30880;
-            throw ((("Match fail in hooves/hooves-rx against: ")+(anythingElse30871)));
+          G49923 = (function (arguments)            {
+            var matchVal49931 = G49924;
+            var anythingElse49922 = matchVal49931;
+            throw ((("Match fail in hooves/hooves-rx against: ")+(anythingElse49922)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30872))))            {
-            return G30872;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G49923))))            {
+            return G49923;
             };
-          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: s :- (opt args ''g'')] (_newline-sequence (new RegExp s args))) (anything-else-30871 (_throw (_+ ''Match fail in hooves/hooves-rx against: '' anything-else-30871))))) for value ")+(JSON.stringify(G30873))));
+          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: s :- (opt args ''g'')] (_newline-sequence (new RegExp s args))) (anything-else-49922 (_throw (_+ ''Match fail in hooves/hooves-rx against: '' anything-else-49922))))) for value ")+(JSON.stringify(G49924))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValue30866 = actualFun30868.apply(this, arguments);
-      while (recurP30869(returnValue30866))        {
-        returnValue30866 = actualFun30868.apply(this, returnValue30866.args);
+      returnValue49917 = actualFun49919.apply(this, arguments);
+      while (recurP49920(returnValue49917))        {
+        returnValue49917 = actualFun49919.apply(this, returnValue49917.args);
         };
-      return returnValue30866;
+      return returnValue49917;
       });
     // set-to!
     // macro - no dynamic value.
     ;
-    currentModule29611.prefix = (function (i, ra)      {
+    currentModule48662.prefix = (function (i, ra)      {
       return [i].concat(ra);
       });
-    currentModule29611.postfix = (function (i, ra)      {
+    currentModule48662.postfix = (function (i, ra)      {
       return [].concat(ra, [i]);
       });
-    currentModule29611.identity = (function (x)      {
+    currentModule48662.identity = (function (x)      {
       return x;
       });
     var pushdividereturn = (function (item, array)      {
@@ -1174,278 +1174,278 @@ define([], (function ()  {
       return array;
       });
     var plistToObjectHelper = (function ()      {
-      var returnValue30954 = undefined;
+      var returnValue50005 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigil30953",
+          recurSigil:"recurSigil50004",
           args:arguments
         };
         });
-      var recurP30957 = (function (val30958)        {
-        if ((("undefined")===((typeof val30958))))          {
+      var recurP50008 = (function (val50009)        {
+        if ((("undefined")===((typeof val50009))))          {
           return false;
           };
-        return (val30958.recurSigil===("recurSigil30953"));
+        return (val50009.recurSigil===("recurSigil50004"));
         });
-      var actualFun30956 = (function ()        {
+      var actualFun50007 = (function ()        {
         return (function (arguments)          {
-          var G30960 = undefined;
-          var G30961 = Array.prototype.slice.apply(arguments);
-          G30960 = (function (arguments)            {
-            var matchVal30962 = G30961;
-            if ((!((("object")===((typeof matchVal30962))))))              {
+          var G50011 = undefined;
+          var G50012 = Array.prototype.slice.apply(arguments);
+          G50011 = (function (arguments)            {
+            var matchVal50013 = G50012;
+            if ((!((("object")===((typeof matchVal50013))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((2===matchVal30962.length))))              {
+            if ((!((2===matchVal50013.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchTemp30963 = matchVal30962[0];
-            var matchTemp30964 = matchVal30962[1];
-            var objectAcc = matchTemp30963;
-            if ((!((("object")===((typeof matchTemp30964))))))              {
+            var matchTemp50014 = matchVal50013[0];
+            var matchTemp50015 = matchVal50013[1];
+            var objectAcc = matchTemp50014;
+            if ((!((("object")===((typeof matchTemp50015))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((0===matchTemp30964.length))))              {
+            if ((!((0===matchTemp50015.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
             return objectAcc;
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30960))))            {
-            return G30960;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G50011))))            {
+            return G50011;
             };
-          G30960 = (function (arguments)            {
-            var matchVal30965 = G30961;
-            if ((!((("object")===((typeof matchVal30965))))))              {
+          G50011 = (function (arguments)            {
+            var matchVal50016 = G50012;
+            if ((!((("object")===((typeof matchVal50016))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((2===matchVal30965.length))))              {
+            if ((!((2===matchVal50016.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchTemp30966 = matchVal30965[0];
-            var matchTemp30967 = matchVal30965[1];
-            var objectAcc = matchTemp30966;
-            if ((!((("object")===((typeof matchTemp30967))))))              {
+            var matchTemp50017 = matchVal50016[0];
+            var matchTemp50018 = matchVal50016[1];
+            var objectAcc = matchTemp50017;
+            if ((!((("object")===((typeof matchTemp50018))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchTemp30967.length>=2))))              {
+            if ((!((matchTemp50018.length>=2))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePart30968 = Array.prototype.slice.call(matchTemp30967, 0, 2);
-            if ((!((("object")===((typeof matchArraySimplePart30968))))))              {
+            var matchArraySimplePart50019 = Array.prototype.slice.call(matchTemp50018, 0, 2);
+            if ((!((("object")===((typeof matchArraySimplePart50019))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((2===matchArraySimplePart30968.length))))              {
+            if ((!((2===matchArraySimplePart50019.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchTemp30969 = matchArraySimplePart30968[0];
-            var matchTemp30970 = matchArraySimplePart30968[1];
-            var matchFunExpr30975 = (function (G30974)              {
-              return (((typeof G30974))===("string"));
+            var matchTemp50020 = matchArraySimplePart50019[0];
+            var matchTemp50021 = matchArraySimplePart50019[1];
+            var matchFunExpr50026 = (function (G50025)              {
+              return (((typeof G50025))===("string"));
               });
-            if ((!(matchFunExpr30975(matchTemp30969))))              {
+            if ((!(matchFunExpr50026(matchTemp50020))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var key = matchTemp30969;
-            var value = matchTemp30970;
-            var matchArrayTailPart30976 = Array.prototype.slice.call(matchTemp30967, 2);
-            var rest = matchArrayTailPart30976;
+            var key = matchTemp50020;
+            var value = matchTemp50021;
+            var matchArrayTailPart50027 = Array.prototype.slice.call(matchTemp50018, 2);
+            var rest = matchArrayTailPart50027;
             objectAcc[key] = value;
             return recur(objectAcc, rest);
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30960))))            {
-            return G30960;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G50011))))            {
+            return G50011;
             };
-          G30960 = (function (arguments)            {
-            var matchVal30977 = G30961;
-            var anythingElse30959 = matchVal30977;
-            throw ((("Match fail in plist->object-helper against: ")+(anythingElse30959)));
+          G50011 = (function (arguments)            {
+            var matchVal50028 = G50012;
+            var anythingElse50010 = matchVal50028;
+            throw ((("Match fail in plist->object-helper against: ")+(anythingElse50010)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G30960))))            {
-            return G30960;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G50011))))            {
+            return G50011;
             };
-          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: object-acc [:]] (_newline-sequence object-acc)) ([: object-acc [: (string key) value (tail rest)]] (_newline-sequence (set! [object-acc key] value) (recur object-acc rest))) (anything-else-30959 (_throw (_+ ''Match fail in plist->object-helper against: '' anything-else-30959))))) for value ")+(JSON.stringify(G30961))));
+          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: object-acc [:]] (_newline-sequence object-acc)) ([: object-acc [: (string key) value (tail rest)]] (_newline-sequence (set! [object-acc key] value) (recur object-acc rest))) (anything-else-50010 (_throw (_+ ''Match fail in plist->object-helper against: '' anything-else-50010))))) for value ")+(JSON.stringify(G50012))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValue30954 = actualFun30956.apply(this, arguments);
-      while (recurP30957(returnValue30954))        {
-        returnValue30954 = actualFun30956.apply(this, returnValue30954.args);
+      returnValue50005 = actualFun50007.apply(this, arguments);
+      while (recurP50008(returnValue50005))        {
+        returnValue50005 = actualFun50007.apply(this, returnValue50005.args);
         };
-      return returnValue30954;
+      return returnValue50005;
       });
-    currentModule29611.plistToObject = (function ()      {
-      var returnValue31001 = undefined;
+    currentModule48662.plistToObject = (function ()      {
+      var returnValue50052 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigil31000",
+          recurSigil:"recurSigil50051",
           args:arguments
         };
         });
-      var recurP31004 = (function (val31005)        {
-        if ((("undefined")===((typeof val31005))))          {
+      var recurP50055 = (function (val50056)        {
+        if ((("undefined")===((typeof val50056))))          {
           return false;
           };
-        return (val31005.recurSigil===("recurSigil31000"));
+        return (val50056.recurSigil===("recurSigil50051"));
         });
-      var actualFun31003 = (function ()        {
+      var actualFun50054 = (function ()        {
         return (function (arguments)          {
-          var G31007 = undefined;
-          var G31008 = Array.prototype.slice.apply(arguments);
-          G31007 = (function (arguments)            {
-            var matchVal31009 = G31008;
-            if ((!((("object")===((typeof matchVal31009))))))              {
+          var G50058 = undefined;
+          var G50059 = Array.prototype.slice.apply(arguments);
+          G50058 = (function (arguments)            {
+            var matchVal50060 = G50059;
+            if ((!((("object")===((typeof matchVal50060))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchVal31009.length>=0))))              {
+            if ((!((matchVal50060.length>=0))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePart31010 = Array.prototype.slice.call(matchVal31009, 0, 0);
-            if ((!((("object")===((typeof matchArraySimplePart31010))))))              {
+            var matchArraySimplePart50061 = Array.prototype.slice.call(matchVal50060, 0, 0);
+            if ((!((("object")===((typeof matchArraySimplePart50061))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((0===matchArraySimplePart31010.length))))              {
+            if ((!((0===matchArraySimplePart50061.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArrayTailPart31011 = Array.prototype.slice.call(matchVal31009, 0);
-            var kvPairs = matchArrayTailPart31011;
+            var matchArrayTailPart50062 = Array.prototype.slice.call(matchVal50060, 0);
+            var kvPairs = matchArrayTailPart50062;
             return plistToObjectHelper({              
               
             }, kvPairs);
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G31007))))            {
-            return G31007;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G50058))))            {
+            return G50058;
             };
-          G31007 = (function (arguments)            {
-            var matchVal31012 = G31008;
-            var anythingElse31006 = matchVal31012;
-            throw ((("Match fail in hooves/hooves-plist->object against: ")+(anythingElse31006)));
+          G50058 = (function (arguments)            {
+            var matchVal50063 = G50059;
+            var anythingElse50057 = matchVal50063;
+            throw ((("Match fail in hooves/hooves-plist->object against: ")+(anythingElse50057)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G31007))))            {
-            return G31007;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G50058))))            {
+            return G50058;
             };
-          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: (tail kv-pairs)] (_newline-sequence (plist->object-helper ({}) kv-pairs))) (anything-else-31006 (_throw (_+ ''Match fail in hooves/hooves-plist->object against: '' anything-else-31006))))) for value ")+(JSON.stringify(G31008))));
+          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: (tail kv-pairs)] (_newline-sequence (plist->object-helper ({}) kv-pairs))) (anything-else-50057 (_throw (_+ ''Match fail in hooves/hooves-plist->object against: '' anything-else-50057))))) for value ")+(JSON.stringify(G50059))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValue31001 = actualFun31003.apply(this, arguments);
-      while (recurP31004(returnValue31001))        {
-        returnValue31001 = actualFun31003.apply(this, returnValue31001.args);
+      returnValue50052 = actualFun50054.apply(this, arguments);
+      while (recurP50055(returnValue50052))        {
+        returnValue50052 = actualFun50054.apply(this, returnValue50052.args);
         };
-      return returnValue31001;
+      return returnValue50052;
       });
-    currentModule29611.filter = (function ()      {
-      var returnValue31043 = undefined;
+    currentModule48662.filter = (function ()      {
+      var returnValue50094 = undefined;
       var recur = (function ()        {
         return {          
-          recurSigil:"recurSigil31042",
+          recurSigil:"recurSigil50093",
           args:arguments
         };
         });
-      var recurP31046 = (function (val31047)        {
-        if ((("undefined")===((typeof val31047))))          {
+      var recurP50097 = (function (val50098)        {
+        if ((("undefined")===((typeof val50098))))          {
           return false;
           };
-        return (val31047.recurSigil===("recurSigil31042"));
+        return (val50098.recurSigil===("recurSigil50093"));
         });
-      var actualFun31045 = (function ()        {
+      var actualFun50096 = (function ()        {
         return (function (arguments)          {
-          var G31049 = undefined;
-          var G31050 = Array.prototype.slice.apply(arguments);
-          G31049 = (function (arguments)            {
-            var matchVal31051 = G31050;
-            if ((!((("object")===((typeof matchVal31051))))))              {
+          var G50100 = undefined;
+          var G50101 = Array.prototype.slice.apply(arguments);
+          G50100 = (function (arguments)            {
+            var matchVal50102 = G50101;
+            if ((!((("object")===((typeof matchVal50102))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((3===matchVal31051.length))))              {
+            if ((!((3===matchVal50102.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchTemp31052 = matchVal31051[0];
-            var matchTemp31053 = matchVal31051[1];
-            var matchTemp31054 = matchVal31051[2];
-            var fun = matchTemp31052;
-            if ((!((("object")===((typeof matchTemp31053))))))              {
+            var matchTemp50103 = matchVal50102[0];
+            var matchTemp50104 = matchVal50102[1];
+            var matchTemp50105 = matchVal50102[2];
+            var fun = matchTemp50103;
+            if ((!((("object")===((typeof matchTemp50104))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((0===matchTemp31053.length))))              {
+            if ((!((0===matchTemp50104.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var acc = matchTemp31054;
+            var acc = matchTemp50105;
             return acc;
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G31049))))            {
-            return G31049;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G50100))))            {
+            return G50100;
             };
-          G31049 = (function (arguments)            {
-            var matchVal31055 = G31050;
-            if ((!((("object")===((typeof matchVal31055))))))              {
+          G50100 = (function (arguments)            {
+            var matchVal50106 = G50101;
+            if ((!((("object")===((typeof matchVal50106))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((3===matchVal31055.length))))              {
+            if ((!((3===matchVal50106.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchTemp31056 = matchVal31055[0];
-            var matchTemp31057 = matchVal31055[1];
-            var matchTemp31058 = matchVal31055[2];
-            var fun = matchTemp31056;
-            if ((!((("object")===((typeof matchTemp31057))))))              {
+            var matchTemp50107 = matchVal50106[0];
+            var matchTemp50108 = matchVal50106[1];
+            var matchTemp50109 = matchVal50106[2];
+            var fun = matchTemp50107;
+            if ((!((("object")===((typeof matchTemp50108))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((matchTemp31057.length>=1))))              {
+            if ((!((matchTemp50108.length>=1))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var matchArraySimplePart31059 = Array.prototype.slice.call(matchTemp31057, 0, 1);
-            if ((!((("object")===((typeof matchArraySimplePart31059))))))              {
+            var matchArraySimplePart50110 = Array.prototype.slice.call(matchTemp50108, 0, 1);
+            if ((!((("object")===((typeof matchArraySimplePart50110))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((1===matchArraySimplePart31059.length))))              {
+            if ((!((1===matchArraySimplePart50110.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var hd = matchArraySimplePart31059[0];
-            var matchArrayTailPart31060 = Array.prototype.slice.call(matchTemp31057, 1);
-            var tl = matchArrayTailPart31060;
-            var acc = matchTemp31058;
+            var hd = matchArraySimplePart50110[0];
+            var matchArrayTailPart50111 = Array.prototype.slice.call(matchTemp50108, 1);
+            var tl = matchArrayTailPart50111;
+            var acc = matchTemp50109;
             var r = fun(hd);
             return ((r)?(recur(fun, tl, pushdividereturn(hd, acc))) : (recur(fun, tl, acc)));
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G31049))))            {
-            return G31049;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G50100))))            {
+            return G50100;
             };
-          G31049 = (function (arguments)            {
-            var matchVal31061 = G31050;
-            if ((!((("object")===((typeof matchVal31061))))))              {
+          G50100 = (function (arguments)            {
+            var matchVal50112 = G50101;
+            if ((!((("object")===((typeof matchVal50112))))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            if ((!((2===matchVal31061.length))))              {
+            if ((!((2===matchVal50112.length))))              {
               return "match-fail-e1aa3b7e7ce9731266013c178de842b5";
               };
-            var fun = matchVal31061[0];
-            var ra = matchVal31061[1];
+            var fun = matchVal50112[0];
+            var ra = matchVal50112[1];
             return recur(fun, ra, []);
             ;
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G31049))))            {
-            return G31049;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G50100))))            {
+            return G50100;
             };
-          G31049 = (function (arguments)            {
-            var matchVal31062 = G31050;
-            var anythingElse31048 = matchVal31062;
-            throw ((("Match fail in hooves/hooves-filter against: ")+(anythingElse31048)));
+          G50100 = (function (arguments)            {
+            var matchVal50113 = G50101;
+            var anythingElse50099 = matchVal50113;
+            throw ((("Match fail in hooves/hooves-filter against: ")+(anythingElse50099)));
             }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G31049))))            {
-            return G31049;
+          if ((!((("match-fail-e1aa3b7e7ce9731266013c178de842b5")===G50100))))            {
+            return G50100;
             };
-          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: fun [:] acc] (_newline-sequence acc)) ([: fun [: hd (tail tl)] acc] (_newline-sequence (var r (fun hd)) (if r (recur fun tl (push/return hd acc)) (recur fun tl acc)))) ([: fun ra] (_newline-sequence (recur fun ra [:]))) (anything-else-31048 (_throw (_+ ''Match fail in hooves/hooves-filter against: '' anything-else-31048))))) for value ")+(JSON.stringify(G31050))));
+          throw ((("match-fail at ((match (\\.\\. Array prototype slice (apply arguments)) ([: fun [:] acc] (_newline-sequence acc)) ([: fun [: hd (tail tl)] acc] (_newline-sequence (var r (fun hd)) (if r (recur fun tl (push/return hd acc)) (recur fun tl acc)))) ([: fun ra] (_newline-sequence (recur fun ra [:]))) (anything-else-50099 (_throw (_+ ''Match fail in hooves/hooves-filter against: '' anything-else-50099))))) for value ")+(JSON.stringify(G50101))));
           }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
         });
-      returnValue31043 = actualFun31045.apply(this, arguments);
-      while (recurP31046(returnValue31043))        {
-        returnValue31043 = actualFun31045.apply(this, returnValue31043.args);
+      returnValue50094 = actualFun50096.apply(this, arguments);
+      while (recurP50097(returnValue50094))        {
+        returnValue50094 = actualFun50096.apply(this, returnValue50094.args);
         };
-      return returnValue31043;
+      return returnValue50094;
       });
     }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-  return currentModule29611;
+  return currentModule48662;
   }))
