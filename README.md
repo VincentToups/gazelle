@@ -163,6 +163,62 @@ Is more or less equivalent to `var x 10`.
 
 Allows you to introduce variable definitions with pattern matching.
 
+Gazelle function definitions can also use pattern matching to dispatch
+to different computations and recur upon themselves.
+
+We can write a `product` function like so, for instance:
+
+    (define (product
+     [(([:] acc)
+       acc)
+      (([: hd (tail tl)] acc)
+       (recur tl (* acc hd)))
+      ((seq)
+       (recur seq 1))]))
+
+Where `recur` here is tail-optimized recursion, and so does not grow
+the stack.  Pretty neat!
+
+The pattern matching engine is extensible via
+
+    (defpattern positive-number (sub-pattern)
+     `(number (p (_function (x) (_return (_> x 0))) ,sub-pattern)))
+
+Which allows us to write function which takes only positive integers
+as:
+
+    (define (f (positive-number x)) (Math.sqrt x))
+
+In addition to these fancy pants features, Gazelle provides a `match`
+expression which lets you apply pattern matching to any value,
+non-underscored versions of all the prim fundamental Javascript
+operators (except for `_if`), `cond` statements, `progn`, `let` and a
+variety of other niceties.
+
+*** Macros
+
+Gazelle provides translation-time meta-programming features in the
+form of macros.
+
+A macro is introduced via
+
+    (define-macro (increment x) `(set! ,x (_+ ,x 1)))
+
+And allows us to write
+
+    (var x 0)
+    (increment x)
+    (console.log x)
+
+And get Javascript like:
+
+    var x;
+    x = x + 1;
+    console.log(x);
+
+See [proper.md][] for information on the language-level features of
+Gazelle.
+
 
 Using the Module System
 -----------------------
@@ -232,8 +288,20 @@ Gazelle produces pure Javascript code which is no longer dependent on
 Gazelle and can be further minified or obfuscated using the tools of
 your choice.
 
+Conclusions
+-----------
+
+Gazelle is becoming a rich platform for developing applications that
+target both server and client side Javascript ecosystems with most of
+the conveniences of s-expression based editing, macros and pattern
+matching in a module oriented programming platform.  
+
+I am already using it for non-trivial work, but would love it if
+other's contributed to the project's forward development.
+
 * * *
 
 [require.js]:http://requirejs.org/
 [prim.md]:https://github.com/VincentToups/gazelle/blob/master/doc/prim.md
+[proper.md]:https://github.com/VincentToups/gazelle/blob/master/doc/proper.md
 
