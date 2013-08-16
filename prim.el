@@ -174,6 +174,9 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 (defun-match prim:transcode ('_continue)
   (prim:insert "continue"))
 
+(defun-match prim:transcode ('_{})
+  (prim:insert "{}"))
+
 
 (defun-match prim:transcode ((non-kw-symbol s))
   (prim:insert (prim:mangle s)))
@@ -191,7 +194,28 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 (defun-match prim:transcode ((number n))
   (prim:insertf "%s" n))
 
-(defun prim:transcode-string (string)
+(defun prim:message (s)
+  (message (format "prim: %S" s)))
+
+(defun prim:block-string-p (str)
+  (and (stringp str)
+	   (> (length (split-string str (regexp-quote (format "\n"))))
+		  1)))
+
+(defun prim:transcode-block-string (str)
+  (let ((parts (split-string str (regexp-quote (format "\n")))))
+	(prim:insert "[")
+	(prim:with-tab+ 
+	 (loop for (part . rest) on parts do
+		   (prim:transcode-string part)
+		   (if rest 
+			   (progn 
+				 (prim:insert ",")
+				 (prim:newline))
+			 (progn 
+			   (prim:insert "].join(\"\\n\")")))))))
+
+(defun prim:transcode-normal-string (string)
   (prim:insert "\"")
   (loop for character in (coerce string 'list) do
 		(match character
@@ -200,20 +224,27 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 			   (?\t (insert "\\t"))
 			   (?\" (insert "\\\""))
 			   (?\\ (insert "\\\\"))
+			   (?\s 
+				(insert " "))
 			   (else (insert else))))
   (prim:insert "\""))
+
+(defun prim:transcode-string (string)
+  (if (prim:block-string-p string)
+	  (prim:transcode-block-string string)
+	(prim:transcode-normal-string string)))
 
 (defun-match prim:transcode ((string s))
   (prim:transcode-string  s))
 
-(assert (string= "\"cats and dogs\""
-				 (prim:transcode->string "cats and dogs")))
+;; (assert (string= "\"cats and dogs\""
+;; 				 (prim:transcode->string "cats and dogs")))
 
-(assert (string= "stringToNumber"
-				 (prim:transcode->string 'string->number)))
+;; (assert (string= "stringToNumber"
+;; 				 (prim:transcode->string 'string->number)))
 
-(assert (string= "\"stringToNumber\""
-				 (prim:transcode->string :string->number)))
+;; (assert (string= "\"stringToNumber\""
+;; 				 (prim:transcode->string :string->number)))
 
 (defun-match prim:transcode ((list '_var (non-kw-symbol s) expr
 								   (tail tail-of-var)))
@@ -414,7 +445,7 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 (defun-match prim:transcode ((list '_return (list '_newline-sequence (tail body))))
   (recur `(_newline-sequence ,@(prim:make-last-return body))))
 
-(defun-match prim:transcode ((list '_return (list (and which (or '_throw '_continue '_break)) expression)))
+(defun-match prim:transcode ((list '_return (list (and which (or '_delete '_throw '_continue '_break)) expression)))
   (recur `(,which ,expression)))
 
 (defun-match prim:transcode ((list '_return expression))
@@ -450,6 +481,10 @@ manglings.  Additionally, dashed ids are replaced by camel case."
    (prim:insert ";")
    (prim:transcode update))
   (prim:transcode-block body))
+
+(defun-match prim:transcode ((list '_delete expr))
+  (prim:insert "delete ")
+  (prim:in-parens (prim:transcode expr)))
 
 (defun-match prim:transcode ((list '_throw expr))
   (prim:insert "throw ")
@@ -665,6 +700,8 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 (defun prim:binop-sym->transcode-string (s)
   (substring (symbol-name s) 1))
 
+
+
 (defun prim:transcode-in-parens-when-needed (expr)
   (match expr
 		 ((or (keyword k)
@@ -679,12 +716,52 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 		  (prim:in-parens
 		   (prim:transcode expr)))))
 
+(defun-match prim:transcode ((list '_+ (tail args)))
+  (prim:in-parens 
+   (loop for (element . rest) on args 
+		 do (prim:in-parens (prim:transcode element))
+		 when rest do (prim:insert "+"))))
+
+(defun-match prim:transcode ((list '_- (tail args)))
+  (prim:in-parens 
+   (loop for (element . rest) on args 
+		 do (prim:in-parens (prim:transcode element))
+		 when rest do (prim:insert "-"))))
+
+(defun-match prim:transcode ((list '_* (tail args)))
+  (prim:in-parens 
+   (loop for (element . rest) on args 
+		 do (prim:in-parens (prim:transcode element))
+		 when rest do (prim:insert "*"))))
+
+(defun-match prim:transcode ((list '_/ first (tail args)))
+  (prim:in-parens 
+   (cond  ((= 0 (length args)) 
+		   (recur first))
+		  (:otherwise 
+		   (prim:in-parens (prim:transcode first))
+		   (prim:insert "/")
+		   (prim:in-parens (loop for (element . rest) on args 
+				  do (prim:in-parens (prim:transcode element))
+				  when rest do (prim:insert "*")))))))
+
+(defun-match prim:transcode ((list '_&& (tail args)))
+  (prim:in-parens 
+   (loop for (element . rest) on args 
+		 do (prim:in-parens (prim:transcode element))
+		 when rest do (prim:insert "&&"))))
+
+(defun-match prim:transcode ((list '_|| (tail args)))
+  (prim:in-parens 
+   (loop for (element . rest) on args 
+		 do (prim:in-parens (prim:transcode element))
+		 when rest do (prim:insert "||"))))
 
 (defun-match prim:transcode ((list (prim:binop op) e1 e2))
-  (prim:in-parens 
-   (prim:transcode-in-parens-when-needed e1)
-   (prim:insert (prim:binop-sym->transcode-string op))
-   (prim:transcode-in-parens-when-needed e2)))
+	(prim:in-parens 
+	 (prim:transcode-in-parens-when-needed e1)
+	 (prim:insert (prim:binop-sym->transcode-string op))
+	 (prim:transcode-in-parens-when-needed e2)))
 
 (defun-match prim:transcode ((list-rest '_comma-sequence exprs))
   (prim:in-parens (prim:transcode-csvs exprs)))
@@ -708,7 +785,9 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 	t)
   (defun-match prim:flat-seq-of-sym-val-pairs ((list odd))
 	nil)
-  (defun-match prim:flat-seq-of-sym-val-pairs ((list (non-kw-symbol sym) value-expr (tail rest)))
+  (defun-match prim:flat-seq-of-sym-val-pairs ((list (or (symbol s)
+														 (string s)) 
+													 value-expr (tail rest)))
 	(recur rest))
   (defun-match prim:flat-seq-of-sym-val-pairs (anything-else)
 	nil))
@@ -725,7 +804,6 @@ manglings.  Additionally, dashed ids are replaced by camel case."
   (recur rest (cons (list a b) acc)))
 (defun-match prim:group-by-2 ((list-rest lst))
   (recur lst nil))
-
 
 (defun-match prim:transcode ((list '_{} (tail (prim:{}-body tail))))
   (prim:insert "{")

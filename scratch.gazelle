@@ -1,9 +1,7 @@
-(define (test :* (as-options{} (x (defined x) undefined) (y 11) (z 13)))
-  [: x y z])
-
-(console.log (test :y 200 :z "Hello"))
-
-
-
-
-
+(var window ({}))
+(node-require (("hooves/hooves" :all))
+		  (var results (array	(=== (_+ 1 2 3 4 5 6 7 8 9 10) (+ 1 2 3 4 5 6 7 8 9 10))
+								(=== (_* 1 2 3 4 5 6 7 8 9 10) (* 1 2 3 4 5 6 7 8 9 10))
+								(=== (_/ 1 2 3 4 5 6 7 8 9 10) (/ 1 2 3 4 5 6 7 8 9 10))
+								(=== (_- 1 2 3 4 5 6 7 8 9 10) (- 1 2 3 4 5 6 7 8 9 10))))
+		  (console.log results))

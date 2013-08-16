@@ -12,8 +12,13 @@
    (_instanceof o Array))
  (define+ (empty? o)
    (_=== 0 (.. o length)))
+ (define+ (null? x)
+   (=== null x))
  (define-macro+ collect{} ((tail ids))
    `(_{} ,@(loop for id in ids append (list id id))))
+ (define-macro+ collect-> (into (tail ids))
+   (let ((object (gensym "object")))
+	 `(progn (var ,object ,into) ,@(loop for id in ids collect `(set! (.. ,object ,id) ,id)) ,object)))
  (define-macro+ @ ((tail ids))
    `(_. this ,@ids))
 
@@ -25,8 +30,11 @@
 	 (_=== open partial)))
 
  (define-macro+ when (condexpr (tail body))
-   `(if ,condexpr 
-		(progn ,@body)))
+   (if (= 1 (length body)
+		  `(if ,condexpr 
+			   ,(car body))
+		  `(if ,condexpr 
+			   (progn ,@body)))))
 
  (define-macro+ unless (condexpr (tail body))
    `(if (_! ,condexpr)
@@ -120,8 +128,8 @@
 				  ]))
 
  (define+ (pure-sort array :- (opt sort-fun 
-								  (lambda (a b)
-									(if (< a b) -1 1))))
+								   (lambda (a b)
+									 (if (< a b) -1 1))))
    (var copy (.. array (concat [:])))
    (.. copy
 	   (sort sort-fun))
@@ -165,6 +173,66 @@
  (define+ (/ hd (tail tl))
    (_/ hd (apply * tl)))
 
+ (define+ (map1 f a)
+   (var o [:])
+   (for ((var i 0) (< i (.. a length)) (set! i (+ i 1)))
+		(set! [o i] (f [a i])))
+   o)
+
+ (define+ (min2 a b)
+   (if (< a b) a b))
+
+ (define+ (max2 a b)
+   (if (> a b) a b))
+
+ (define (foldl f-it-ac init sequence)
+   (for ((var i 0) (< i sequence.length) (set! i (+ i 1)))
+		(set! init (f-it-ac init [sequence i])))
+   init)
+
+ (define+ (min (tail values))
+   (foldl min2 Infinity values))
+
+ (define+ (max (tail values))
+   (foldl max2 (- Infinity) values))
+
+ (define+ (map f (tail arrays))
+   (var min-len (min.apply undefined (map1 (lambda (a) a.length) arrays)))
+   (var out [:])
+   (for ((var i 0)
+		 (< i min-len)
+		 (set! i (+ i 1)))
+		(set! [out i]
+			  (f.apply this 
+					   (map1 
+						(lambda (a)
+						  [a i])
+						arrays))))
+   out)
+
+ (define+ (each f (tail arrays))
+   (var min-len (min.apply undefined (map1 (lambda (a) a.length) arrays)))
+   (for ((var i 0)
+		 (< i min-len)
+		 (set! i (+ i 1)))
+		(f.apply this 
+				 (map1 
+				  (lambda (a)
+					[a i])
+				  arrays)))
+   undefined)
+
+ (define+ (zip (tail arrays))
+   (map.apply this 
+			  (.. [: (lambda ((tail elements))
+					   elements)]
+				  (concat arrays))))
+
+ (define-macro+ | ((tail parts))
+   (match (gzu:split-on '| parts)
+		  ((list args body)
+		   `(lambda ,args ,@body))))
+
  (define-macro define-external-binop (op-name)
    (let ((prim-op (intern (concat "_" (symbol-name op-name))))
 		 (a (gensym))
@@ -206,7 +274,7 @@
 
  (define+ (plist (tail parts))
    (var out ({}))
-   (for ((var i) (< i parts.length) (set! i (+ i 2)))
+   (for ((var i 0) (< i parts.length) (set! i (+ i 2)))
 		(set! [out [parts i]] [parts (+ i 1)]))
    out)
 
@@ -232,6 +300,11 @@
 
  (define+ (prefix i ra)
    (.. [: i] (concat ra)))
+
+ (define+ (postfix i ra)
+   (.. [:] (concat ra [: i])))
+
+ (define+ (identity x) x)
 
  (define (push/return item array)
    (.. array (push item))

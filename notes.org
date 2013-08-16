@@ -1,7 +1,33 @@
-* Problem:
-  Macros expand to symbols which refer to objects in the expansion
-  environment, not the module they come in.  This is problematic for
-  macros which want to capture.  Indeed, there is no way they can
-  effectively do so without, perhaps, expanding to a require form
-  which evaluates the body of the expansion in the context of the
-  original module.  Even this is not satisfactory.  
+* Top
+  I've changed the behavior of quotation.  It previously converted the
+  quoted expression to Javascript through proper, but this leads to
+  certain symbols being ns qualified when transcoded, which isn't the
+  behavior one intuitively expects of quote in many situations.  
+
+  Now it transcodes directly through prim.  One may get the old
+  behavior by saying `(proper:quote expr)` (this doesn't seem to work)
+
+  In the mean time in Gazelle keywords are more frequently what one
+  means by quotation and since there is no eval at runtime, there
+  isn't really much of a use for quotation as it is, particular
+  without a backquate implementation.
+
+* Pattern Matches failing silently
+
+  In extremely unusual conditions, pattern matching against arrays
+  seems to cause the code to silently stop executing in Firefox.
+
+  I need test coverage for this issue.
+
+
+
+* Misc
+<ApeShot> hualet_deepin: will this ensure that paredit knows that M-r inside a
+		  {} pair means to lift the s-expression out?
+*** Sembei (~Sembei@unaffiliated/sembei) has joined channel #emacs
+<taylanub> ablepharus: How old is your system ?
+<ablepharus> about 4-6month
+<taylanub> ApeShot: No, for that you need to add { as a "parentheses" to the
+		   syntax-table of the buffer if it isn't already there.  [09:33]
+<ApeShot> taylanub: thanks a ton!
+<fledermaus> ablepharus: well, it's probably just being slow slurping the

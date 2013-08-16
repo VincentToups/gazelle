@@ -1,0 +1,51 @@
+(node-require 
+ (("hooves/hooves" :all))
+ 
+ (define+ test-table ({}))
+ (define-macro define-test (name expr)
+   `(set! [test-table ,name] (lambda () ,expr)))
+
+ (define+ (run-tests) 
+   (var failures ({}))
+   (var successes ({}))
+   (var failures-count 0)
+   (var successes-count 0)
+   (for* ((test-name test-fun) :in test-table)
+		 (console.log "Running test <" test-name ">.")
+		 (var result (test-fun.call undefined))
+		 (_if result 
+			  ((set! successes-count (+ 1 successes-count))
+			   (console.log "\tSUCCESS")
+			   (set! [successes test-name] true))
+			  _else
+			  ((set! failures-count (+ 1 failures-count))
+			   (console.log "\t**FAILURE**")
+			   (set! [failures test-name] true))))
+   (console.log "-----------------")
+   (console.log "Results: " successes-count " successes, " failures-count " failures.")
+   (console.log "Failing tests: ")
+   (for* ((test-name _) :in failures)
+		 (console.log "\t" "<"  test-name ">"))
+   ({} failures failures successes successes))
+
+ (define-test "intentionally fails" false)
+
+ (define-test "array match in lambda"
+   (=== (.. (lambda ([: a b c d]) (+ a b c d)) (call undefined [: 1 2 3 4]))
+		10))
+
+ (define-test "array match fail in lambda"
+   (_try 
+ 	((=== (.. (lambda ([: a b c d]) (+ a b c d)) (call undefined [: 1 2 3 4 5]))
+		  15))
+	_catch (e) ((_return true))))
+
+ (define-test "support for empty {} notation"
+   (=== (JSON.stringify {})
+		(JSON.stringify ({}))))
+
+ (define-test "support for {} notation"
+   (=== (JSON.stringify { x 10 y 11 })
+		(JSON.stringify ({} x 10 y 11))))
+
+ (run-tests))

@@ -1,0 +1,16 @@
+(module 
+ ()
+ (define+ (query-object)
+   (comment "Return an object representing the current URL's query string.")
+   (var result ({})
+		query-string (.. location search (slice 1))
+		re (new RegExp "([^&=]+)=([^&]*)" "g")
+		m undefined)
+   (_while (set! m (.. re (exec query-string)))
+	 (_if m 
+		  ((set! [result (decode-URI-component [m 1])]
+				(decode-URI-component [m 2])))))
+   result))
+
+
+

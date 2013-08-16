@@ -1,0 +1,10 @@
+(var window ({}))
+(node-require (("hooves/hooves" :all))
+			  (define (array (tail parts))
+				parts)
+			  (var results (array	(=== (_+ 1 2 3 4 5 6 7 8 9 10) (+ 1 2 3 4 5 6 7 8 9 10))
+									(=== (_* 1 2 3 4 5 6 7 8 9 10) (* 1 2 3 4 5 6 7 8 9 10))
+									(=== (_/ 1 2 3 4 5 6 7 8 9 10) (/ 1 2 3 4 5 6 7 8 9 10))
+									(=== (_- 1 2 3 4 5 6 7 8 9 10) (- 1 2 3 4 5 6 7 8 9 10))))
+		  (console.log results))
+

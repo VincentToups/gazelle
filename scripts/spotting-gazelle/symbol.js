@@ -1,9 +1,9 @@
-define(["hooves/hooves", "hooves/class-utils"], (function (module4745e9d952, module327750a039)  {
-  var currentModule164232 = {    
+define(["hooves/hooves", "hooves/class-utils"], (function (module47c9484436, moduleB9320eb5f4)  {
+  var currentModule30478 = {    
     
   };
   var setModuleObject = (function (value)    {
-    currentModule164232 = value;
+    currentModule30478 = value;
     });
   (function (arguments)    {
     // define+
@@ -22,48 +22,48 @@ define(["hooves/hooves", "hooves/class-utils"], (function (module4745e9d952, mod
     var internedSymbols = {      
       
     };
-    var Symbol164252 = (function (name)      {
+    var Symbol30498 = (function (name)      {
       this.name = name;
       return this;
       });
-    var superClass164256 = Object;
-    currentModule164232.Symbol = (function (name)      {
+    var superClass30502 = Object;
+    currentModule30478.Symbol = (function (name)      {
       this.name = name;
       return this;
       });
-    (require("hooves/class-utils").extend).call(null, currentModule164232.Symbol, superClass164256);
-    var classValue164275 = currentModule164232.Symbol;
-    classValue164275.prototype.toString = (function ()      {
-      return module4745e9d952.plus("", this.name);
+    (require("hooves/class-utils").extend).call(null, currentModule30478.Symbol, superClass30502);
+    var classValue30521 = currentModule30478.Symbol;
+    classValue30521.prototype.toString = (function ()      {
+      return module47c9484436.plus("", this.name);
       });
-    currentModule164232.intern = (function (name)      {
+    currentModule30478.intern = (function (name)      {
       var maybeSymbol = internedSymbols[name];
-      var theSymbol = ((module4745e9d952.definedPredicate(maybeSymbol))?(maybeSymbol) : ((new (currentModule164232.Symbol)(name))));
+      var theSymbol = ((module47c9484436.definedPredicate(maybeSymbol))?(maybeSymbol) : ((new (currentModule30478.Symbol)(name))));
       internedSymbols[name] = theSymbol;
       return theSymbol;
       });
-    currentModule164232.symbol = (function (name)      {
-      return (new (currentModule164232.Symbol)(name));
+    currentModule30478.symbol = (function (name)      {
+      return (new (currentModule30478.Symbol)(name));
       });
     // symbol
     // pattern - no dynamic value.
     ;
-    currentModule164232.symbolName = (function (s)      {
-      return (((s instanceof currentModule164232.Symbol))?(s.name) : ((function (arguments)        {
-        throw (module4745e9d952.plus("Tried to take the symbol-name of ", s));
+    currentModule30478.symbolName = (function (s)      {
+      return (((s instanceof currentModule30478.Symbol))?(s.name) : ((function (arguments)        {
+        throw (module47c9484436.plus("Tried to take the symbol-name of ", s));
         }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)))));
       });
-    currentModule164232.symbolp = (function (s)      {
-      return (s instanceof currentModule164232.Symbol);
+    currentModule30478.symbolp = (function (s)      {
+      return (s instanceof currentModule30478.Symbol);
       });
     // symbol
     // pattern - no dynamic value.
     ;
-    currentModule164232.keywordp = (function (o)      {
-      return (o instanceof currentModule164232.Keyword);
+    currentModule30478.keywordp = (function (o)      {
+      return (o instanceof currentModule30478.Keyword);
       });
-    currentModule164232.nonKwSymbolp = (function (s)      {
-      return ((currentModule164232.symbolp(s))&&(not(currentModule164232.keywordp(s))));
+    currentModule30478.nonKwSymbolp = (function (s)      {
+      return ((currentModule30478.symbolp(s))&&(not(currentModule30478.keywordp(s))));
       });
     // keyword
     // pattern - no dynamic value.
@@ -71,19 +71,19 @@ define(["hooves/hooves", "hooves/class-utils"], (function (module4745e9d952, mod
     // non-kw-symbol
     // pattern - no dynamic value.
     ;
-    var Keyword164459 = (function (name)      {
-      return currentModule164232.Symbol.call(this, name);
+    var Keyword30705 = (function (name)      {
+      return currentModule30478.Symbol.call(this, name);
       });
-    var superClass164463 = currentModule164232.Symbol;
-    currentModule164232.Keyword = (function (name)      {
-      return currentModule164232.Symbol.call(this, name);
+    var superClass30709 = currentModule30478.Symbol;
+    currentModule30478.Keyword = (function (name)      {
+      return currentModule30478.Symbol.call(this, name);
       });
-    (require("hooves/class-utils").extend).call(null, currentModule164232.Keyword, superClass164463);
-    var classValue164482 = currentModule164232.Keyword;
-    classValue164482.prototype.toString = (function ()      {
-      return module4745e9d952.plus(":", currentModule164232.Keyword.superClass.toString.call(this));
+    (require("hooves/class-utils").extend).call(null, currentModule30478.Keyword, superClass30709);
+    var classValue30728 = currentModule30478.Keyword;
+    classValue30728.prototype.toString = (function ()      {
+      return module47c9484436.plus(":", currentModule30478.Keyword.superClass.toString.call(this));
       });
     ;
     }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-  return currentModule164232;
+  return currentModule30478;
   }))

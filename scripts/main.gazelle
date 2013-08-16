@@ -1,36 +1,15 @@
-(require 
- (("hooves/hooves" :all)
-  ("hooves/class-utils" :all)
-  ("spotting-gazelle/symbol" :all)
-  ("spotting-gazelle/el" :all)
-  ("spotting-gazelle/prim" :all)
-  ("jquery/jquery" (:as $)))
+(require*
+ (("hooves/hooves" :all))
 
- (define (pr (tail args))
-   (console.log.apply console args))
+ (define+ (test1 x)
+   (console.log x))
 
- (set! window.el ((value require) "spotting-gazelle/el"))
- (set! window.prim ((value require) "spotting-gazelle/prim"))
+ (define+ value 10)
 
- (pr "Test collect-for "
-	 (collect-for ((index element) :in [: 'x 'y 'z])
-				  (+ element "!")))
- (console.log "Testing class system.")
+ (test1 (_+ "Hello inside module." "cat" "dog")))
 
- (console.log "match string"
-			  (match "x"
-					 ((string s) s)))
+(console.log "After")
 
 
 
- (pr "Testing replace-regexp-in-string")
- (var s "How bold!")
- (var s* (replace-regexp-in-string "bold" "jejune" s))
- (pr "s: " s ", s*: " s*)
- (var s** (replace-regexp-in-string (regexp-quote "bold") "stupid" s))
- (pr "s: " s ", s**: " s**)
-
- (pr "rx-or test: " (replace-regexp-in-string (regular-expression-or "x" "y") "___" "xyzy"))
-
- (pr "mangle test: " (mangle (intern 'dogs-and-cats*))))
-
+ 

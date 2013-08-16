@@ -116,6 +116,9 @@
 (defun-match proper:to-prim ((or '_undefined 'undefined))
   '_undefined)
 
+(defun-match proper:to-prim ((or '_{} '{}))
+  '_{})
+
 (defun-match proper:to-prim ((or '_true 'true))
   '_true)
 
@@ -249,7 +252,7 @@
   `(_return))
 
 
-(defun-match proper:to-prim ((list-rest '_while expression body))
+(defun-match proper:to-prim ((list-rest (or 'while '_while) expression body))
   `(_while ,(proper:to-prim expression)
 		   ,@(proper:newline-sequence->prim body)))
 
@@ -298,6 +301,9 @@
 
 (defun-match proper:to-prim ((list '_throw expr))
   `(_throw ,(proper:to-prim expr)))
+
+(defun-match proper:to-prim ((list (or 'delete '_delete) expr))
+  `(_delete ,(proper:to-prim expr)))
 
 ;; (defun-match proper:to-prim ((list '_break expr))
 ;;   `(_break ,(proper:to-prim expr)))
@@ -604,7 +610,7 @@
 				(if macro (proper:message "Found macro at id: %S in %S" id-from-head loc))
 				(if macro 
 					(recur (apply macro args))
-				  `(_. ((_value require) ,loc) ,id-from-head))))
+				  (recur `((_. ((_value require) ,loc) ,id-from-head) ,@args)))))
 			 (anything-else 
 			  (error "Gazelle Module %S didn't compile in from form %S" `(from ,loc ,id-from-head))))
 	(recur `(,id-from-head ,@args))))
@@ -704,7 +710,7 @@
  `((_function 
 	()
 	(_if (_! ,condition) 
-		 ((_return (match-fail)))
+		 ((_return (proper:signal-match-fail)))
 		 _else
 		 (,@(proper:make-last-return body))))))
 
@@ -1014,6 +1020,11 @@
 					 `((_if (_! (_=== "undefined" (_typeof ,val)))
 							(,proper:signal-match-fail))))))
 	(proper:expand-match1-body sub-pattern val body acc)))
+
+(defun-match proper:expand-match1-body ((list 'quote expr)
+										val body acc)
+  (proper:expand-match1-body (prim:transcode->string expr)
+							 val body acc))
 
 (defun-match proper:expand-match1-body ((list 'quote expr)
 										val body acc)
@@ -1626,7 +1637,7 @@
 (defun-match- proper:module-module-specs-for-deps ((list 'module module-specs (tail body)))
   (loop for spec in module-specs 
 		when (match spec 
-					((list (list 'js loc name))
+					((list (list (or 'js-library 'js) loc name))
 					 nil)
 					(elsewise t))
 		collect spec))
@@ -1745,7 +1756,7 @@
 										 symbol-macros
 										 patterns)))
 		   `(_comment (,module-location ,@parts)))))
-  (((list 'js loc name))
+  (((list (or 'js 'js-library) loc name))
    `(_comment ((js ,loc ,name))))])
 
 (defun proper:module-specs->crypto-symbols (specs)
@@ -1756,7 +1767,7 @@
 				   ((list (list (string location) (symbol local-symbol))
 						  (tail parts))
 					local-symbol)
-				   ((list (list 'js (string require-string) (non-kw-symbol local-name)))
+				   ((list (list (or 'js 'js-library) (string require-string) (non-kw-symbol local-name)))
 					local-name)
 				   (other-value
 					(error "Unrecognized module require specification %S" spec))))
@@ -1772,7 +1783,7 @@
 						 (symbol local-name))
 				   (tail parts))
 			 location)
-			((list (list 'js (string require-string) (non-kw-symbol local-name)))
+			((list (list (or 'js-library 'js) (string require-string) (non-kw-symbol local-name)))
 			 require-string))) 
    specs))
 
@@ -1921,16 +1932,87 @@
   (()
    `(gazelle:essentials :export nil))])
 
+;; (proper:define-macro 
+;;  require (specs (tail body))
+;;  (proper:message "specs is %S" specs)
+;;  `((_value require)
+;;    [: ,@(proper:module-specs->locations specs)]
+;;    (designated-lambda require-form (,@(proper:module-specs->crypto-symbols specs))
+;; 					  (_proper:macro-context
+;; 					   ,@(loop for spec in specs collect
+;; 							   `(_proper:require-spec ,@spec))
+;; 					   (_newline-sequence ,@body)))))
+
 (proper:define-macro 
  require (specs (tail body))
  (proper:message "specs is %S" specs)
- `((_value require)
-   [: ,@(proper:module-specs->locations specs)]
-   (designated-lambda require-form (,@(proper:module-specs->crypto-symbols specs))
-					  (_proper:macro-context
-					   ,@(loop for spec in specs collect
-							   `(_proper:require-spec ,@spec))
-					   (_newline-sequence ,@body)))))
+ (let* ((current-module (gensym "window-alias"))
+		(spec "window"))
+   (proper:to-prim `((_value require)
+					 [: ,@(proper:module-specs->locations specs)]
+					 (designated-lambda require-form (,@(proper:module-specs->crypto-symbols specs))
+										(_proper:macro-context
+										 ,@(loop for spec+ in specs collect
+												 `(_proper:require-spec ,@spec+))
+										 (_newline-sequence
+										  (_var ,current-module window)
+										  (define (set-module-object value)
+											(_= ,current-module value))
+										  (_proper:unit 
+										   (define-macro _current-module ()
+											 current-module)
+										   (define-macro define+ ((tail parts))
+											 (match parts
+													((list (non-kw-symbol name) value-expr)
+													 
+													 (proper:add-to-symbol-macro-context 
+													  name
+													  (lexical-let  
+														  ((lcurrent-module current-module)
+														   (lname name))
+														(lambda (_) `(_. ,lcurrent-module ,lname))))
+													 `(_= (_. ,current-module ,name) ,value-expr))
+													((list (list (non-kw-symbol name) (tail args)) 
+														   (tail (p #'proper:not-null body)))
+													 
+													 (proper:add-to-symbol-macro-context 
+													  name
+													  (lexical-let
+														  ((lcurrent-module current-module) 
+														   (lname name))
+														(lambda (_) `(_. ,lcurrent-module ,lname))))
+													 `(_= (_. ,current-module ,name) (designated-lambda 
+																					  ,(intern 
+																						(concat spec "-" (symbol-name name))) 
+																					  ,args ,@body)))
+													((list (list (non-kw-symbol name) (tail function-terms)))
+													 
+													 (proper:add-to-symbol-macro-context 
+													  name
+													  (lexical-let
+														  ((lcurrent-module current-module) 
+														   (lname name))
+														(lambda (_) `(_. ,lcurrent-module ,lname))))
+													 `(_= (_. ,current-module ,name) (designated-lambda 
+																					  ,(intern 
+																						(concat spec "-" (symbol-name name))) 
+																					  ,@function-terms)))
+													(other-form
+													 (error (concat "gazelle/proper define must either"
+																	" by (define symbol expr) or (define"
+																	" (name arg-pattern ...) body0 ...)," 
+																	" got %S") `(define+ ,@parts)))))
+										   (define-macro define-macro+ (name (tail rest))
+											 
+											 `(define-macro ,name ,@rest))
+										   (define-macro define-pattern+ (name (tail rest))
+											 
+											 `(define-pattern ,name ,@rest))
+										   ,@(loop for spec* in specs collect
+												   `(_proper:require-spec ,@spec*))
+										   ,@body))))))))
+
+
 
 
 (defvar proper:*node-rjs-root* nil)
@@ -1952,20 +2034,84 @@
 (proper:define-macro 
  node-require (specs (tail body))
  (proper:message "specs is %S" specs)
- (proper:to-prim 
-  `(((_function () 
-				(_var rjs ((value require) "requirejs"))
-				(console.log (_+ "using requirejs in nodejs, rjs is " rjs))
-				(rjs.config 
-				 ({} node-require require
-					 ))
-				(_return rjs)))
-	[: ,@(proper:module-specs->locations specs)]
-	(designated-lambda require-form (,@(proper:module-specs->crypto-symbols specs))
-					   (_proper:macro-context
-						,@(loop for spec in specs collect
-								`(_proper:require-spec ,@spec))
-						,@body)))))
+ (let* ((current-module (gensym "global-alias"))
+		(spec "global"))
+   (proper:to-prim 
+   `(((_function () 
+				 (_var rjs ((value require) "requirejs"))
+				 (comment				(console.log (_+ "using requirejs in nodejs, rjs is " rjs)))
+				 (rjs.config 
+				  ({} node-require require
+					  ))
+				 (_return rjs)))
+	 [: ,@(proper:module-specs->locations specs)]
+	 ;; (designated-lambda require-form (,@(proper:module-specs->crypto-symbols specs))
+	 ;; 				   (_proper:macro-context
+	 ;; 					,@(loop for spec in specs collect
+	 ;; 							`(_proper:require-spec ,@spec))
+	 ;; 					,@body))
+	 (designated-lambda require-form (,@(proper:module-specs->crypto-symbols specs))
+						(_proper:macro-context
+						 ,@(loop for spec+ in specs collect
+								 `(_proper:require-spec ,@spec+))
+						 (_newline-sequence
+						  (_var ,current-module global)
+						  (define (set-module-object value)
+							(_= ,current-module value))
+						  (_proper:unit 
+						   (define-macro _current-module ()
+							 current-module)
+						   (define-macro define+ ((tail parts))
+							 (match parts
+									((list (non-kw-symbol name) value-expr)
+													 
+									 (proper:add-to-symbol-macro-context 
+									  name
+									  (lexical-let  
+										  ((lcurrent-module current-module)
+										   (lname name))
+										(lambda (_) `(_. ,lcurrent-module ,lname))))
+									 `(_= (_. ,current-module ,name) ,value-expr))
+									((list (list (non-kw-symbol name) (tail args)) 
+										   (tail (p #'proper:not-null body)))
+													 
+									 (proper:add-to-symbol-macro-context 
+									  name
+									  (lexical-let
+										  ((lcurrent-module current-module) 
+										   (lname name))
+										(lambda (_) `(_. ,lcurrent-module ,lname))))
+									 `(_= (_. ,current-module ,name) (designated-lambda 
+																	  ,(intern 
+																		(concat spec "-" (symbol-name name))) 
+																	  ,args ,@body)))
+									((list (list (non-kw-symbol name) (tail function-terms)))
+													 
+									 (proper:add-to-symbol-macro-context 
+									  name
+									  (lexical-let
+										  ((lcurrent-module current-module) 
+										   (lname name))
+										(lambda (_) `(_. ,lcurrent-module ,lname))))
+									 `(_= (_. ,current-module ,name) (designated-lambda 
+																	  ,(intern 
+																		(concat spec "-" (symbol-name name))) 
+																	  ,@function-terms)))
+									(other-form
+									 (error (concat "gazelle/proper define must either"
+													" by (define symbol expr) or (define"
+													" (name arg-pattern ...) body0 ...)," 
+													" got %S") `(define+ ,@parts)))))
+						   (define-macro define-macro+ (name (tail rest))
+											 
+							 `(define-macro ,name ,@rest))
+						   (define-macro define-pattern+ (name (tail rest))
+											 
+							 `(define-pattern ,name ,@rest))
+						   ,@(loop for spec* in specs collect
+								   `(_proper:require-spec ,@spec*))
+						   ,@body))))
+	 ))))
 
 (defun proper:spec-location->naive-name (location)
   (intern (car (last (split-string location (regexp-quote "/"))))))
@@ -2065,6 +2211,8 @@
 						 (define (set-module-object value)
 						   (_= ,current-module value))
 						 (_proper:unit 
+						  (define-macro _current-module ()
+							current-module)
 						  (define-macro define+ ((tail parts))
 							(match parts
 								   ((list (non-kw-symbol name) value-expr)

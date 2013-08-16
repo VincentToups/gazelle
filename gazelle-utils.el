@@ -80,6 +80,19 @@
 						(cdr parts)))
 		  (format "\n"))))
 
+(defun-match- gzu:split-on (sigil lst)
+  (recur sigil lst #'equal nil))
+
+(defun-match gzu:split-on (sigil (list) test acc)
+  (error "gzu:split-on wanted to find %S in %S but could not." sigil (reverse acc)))
+
+(defun-match gzu:split-on (sigil (list* hd tl) test acc)
+  (cond ((funcall test hd sigil)
+		 (list (reverse acc) tl))
+		(:otherwise
+		 (recur sigil tl test 
+				(cons hd acc)))))
+
 (defun gzu:kill-leading-comments (s)
   (let ((s* (gzu:kill-leading-comment s)))
 	(loop while (not (string= s* s)) do
@@ -116,19 +129,76 @@
 		 ((None read-from-string-reason)
 		  (None (list :read-from-string-failed (reverse acc) read-from-string-reason)))))
 
+(defun-match- gzu:replace-curlies-step 
+  (nil nil) t)
+
+(defun-match gzu:replace-curlies-step 
+  (nil (and tl (funcall #'char-before ?\})))
+  "unbalanced closing"
+  (error "Unbalanced closing curly brace in %s at %s." (buffer-name) tl))
+
+(defun-match gzu:replace-curlies-step 
+  (nil (and tl (funcall #'char-before ?\{)))
+  (recur (list tl) (search-forward-regexp (rx (or "{" "}" "\"")) nil t)))
+
+(defun-match gzu:replace-curlies-step 
+  (nil (and tl (funcall #'char-before ?\")))
+  "open string"
+  (recur (list tl) (search-forward-regexp (rx (not (any "\\")) "\"") nil t)))
+
+(defun-match gzu:replace-curlies-step 
+  ((list* (and hd (funcall #'char-before ?\")) rest)
+   (and tl (funcall #'char-before ?\")))
+  "close string"
+  (recur rest (search-forward-regexp (rx (or "{" "}" "\"")) nil t)))
+
+(defun-match gzu:replace-curlies-step 
+  ((list* (and hd (funcall #'char-before ?\{)) rest)
+   (and tl (funcall #'char-before ?\")))
+  "Open string while searching for close brace."
+  (recur (cons tl (cons hd rest)) (search-forward-regexp (rx (not (any "\\")) "\"") nil t)))
+
+(defun-match gzu:replace-curlies-step 
+  ((list* (and hd (funcall #'char-before ?\{)) rest)
+   (and tl (funcall #'char-before ?\{)))
+  (recur (cons tl (cons hd rest))
+		 (search-forward-regexp (rx (or "{" "}" "\"")) nil t)))
+
+(defun-match gzu:replace-curlies-step 
+  ((list* (and hd (funcall #'char-before ?\{)) rest)
+   (and tl (funcall #'char-before ?\})))
+  "fix curly pair"
+  (cond 
+   ((= hd (- tl 1))
+	(recur rest (search-forward-regexp (rx (or "{" "}" "\"")) nil t)))
+   (:otherwise 
+	(kill-region (- tl 1) tl)
+	(insert ")")
+	(save-excursion 
+	  (goto-char hd)
+	  (kill-region (- hd 1) hd)
+	  (insert "({} "))
+	(goto-char (+ tl (- (length "({} ") (length "{"))))
+	(recur rest (search-forward-regexp (rx (or "{" "}" "\"")))))))
+
+(defun gzu:preprocess-buffer ()
+  (interactive)
+  (save-excursion 
+	(goto-char (point-min))
+	(gzu:replace-curlies-step nil (search-forward-regexp (rx (or "{" "}" "\"")) nil t))))
+
 (defun gzu:read-file (filename)
-  (let* ((open-already (find-buffer-visiting (file-truename filename)))
-		 (buffer (if open-already open-already 
-				   (find-file-noselect (file-truename filename))))
-		 (string-contents
-		  (with-current-buffer buffer
-			(buffer-substring-no-properties (point-min) (point-max)))))
-	(match (gzu:maybe-read-sexps-from-string string-contents)
-		   ((Just s-expressions)
-			s-expressions)
-		   ((None (list _ read-sexpressions read-from-string-reason))
-			(error "Error reading file %s, last s-expression was %S and read-from-string error was %S"
-				   filename (car (last read-sexpressions)) read-from-string-reason)))))
+  (let ((gzu:read-file-contents nil)) 
+	(with-temp-buffer 
+	  (insert "(setq gzu:read-file-contents '(")
+	  (goto-char (point-max))
+	  (insert-file filename)
+	  (goto-char (point-max))
+	  (insert "))")
+	  (write-region (point-min) (point-max) "/tmp/gzu-temp.el")
+	  (gzu:preprocess-buffer)
+	  (eval-buffer))
+	gzu:read-file-contents))
 
 (defun-match gzu:alist-lookup (key nil)
   nil)

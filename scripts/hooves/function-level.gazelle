@@ -1,0 +1,36 @@
+(module 
+ (("hooves/hooves" :all))
+ 
+ (define+ (^or f1 (tail fs))
+   (lambda ((tail args))
+ 	 (var done (f1.apply this args))
+ 	 (var i 0)
+ 	 (_while (_&& (_! done)
+ 				 (_< i fs.length))
+	   
+	   (set! done (.. [fs i] (apply this args)))
+	   (set! i (_+ i 1)))
+ 	 done))
+
+ (define+ (^and f1 (tail fs))
+   (lambda ((tail args))
+ 	 (var done (_! (f1.apply this args)))
+ 	 (var i 0)
+ 	 (_while (_&& (_! done)
+ 				 (_< i fs.length)) 
+ 	   (set! done (_! (.. [fs i] (apply this args))))
+	   (set! i (_+ i 1)))
+ 	 (_! done)))
+
+ (define+ (^^ (tail fs))
+   (lambda ((tail args))
+ 	 (var rval (.. [fs (_- fs.length 1)]))
+ 	 (for ((var i (_- fs.length 2))
+ 		   (_>= i 0)
+ 		   (set! i (- i 1)))
+ 		  (set! rval (.. [fs i] (call this rval))))
+ 	 rval))
+
+
+
+ )
