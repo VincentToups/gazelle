@@ -57,4 +57,10 @@
    (=== "{ x y z b}"
 		(file-as-string "test-brackets.string")))
 
+ (define-test "in operator prim"
+   (_in :x { x 10 y 11 }))
+
+ (define-test "in operator proper"
+   (in :x { x 10 y 11 }))
+
  (run-tests))
