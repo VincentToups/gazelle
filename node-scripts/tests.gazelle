@@ -48,4 +48,13 @@
    (=== (JSON.stringify { x 10 y 11 })
 		(JSON.stringify ({} x 10 y 11))))
 
+ (define-macro file-as-string (filename)
+   (with-temp-buffer 
+	 (insert-file filename)
+	 (buffer-substring (point-min) (point-max))))
+
+ (define-test "{} not expanded in strings"
+   (=== "{ x y z b}"
+		(file-as-string "test-brackets.string")))
+
  (run-tests))
