@@ -1,0 +1,2 @@
+(module ()
+		(define+ quoted-value 'some-value))

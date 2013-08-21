@@ -1,5 +1,6 @@
 (node-require 
- (("hooves/hooves" :all))
+ (("hooves/hooves" :all)
+  ("test-module/a-module" :all))
  
  (define+ test-table ({}))
  (define-macro define-test (name expr)
@@ -57,6 +58,13 @@
    (=== "{ x y z b}"
 		(file-as-string "test-brackets.string")))
 
+ (define-test "{} not expanded as part of symbol."
+   (=== 
+	(.. (lambda (:* (as-options{} (x 10) (y 11)))
+		  (+ x y))
+		(call undefined))
+	21))
+
  (define-test "in operator prim"
    (_in :x { x 10 y 11 }))
 
@@ -67,4 +75,9 @@
    (=== 10 
 		(.. (lambda ({ x (number a)}) a) (call undefined { x 10 }))))
 
+ (define-test "quote inside a module"
+   (=== 'some-value
+		quoted-value))
+
  (run-tests))
+
