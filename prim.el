@@ -586,13 +586,7 @@ manglings.  Additionally, dashed ids are replaced by camel case."
 
 (defun-match prim:transcode 
   ((list-rest '_. 
-			  (and expr
-				   (! (or (list hd (tail tl))
-						  [hd (tail tl)]) 
-					  actually 
-					  (format (concat "_. expressions must begin with a symbol, "
-									  "a function call, or an array access. Got %S.") 
-							  actually))) 
+			  expr 
 			  tail-of-dot-expr))
   (prim:transcode expr)
   (if tail-of-dot-expr

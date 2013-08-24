@@ -674,9 +674,12 @@
 
 (proper:define-macro 
  _let ((list-rest binders) (tail body))
- (let ((names (cons 'arguments (mapcar #'car binders)))
-	   (expressions (mapcar #'cadr binders)))
-   `(_. (_lambda ,names ,@body)
+ (let* ((arguments-name (gensym "arguments"))
+		(names (cons arguments-name (mapcar #'car binders)))
+		(expressions (mapcar #'cadr binders)))
+   `(_. (_lambda ,names 
+				 (_= arguments ,arguments-name)
+				 ,@body)
 		(call this (_? (_=== (_typeof arguments) "undefined") undefined arguments) ,@expressions))))
 
 
@@ -918,6 +921,14 @@
 
 (defun-match proper:expand-match1-body ((list 'number pattern) val body acc)
   (recur `(type "number" ,pattern)
+		 val body acc))
+
+(defun-match proper:expand-match1-body ((list 'string) val body acc)
+  (recur `(type "string")
+		 val body acc))
+
+(defun-match proper:expand-match1-body ((list 'string pattern) val body acc)
+  (recur `(type "string" ,pattern)
 		 val body acc))
 
 
@@ -1898,32 +1909,7 @@
 (defun proper:prefix_ (s)
   (intern (concat "_" (symbol-name s))))
 
-(defun proper:expand-essentials (define define-macro)
-  `(_newline-sequence 
-	(,define (+ hd (tail tl))
-	  (for (i :in tl)
-		   (set! hd (_+ hd [tl i])))
-	  hd)
-	(,define (* hd (tail tl))
-	  (for (i :in tl)
-		   (set! hd (_* hd [tl i]))))
-	(,define (- hd (tail tl))
-	  (_- hd (.. + (apply _undefined tl))))
-	(,define (/ hd (tail tl))
-	  (_/ hd (.. * (apply _undefined tl))))
-	,@(loop for op in '(< <= > >= == === >> << >>> & | ^) collect 
-			`(define (,op a b)
-			   (,(proper:prefix_ op) a b)))
-	(,define-macro && 
-	  [((a b)
-		`(_&& ,a ,b))
-	   ((a (tail rest))
-		`(_&& ,a (&& ,@rest)))])
-	(,define-macro ||
-	  [((a b)
-		`(_&& ,a ,b))
-	   ((a (tail rest))
-		`(_&& ,a (|| ,@rest)))])))
+
 
 (proper:define-macro 
  gazelle:essentials
@@ -2277,3 +2263,329 @@
 
 
 
+(defun proper:expand-essentials (define define-macro)
+  `(_newline-sequence 
+	(define (defined? x)
+	  (_! (_=== (_typeof x) "undefined")))
+	(define (undefined? x)
+	  (_=== (_typeof x) "undefined"))
+	(define (number? o)
+	  (_=== (_typeof o) "number"))
+	(define (string? o)
+	  (_=== (_typeof o) "string"))
+	(define (array? o)
+	  (_instanceof o Array))
+	(define (empty? o)
+	  (_=== 0 (.. o length)))
+	(define (null? x)
+	  (=== null x))
+	(define-macro collect{} ((tail ids))
+	  `(_{} ,@(loop for id in ids append (list id id))))
+	(define-macro collect-> (into (tail ids))
+	  (let ((object (gensym "object")))
+		`(progn (var ,object ,into) ,@(loop for id in ids collect `(set! (.. ,object ,id) ,id)) ,object)))
+	(define-macro @ ((tail ids))
+	  `(_. this ,@ids))
+
+	(define (apply f lst)
+	  (.. f (apply f lst)))
+
+	(define (===_ partial)
+	  (lambda (open)
+		(_=== open partial)))
+
+	(define-macro when (condexpr (tail body))
+	  (if (= 1 (length body)
+			 `(if ,condexpr 
+				  ,(car body))
+			 `(if ,condexpr 
+				  (progn ,@body)))))
+
+	(define-macro unless (condexpr (tail body))
+	  `(if (_! ,condexpr)
+		   (progn ,@body)))
+
+	(define (Delay lambda-expr)
+	  (set! this.lambda-expr lambda-expr)
+	  this)
+
+	(set! Delay.prototype.value 
+		  (lambda ()
+			(this.lambda-expr)))
+
+	(define-macro delay ((tail body))
+	  `(new (from "hooves/hooves" Delay)
+			(lambda () ,@body)))
+
+	(define (undelay o)
+	  (match o
+			 ((instance Delay delay-object)
+			  (delay-object.value))))
+
+	(define-macro define-to (object-expr (tail define-args))
+	  (let ((object (gensym "define-to-object-")))
+		`(progn
+		   (_var ,object ,object-expr)
+		   (define ,@define-args)
+		   ,(match define-args
+				   ((list (non-kw-symbol idx) expr)
+					`(set! (_. ,object ,idx) ,idx))
+				   ((list (list (non-kw-symbol idy) (tail expr)) (tail exprs))
+					`(set! (_. ,object ,idy) ,idy)))
+		   ,object)))
+
+	(define-macro for* ((list 
+						 (list (non-kw-symbol index) match-expr) 
+						 (or 'in :in) expr)
+						(tail body))
+	  (let ((array-object (gensym "array-object")))
+		`(_newline-sequence 
+		  (_var ,array-object ,expr)
+		  (for (,index in ,array-object)
+			   (var-match ,match-expr [,array-object ,index])
+			   ,@body))))
+
+	(define-macro collecting (with (tail body))
+	  (let ((collection (gensym "collection"))
+			(temp (gensym "temp")))
+		`(let ((,collection [:])
+			   (,with (lambda (,temp) (.. ,collection (push ,temp)))))
+		   ,@body ,collection)))
+
+	(define-macro collect-for 
+	  ((list 
+		(list (non-kw-symbol index) match-expr) 
+		(or 'in :in) expr)
+	   (tail body))
+	  (let ((o (gensym "collecter"))
+			(v (gensym "collect-for-value"))
+			(f (gensym "collect-for-body-lambda")))
+		`(let ((,o [:])
+			   (,f (lambda (,index ,match-expr) ,@body)))
+		   (for* ((,index ,v) :in ,expr)
+				 (.. ,o (push 
+						 (.. ,f (call this ,index ,v)))))
+		   ,o)))
+
+	(define (range [
+					((start step stop transform)
+					 (var out [:])
+					 (for ((var i start) 
+						   (_< i stop) 
+						   (set! i (_+ i step)))
+						  (out.push 
+						   (transform i)))
+					 out)
+
+					((start step stop)
+					 (recur start step stop (lambda (v) v)))
+					((start stop)
+					 (recur start 1 stop (lambda (v) v)))
+					((stop)
+					 (recur 0 1 stop (lambda (v) v)))
+					]))
+
+	(define (pure-sort array :- (opt sort-fun 
+									 (lambda (a b)
+									   (if (< a b) -1 1))))
+	  (var copy (.. array (concat [:])))
+	  (.. copy
+		  (sort sort-fun))
+	  copy)
+
+	(define-macro with-slots ((list (tail slots)) object-expr (tail body))
+	  (let ((object (gensym)))
+		`(_let ()  
+			   (_var ,object ,object-expr)
+			   (_proper:symbol-macro-let 
+				,(loop for slot in slots collect
+					   (match slot 
+							  ((non-kw-symbol slot)
+							   `(,slot (_. ,object ,slot)))
+							  ((list (non-kw-symbol local-name)
+									 (non-kw-symbol in-object-name))
+							   `(,local-name (_. ,object ,in-object-name)))
+							  ((list (non-kw-symbol local-name)
+									 (or (string key)
+										 (number key)))
+							   `(,local-name [,object ,key]))))
+				,@body))))
+
+	(define (+ hd (tail tl))
+	  (var result hd)
+	  (for (i :in tl)
+		   (set! result (_+ result [tl i])))
+	  result)
+
+	(define (- hd (tail tl))
+	  (if (_> tl.length 0) 
+		  (_- hd (apply + tl))
+		(_- hd)))
+
+	(define (* hd (tail tl))
+	  (var result hd)
+	  (for (i :in tl)
+		   (set! result (_* result [tl i])))
+	  result)
+
+	(define (/ hd (tail tl))
+	  (_/ hd (apply * tl)))
+
+	(define (map1 f a)
+	  (var o [:])
+	  (for ((var i 0) (< i (.. a length)) (set! i (+ i 1)))
+		   (set! [o i] (f [a i])))
+	  o)
+
+	(define (min2 a b)
+	  (if (< a b) a b))
+
+	(define (max2 a b)
+	  (if (> a b) a b))
+
+	(define (foldl f-it-ac init sequence)
+	  (for ((var i 0) (< i sequence.length) (set! i (+ i 1)))
+		   (set! init (f-it-ac init [sequence i])))
+	  init)
+
+	(define (min (tail values))
+	  (foldl min2 Infinity values))
+
+	(define (max (tail values))
+	  (foldl max2 (- Infinity) values))
+
+	(define (map f (tail arrays))
+	  (var min-len (min.apply undefined (map1 (lambda (a) a.length) arrays)))
+	  (var out [:])
+	  (for ((var i 0)
+			(< i min-len)
+			(set! i (+ i 1)))
+		   (set! [out i]
+				 (f.apply this 
+						  (map1 
+						   (lambda (a)
+							 [a i])
+						   arrays))))
+	  out)
+
+	(define (each f (tail arrays))
+	  (var min-len (min.apply undefined (map1 (lambda (a) a.length) arrays)))
+	  (for ((var i 0)
+			(< i min-len)
+			(set! i (+ i 1)))
+		   (f.apply this 
+					(map1 
+					 (lambda (a)
+					   [a i])
+					 arrays)))
+	  undefined)
+
+	(define (zip (tail arrays))
+	  (map.apply this 
+				 (.. [: (lambda ((tail elements))
+						  elements)]
+					 (concat arrays))))
+
+	(define-macro | ((tail parts))
+	  (match (gzu:split-on '| parts)
+			 ((list args body)
+			  `(lambda ,args ,@body))))
+
+	(define-macro define-external-binop (op-name)
+	  (let ((prim-op (intern (concat "_" (symbol-name op-name))))
+			(a (gensym))
+			(b (gensym)))
+		`(define (,op-name ,a ,b)
+		   (,prim-op ,a ,b))))
+
+	(define-macro define-external-binops ((tail op-names))
+	  `(_newline-sequence 
+		,@(loop for op-name in op-names collect
+				`(define-external-binop ,op-name))))
+
+	(define-external-binops 
+	  < <= > >= & | == === % ^ << >> >>>)
+
+	(define-macro && 
+	  [((a b)
+		`(_&& ,a ,b))
+	   ((a (tail rest))
+		`(_&& ,a (&& ,@rest)))])
+
+	(define-macro ||
+	  [((a b)
+		`(_|| ,a ,b))
+	   ((a (tail rest))
+		`(_|| ,a (|| ,@rest)))])
+
+	(define (! o)
+	  (_! o))
+
+	(define-macro incr ((non-kw-symbol place))
+	  `(set! ,place (+ 1 ,place)))
+
+	(define-macro decr ((non-kw-symbol place))
+	  `(set! ,place (- ,place 1)))
+
+	(define-pattern string (sub-pattern)
+	  `(type "string" ,sub-pattern))
+
+	(define (plist (tail parts))
+	  (var out ({}))
+	  (for ((var i 0) (< i parts.length) (set! i (+ i 2)))
+		   (set! [out [parts i]] [parts (+ i 1)]))
+	  out)
+
+	(define-pattern as-options{} ((tail options-exprs))
+	  `(call 
+		(lambda (parts)
+		  (var out ({}))
+		  (for ((var i) (< i parts.length) (set! i (+ i 2)))
+			   (set! [out [parts i]] [parts (+ i 1)]))
+		  out)
+		,options-exprs))
+
+	(define (rx s :- (opt args "g"))
+	  (new RegExp s args))
+
+	(define-macro set-to! (expr (tail kv-pairs))
+	  (let ((o (gensym "target")))
+		`(progn 
+		   (var ,o ,expr)
+		   (set! ,@(loop for (k v . rest) on kv-pairs
+						 append `((.. ,o ,k) ,v)))
+		   ,o)))
+
+	(define (prefix i ra)
+	  (.. [: i] (concat ra)))
+
+	(define (postfix i ra)
+	  (.. [:] (concat ra [: i])))
+
+	(define (identity x) x)
+
+	(define (push/return item array)
+	  (.. array (push item))
+	  array)
+
+	(define (plist->object-helper 
+			 [((object-acc [:])
+			   object-acc)
+			  ((object-acc [: (string key) value (tail rest)])
+			   (set! [object-acc key] value)
+			   (recur 
+				object-acc rest))]))
+
+	(define (plist->object (tail kv-pairs))
+	  (plist->object-helper ({}) kv-pairs))
+
+	(define (filter 
+			 [((fun [:] acc)
+			   acc)
+			  ((fun [: hd (tail tl)] acc)
+			   (var r (fun hd))
+			   (if r (recur fun tl (push/return hd acc))
+				 (recur fun tl acc)))
+			  ((fun ra)
+			   (recur fun ra [:]))]))
+	))

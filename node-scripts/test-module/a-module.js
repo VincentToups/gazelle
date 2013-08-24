@@ -1,11 +1,12 @@
 define([], (function ()  {
-  var currentModule97939 = {    
+  var currentModule27135 = {    
     
   };
   var setModuleObject = (function (value)    {
-    currentModule97939 = value;
+    currentModule27135 = value;
     });
-  (function (arguments)    {
+  (function (arguments27150)    {
+    arguments = arguments27150;
     // _current-module
     // macro - no dynamic value.
     ;
@@ -18,7 +19,7 @@ define([], (function ()  {
     // define-pattern+
     // macro - no dynamic value.
     ;
-    currentModule97939.quotedValue = "someValue";
+    currentModule27135.quotedValue = "someValue";
     }).call(this, (((((typeof arguments))===("undefined")))?(undefined) : (arguments)));
-  return currentModule97939;
+  return currentModule27135;
   }))

@@ -79,5 +79,17 @@
    (=== 'some-value
 		quoted-value))
 
+ (define-test "arguments preserved in _let"
+   (=== 10 
+		(.. (lambda () (_let ((x 0)) [arguments 0])) (call undefined 10 11 12))))
+
+ (define-test "arguments preserved in progn"
+   (=== 10 
+		(.. (lambda () 
+			  (progn 
+				[arguments 0])) 
+			(call undefined 10 11 12))))
+
+
  (run-tests))
 
